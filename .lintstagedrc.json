@@ -1,5 +1,6 @@
 {
   "*.ts": [
-    "yarn lint"
+    "yarn lint",
+    "yarn test:staged"
   ]
 }
