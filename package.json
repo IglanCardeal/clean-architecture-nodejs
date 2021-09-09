@@ -4,15 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
-    "lint:fix": "yarn run lint -- --fix"
+    "lint:fix": "yarn run lint -- --fix",
+    "test": "jest",
+    "test:unit": "jest",
+    "test:unit:watch": "jest --watch",
+    "test:staged": "jest --passWithNoTests",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^27.0.1",
     "@types/node": "^16.9.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
@@ -22,7 +26,9 @@
     "eslint-plugin-security": "^1.4.0",
     "git-commit-msg-linter": "^3.2.8",
     "husky": "^7.0.2",
+    "jest": "^27.1.1",
     "lint-staged": "^11.1.2",
+    "ts-jest": "^27.0.5",
     "typescript": "*"
   }
 }
