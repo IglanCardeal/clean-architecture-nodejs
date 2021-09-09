@@ -10,6 +10,7 @@
     "test:unit": "jest",
     "test:unit:watch": "jest --watch",
     "test:staged": "jest --passWithNoTests",
+    "test:coverage": "jest --passWithNoTests --coverage ",
     "prepare": "husky install"
   },
   "keywords": [],
