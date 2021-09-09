@@ -19,8 +19,13 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
+    "paths": {
+      "@src/*": ["./src/*"]
+    },
+    "rootDirs": ["./src"],
     "typeRoots": ["./node_modules/@types"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
-  }
+  },
+  "exclude": ["./node_modules/*", "dist"]
 }
