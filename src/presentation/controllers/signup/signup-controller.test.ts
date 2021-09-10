@@ -1,7 +1,11 @@
 import { AccountModel } from '@src/domain/models/account'
 import { AddAccount, AddAccountModel } from '@src/domain/usecases/add-account'
-import { MissingParamError, InvalidParamError, ServerError } from '../errors'
-import { EmailValidator } from '../protocols'
+import {
+  MissingParamError,
+  InvalidParamError,
+  ServerError
+} from '@src/presentation/errors'
+import { EmailValidator } from '@src/presentation/protocols'
 import { SignUpController } from './signup-controller'
 
 const makeEmailValidator = (): EmailValidator => {
@@ -17,7 +21,7 @@ const makeEmailValidator = (): EmailValidator => {
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     add (account: AddAccountModel): AccountModel {
-      (account)
+      account
       const fakeAccount = {
         id: 'valid_id',
         name: 'valid_name',
