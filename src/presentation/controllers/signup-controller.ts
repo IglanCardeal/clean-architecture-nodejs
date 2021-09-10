@@ -6,9 +6,13 @@ import {
   HttpResponse
 } from '../protocols'
 import { badRequest, serverError } from '../helpers/http-helper'
+import { AddAccount } from '@src/domain/usecases/add-account'
 
 export class SignUpController implements Controller {
-  constructor (private readonly emailValidator: EmailValidator) {}
+  constructor (
+    private readonly emailValidator: EmailValidator,
+    private readonly addAccount: AddAccount
+  ) {}
 
   public handle (httpRequest: HttpRequest): HttpResponse {
     try {
@@ -25,19 +29,26 @@ export class SignUpController implements Controller {
         }
       }
 
-      if (httpRequest.body.password !== httpRequest.body.passwordConfirmation) {
+      const { name, email, password, passwordConfirmation } = httpRequest.body
+      const isValidEmail = this.emailValidator.isValid(email)
+      const passwordsAreEqual = password === passwordConfirmation
+
+      if (!passwordsAreEqual) {
         return badRequest(new InvalidParamError('passwordConfirmation'))
       }
-
-      if (!this.emailValidator.isValid(httpRequest.body.email)) {
+      if (!isValidEmail) {
         return badRequest(new InvalidParamError('email'))
       }
 
+      const account = this.addAccount.add({
+        name,
+        email,
+        password
+      })
+
       return {
         statusCode: 201,
-        body: {
-          message: 'success'
-        }
+        body: account
       }
     } catch (error) {
       return serverError()
