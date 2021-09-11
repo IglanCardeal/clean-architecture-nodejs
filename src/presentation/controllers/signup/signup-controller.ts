@@ -5,7 +5,7 @@ import {
   HttpRequest,
   AddAccount,
   HttpResponse
-} from './signup-protocolos'
+} from './signup-protocols'
 import {
   badRequest,
   serverError,
