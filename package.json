@@ -18,9 +18,7 @@
     "test:i": "yarn test:integration",
     "test:i:w": "yarn test:integration:watch",
     "test:staged": "yarn test:unit",
-    "test:coverage:unit": "yarn test --coverage",
-    "test:coverage:integration": "yarn test:integration --coverage",
-    "test:coverage": "yarn test:coverage:unit && yarn test:coverage:integration",
+    "test:coverage": "yarn test --coverage",
     "test:ci": "yarn test:coverage",
     "prepare": "husky install"
   },
