@@ -5,7 +5,7 @@ import {
   InvalidParamError,
   ServerError
 } from '@src/presentation/errors'
-import { EmailValidator } from '@src/presentation/protocols'
+import { EmailValidator } from '@src/presentation/ports'
 import { SignUpController } from './signup-controller'
 
 const makeEmailValidator = (): EmailValidator => {
