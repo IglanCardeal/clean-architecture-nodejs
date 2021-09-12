@@ -17,7 +17,7 @@
     "test:integration:watch": "yarn test -c jest-integration.config.js --watch --runInBand",
     "test:i": "yarn test:integration",
     "test:i:w": "yarn test:integration:watch",
-    "test:staged": "yarn test --findRelatedTests && yarn test:integration",
+    "test:staged": "yarn test --findRelatedTests ",
     "test:coverage:unit": "yarn test --coverage",
     "test:coverage:integration": "yarn test:integration --coverage",
     "test:coverage": "yarn test:coverage:unit && yarn test:coverage:integration",
