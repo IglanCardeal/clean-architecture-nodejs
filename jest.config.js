@@ -11,6 +11,7 @@ module.exports = {
   displayName: 'unit-tests',
   testMatch: ['<rootDir>/src/**/*.test.ts'],
   testEnvironment: 'node',
+  preset: '@shelf/jest-mongodb',
   transform: {
     '.+\\.ts$': 'ts-jest'
   },
