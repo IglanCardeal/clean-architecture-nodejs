@@ -6,7 +6,7 @@ module.exports = {
   roots: ['<rootDir>/src'],
   collectCoverage: false,
   coverageDirectory: 'coverage',
-  coverageProvider: 'v8',
+  coverageProvider: 'babel',
   modulePathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/'],
   displayName: 'unit-tests',
   testMatch: ['<rootDir>/src/**/*.test.ts'],
