@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "NODE_ENV=development ts-node-dev src/main/server.ts",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "yarn run lint --fix",
     "test": "jest --passWithNoTests --silent",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "@shelf/jest-mongodb": "^2.0.3",
     "@types/bcrypt": "^5.0.0",
+    "@types/express": "^4.17.13",
     "@types/jest": "^27.0.1",
     "@types/mongodb": "^4.0.7",
     "@types/node": "^16.9.0",
@@ -43,10 +45,12 @@
     "jest": "^27.1.1",
     "lint-staged": "^11.1.2",
     "ts-jest": "^27.0.5",
+    "ts-node-dev": "^1.1.8",
     "typescript": "*"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "express": "^4.17.1",
     "mongodb": "^4.1.1",
     "validator": "^13.6.0"
   }
