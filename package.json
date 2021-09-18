@@ -20,7 +20,8 @@
     "test:i:w": "yarn test:integration:watch",
     "test:staged": "yarn test:unit",
     "test:coverage": "yarn test --coverage",
-    "test:ci": "yarn test:coverage",
+    "test:integration:coverage": "yarn test:integration --coverage",
+    "test:ci": "yarn test:coverage --ci --updateSnapshot && yarn test:integration:coverage --ci --updateSnapshot",
     "prepare": "husky install"
   },
   "keywords": [],

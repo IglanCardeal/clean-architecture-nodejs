@@ -47,10 +47,7 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
 
-      - name: Run unit test
-        run: yarn test:unit
-
-      - name: Run integration test
-        run: yarn test:integration --silent --coverage
+      - name: Run CI tests
+        run: yarn test:ci
     # - name: Start the build
     #   run: yarn build
