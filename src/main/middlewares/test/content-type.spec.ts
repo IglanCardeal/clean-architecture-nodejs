@@ -1,6 +1,6 @@
 import supertest from 'supertest'
 
-import { app } from '../express/app'
+import { app } from '../../express/app'
 
 describe('Content Type Middleware', () => {
   it('Should return default content type as json', async () => {

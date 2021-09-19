@@ -1,6 +1,6 @@
 import supertest from 'supertest'
 
-import { app } from '../express/app'
+import { app } from '../../express/app'
 
 describe('CORS Middleware', () => {
   it('Should enable CORS', async () => {
