@@ -14,9 +14,6 @@ describe('SignUp Route', () => {
   })
 
   it('Should return default content type as json', async () => {
-    app.post('/api/signup', (req, res) => {
-      return res.send({ ok: true })
-    })
     await supertest(app)
       .post('/api/signup')
       .send({
