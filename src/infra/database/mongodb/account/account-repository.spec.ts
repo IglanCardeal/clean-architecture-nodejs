@@ -9,7 +9,7 @@ describe('Account Mongodb Repository', () => {
     await mongoHelper.disconnect()
   })
   beforeEach(async () => {
-    await mongoHelper.getCollection('accounts').deleteMany({})
+    ;(await mongoHelper.getCollection('accounts')).deleteMany({})
   })
 
   it('Should return account on success', async () => {

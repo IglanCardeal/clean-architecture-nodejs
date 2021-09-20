@@ -7,7 +7,11 @@ module.exports = {
   collectCoverage: false,
   coverageDirectory: 'coverage',
   coverageProvider: 'babel',
-  modulePathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/'],
+  modulePathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '<rootDir>/dist/',
+    '<rootDir>/src/main/'
+  ],
   displayName: 'unit-tests',
   testMatch: ['<rootDir>/src/**/*.test.ts'],
   testEnvironment: 'node',

@@ -9,7 +9,10 @@ export const mongoHelper = {
   async disconnect () {
     await this.client.close()
   },
-  getCollection (collectionName: string): Collection {
+  async getCollection (collectionName: string): Promise<Collection> {
+    if (!this.client.connect) {
+      await this.connect()
+    }
     return this.client.db().collection(collectionName)
   }
 }
