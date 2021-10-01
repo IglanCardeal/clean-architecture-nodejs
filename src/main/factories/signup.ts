@@ -3,7 +3,7 @@ import { BcryptAdapter } from '@src/infra/crypto/bcrypt-adapter'
 import { AccountRepository } from '@src/infra/database/mongodb/account/account-repository'
 import { SignUpController } from '@src/modules/account/usecases/signup/signup-controller'
 import { EmailValidatorAdapter } from '@src/utils/email-validator-adapter'
-import { LogControllerDecorator } from '../decorators/log'
+import { LogControllerDecorator } from '../../infra/decorators/log'
 
 export const makeSignUpController = () => {
   const salt = 12
