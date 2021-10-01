@@ -2,7 +2,7 @@ import { AddAccountRepository } from '@src/modules/account/usecases/signup/ports
 import { Encrypter } from '@src/modules/account/usecases/signup/ports/encrypter'
 import { AccountModel } from '@src/domain/models/account'
 import { AddAccountModel } from '@src/domain/usecases/add-account'
-import { DbAddAccount } from '../db-add-account'
+import { AddAccountService } from '../add-account'
 
 const makeEncrypterStub = () => {
   class EncrypterStub implements Encrypter {
@@ -30,7 +30,7 @@ const makeAddAccountRepository = (): AddAccountRepository => {
 }
 
 interface SutTypes {
-  sut: DbAddAccount
+  sut: AddAccountService
   encrypterStub: Encrypter
   addAccountRepositoryStub: AddAccountRepository
 }
@@ -38,7 +38,7 @@ interface SutTypes {
 const makeSut = (): SutTypes => {
   const encrypterStub = makeEncrypterStub()
   const addAccountRepositoryStub = makeAddAccountRepository()
-  const sut = new DbAddAccount(encrypterStub, addAccountRepositoryStub)
+  const sut = new AddAccountService(encrypterStub, addAccountRepositoryStub)
   return {
     sut,
     encrypterStub,

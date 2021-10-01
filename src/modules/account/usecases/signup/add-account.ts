@@ -3,7 +3,7 @@ import { Encrypter } from '@src/modules/account/usecases/signup/ports/encrypter'
 import { AccountModel } from '@src/domain/models/account'
 import { AddAccount, AddAccountModel } from '@src/domain/usecases/add-account'
 
-export class DbAddAccount implements AddAccount {
+export class AddAccountService implements AddAccount {
   constructor (
     private readonly encrypter: Encrypter,
     private readonly addAccountRepository: AddAccountRepository
