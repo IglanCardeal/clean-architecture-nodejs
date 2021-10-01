@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 
-import { Encrypter } from '@src/data/ports/encrypter'
+import { Encrypter } from '@src/modules/account/usecases/signup/ports/encrypter'
 
 export class BcryptAdapter implements Encrypter {
   constructor (private readonly salt: number) {}

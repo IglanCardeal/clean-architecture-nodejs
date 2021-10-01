@@ -4,9 +4,9 @@ import {
   MissingParamError,
   InvalidParamError,
   ServerError
-} from '@src/presentation/errors'
-import { EmailValidator } from '@src/presentation/ports'
-import { SignUpController } from './signup-controller'
+} from '@src/shared/errors'
+import { EmailValidator } from '@src/shared/ports'
+import { SignUpController } from '../signup-controller'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {

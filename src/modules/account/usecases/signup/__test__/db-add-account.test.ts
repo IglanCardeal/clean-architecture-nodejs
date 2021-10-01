@@ -1,8 +1,8 @@
-import { AddAccountRepository } from '@src/data/ports/add-account-repository'
-import { Encrypter } from '@src/data/ports/encrypter'
+import { AddAccountRepository } from '@src/modules/account/usecases/signup/ports/add-account-repository'
+import { Encrypter } from '@src/modules/account/usecases/signup/ports/encrypter'
 import { AccountModel } from '@src/domain/models/account'
 import { AddAccountModel } from '@src/domain/usecases/add-account'
-import { DbAddAccount } from './db-add-account'
+import { DbAddAccount } from '../db-add-account'
 
 const makeEncrypterStub = () => {
   class EncrypterStub implements Encrypter {

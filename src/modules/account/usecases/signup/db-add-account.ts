@@ -1,5 +1,5 @@
-import { AddAccountRepository } from '@src/data/ports/add-account-repository'
-import { Encrypter } from '@src/data/ports/encrypter'
+import { AddAccountRepository } from '@src/modules/account/usecases/signup/ports/add-account-repository'
+import { Encrypter } from '@src/modules/account/usecases/signup/ports/encrypter'
 import { AccountModel } from '@src/domain/models/account'
 import { AddAccount, AddAccountModel } from '@src/domain/usecases/add-account'
 

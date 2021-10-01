@@ -1,4 +1,4 @@
-import { AddAccountRepository } from '@src/data/ports/add-account-repository'
+import { AddAccountRepository } from '@src/modules/account/usecases/signup/ports/add-account-repository'
 import { AccountModel } from '@src/domain/models/account'
 import { AddAccountModel } from '@src/domain/usecases/add-account'
 import { mongoHelper } from '../helpers/mongo-helper'
