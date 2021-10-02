@@ -24,6 +24,8 @@
     "test:coverage": "yarn test --coverage",
     "test:integration:coverage": "yarn test:integration --coverage",
     "test:ci": "yarn test:coverage --ci --updateSnapshot && yarn test:integration:coverage --ci --updateSnapshot",
+    "test:all": "yarn test:unit && yarn test:integration",
+    "test:a": "yarn test:all",
     "prepare": "husky install"
   },
   "keywords": [],
