@@ -4,6 +4,7 @@ import { AccountRepository } from '@src/infra/database/mongodb/account/account-r
 import { SignUpController } from '@src/modules/account/usecases/signup/signup-controller'
 import { EmailValidatorAdapter } from '@src/utils/email-validator-adapter'
 import { LogControllerDecorator } from '../../infra/decorators/log'
+import { LogErrorMongoRepository } from '@src/infra/database/mongodb/log/log-repository'
 
 export const makeSignUpController = () => {
   const salt = 12
@@ -18,6 +19,7 @@ export const makeSignUpController = () => {
     emailValidatorAdapter,
     addAccountUsecase
   )
+  const logErrorMongoRepository = new LogErrorMongoRepository()
 
-  return new LogControllerDecorator(signUpController)
+  return new LogControllerDecorator(signUpController, logErrorMongoRepository)
 }
