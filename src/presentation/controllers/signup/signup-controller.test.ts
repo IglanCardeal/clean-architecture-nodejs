@@ -1,11 +1,15 @@
-import { AccountModel } from '@src/domain/models/account'
-import { AddAccount, AddAccountModel } from '@src/domain/usecases/add-account'
+import { DbAddAccountResult } from '@src/data/usecases/add-account/add-account-results'
+import {
+  AddAccountUseCase,
+  AddAccountModel
+} from '@src/domain/usecases/add-account'
 import {
   MissingParamError,
   InvalidParamError,
   ServerError
 } from '@src/presentation/errors'
 import { EmailValidator } from '@src/presentation/protocols'
+import { success } from '@src/shared/either'
 import { SignUpController } from './signup-controller'
 
 const makeEmailValidator = (): EmailValidator => {
@@ -17,9 +21,9 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
-const makeAddAccount = (): AddAccount => {
-  class AddAccountStub implements AddAccount {
-    async add(account: AddAccountModel): Promise<AccountModel> {
+const makeAddAccount = (): AddAccountUseCase<DbAddAccountResult> => {
+  class AddAccountStub implements AddAccountUseCase<DbAddAccountResult> {
+    async add(account: AddAccountModel): Promise<DbAddAccountResult> {
       account
       const fakeAccount = {
         id: 'valid_id',
@@ -27,7 +31,7 @@ const makeAddAccount = (): AddAccount => {
         email: 'valid_email@mail.com',
         password: 'valid_password'
       }
-      return fakeAccount
+      return success(fakeAccount)
     }
   }
   return new AddAccountStub()
@@ -36,14 +40,14 @@ const makeAddAccount = (): AddAccount => {
 interface SutResponse {
   emailValidatorStub: EmailValidator
   sut: SignUpController
-  addAccountStub: AddAccount
+  addAccountUseCaseStub: AddAccountUseCase<DbAddAccountResult>
 }
 
 const makeSut = (): SutResponse => {
   const emailValidatorStub = makeEmailValidator()
-  const addAccountStub = makeAddAccount()
-  const sut = new SignUpController(emailValidatorStub, addAccountStub)
-  return { sut, emailValidatorStub, addAccountStub }
+  const addAccountUseCaseStub = makeAddAccount()
+  const sut = new SignUpController(emailValidatorStub, addAccountUseCaseStub)
+  return { sut, emailValidatorStub, addAccountUseCaseStub }
 }
 
 describe('SignUp Controller', () => {
@@ -172,11 +176,13 @@ describe('SignUp Controller', () => {
   })
 
   it('Should return 500 if AddAccount throws exception', async () => {
-    const { sut, addAccountStub } = makeSut()
+    const { sut, addAccountUseCaseStub } = makeSut()
 
-    jest.spyOn(addAccountStub, 'add').mockImplementationOnce(async () => {
-      throw new Error()
-    })
+    jest
+      .spyOn(addAccountUseCaseStub, 'add')
+      .mockImplementationOnce(async () => {
+        throw new Error()
+      })
 
     const httpRequest = {
       body: {
@@ -210,8 +216,8 @@ describe('SignUp Controller', () => {
   })
 
   it('Should call AddAccount with correct values', async () => {
-    const { sut, addAccountStub } = makeSut()
-    const addSpy = jest.spyOn(addAccountStub, 'add')
+    const { sut, addAccountUseCaseStub } = makeSut()
+    const addSpy = jest.spyOn(addAccountUseCaseStub, 'add')
     const httpRequest = {
       body: {
         name: 'foo name',

@@ -3,22 +3,23 @@ import {
   Controller,
   EmailValidator,
   HttpRequest,
-  AddAccount,
+  AddAccountUseCase,
   HttpResponse
-} from './signup-protocolos'
+} from './signup-protocols'
 import {
   badRequest,
   serverError,
   ok
 } from '@src/presentation/helpers/http-helper'
+import { DbAddAccountResult } from '@src/data/usecases/add-account/add-account-results'
 
 export class SignUpController implements Controller {
-  constructor (
+  constructor(
     private readonly emailValidator: EmailValidator,
-    private readonly addAccount: AddAccount
+    private readonly addAccountUseCase: AddAccountUseCase<DbAddAccountResult>
   ) {}
 
-  public async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  public async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const requiredFields = [
         'name',
@@ -40,17 +41,22 @@ export class SignUpController implements Controller {
       if (!passwordsAreEqual) {
         return badRequest(new InvalidParamError('passwordConfirmation'))
       }
+
       if (!isValidEmail) {
         return badRequest(new InvalidParamError('email'))
       }
 
-      const account = await this.addAccount.add({
+      const account = await this.addAccountUseCase.add({
         name,
         email,
         password
       })
 
-      return ok(account)
+      if (account.isFailure()) {
+        return serverError()
+      }
+
+      return ok(account.data)
     } catch (error) {
       return serverError()
     }
