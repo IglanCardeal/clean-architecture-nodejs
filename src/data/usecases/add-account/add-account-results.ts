@@ -5,7 +5,7 @@ import { Either } from '@src/shared/either'
 export class DatabaseError implements ApplicationError {
   readonly message: string
 
-  constructor(readonly error: any) {
+  constructor(readonly error?: any) {
     this.message = 'A database error ocurred'
   }
 }
