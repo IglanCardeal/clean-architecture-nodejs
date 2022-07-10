@@ -1,17 +1,16 @@
 import { Encrypter } from '@src/data/protocols/encrypter'
-import { AccountModel } from '@src/domain/models/account'
-import { AddAccount, AddAccountModel } from '@src/domain/usecases/add-account'
+import {
+  AddAccountUseCase,
+  AddAccountModel
+} from '@src/domain/usecases/add-account'
+import { success } from '@src/shared/either'
+import { DbAddAccountResult } from './add-account-results'
 
-export class DbAddAccount implements AddAccount {
-  constructor (private readonly encrypter: Encrypter) {}
+export class DbAddAccount implements AddAccountUseCase<DbAddAccountResult> {
+  constructor(private readonly encrypter: Encrypter) {}
 
-  async add (account: AddAccountModel): Promise<AccountModel> {
+  async add(account: AddAccountModel): Promise<DbAddAccountResult> {
     await this.encrypter.encrypt(account.password)
-    return {
-      email: '',
-      id: '',
-      name: '',
-      password: ''
-    }
+    return success({ ...account, id: '' })
   }
 }
