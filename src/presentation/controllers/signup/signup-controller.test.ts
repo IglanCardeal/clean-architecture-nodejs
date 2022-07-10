@@ -1,4 +1,7 @@
-import { DbAddAccountResult } from '@src/data/usecases/add-account/add-account-results'
+import {
+  DatabaseError,
+  DbAddAccountResult
+} from '@src/data/usecases/add-account/add-account-results'
 import {
   AddAccountUseCase,
   AddAccountModel
@@ -9,7 +12,7 @@ import {
   ServerError
 } from '@src/presentation/errors'
 import { EmailValidator } from '@src/presentation/protocols'
-import { success } from '@src/shared/either'
+import { failure, success } from '@src/shared/either'
 import { SignUpController } from './signup-controller'
 
 const makeEmailValidator = (): EmailValidator => {
@@ -175,13 +178,13 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new ServerError())
   })
 
-  it('Should return 500 if AddAccount throws exception', async () => {
+  it('Should return 500 if AddAccount returns an database error', async () => {
     const { sut, addAccountUseCaseStub } = makeSut()
 
     jest
       .spyOn(addAccountUseCaseStub, 'add')
       .mockImplementationOnce(async () => {
-        throw new Error()
+        return failure(new DatabaseError())
       })
 
     const httpRequest = {
