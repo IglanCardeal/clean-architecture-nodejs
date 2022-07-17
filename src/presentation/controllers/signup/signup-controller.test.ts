@@ -26,8 +26,7 @@ const makeEmailValidator = (): EmailValidator => {
 
 const makeAddAccount = (): AddAccountUseCase<DbAddAccountResult> => {
   class AddAccountUseCaseStub implements AddAccountUseCase<DbAddAccountResult> {
-    async add(account: AddAccountModel): Promise<DbAddAccountResult> {
-      account
+    async add(_account: AddAccountModel): Promise<DbAddAccountResult> {
       const fakeAccount = {
         id: 'valid_id',
         name: 'valid_name',
