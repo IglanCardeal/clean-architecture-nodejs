@@ -1,4 +1,4 @@
-import { Encrypter } from '@src/data/protocols/encrypter'
+import { Hasher } from '@src/data/protocols/hasher'
 import {
   AddAccountUseCase,
   AddAccountModel
@@ -6,11 +6,13 @@ import {
 import { success } from '@src/shared/either'
 import { DbAddAccountResult } from './add-account-results'
 
-export class DbAddAccount implements AddAccountUseCase<DbAddAccountResult> {
-  constructor(private readonly encrypter: Encrypter) {}
+export class DbAddAccountUseCase
+  implements AddAccountUseCase<DbAddAccountResult>
+{
+  constructor(private readonly hasher: Hasher) {}
 
   async add(account: AddAccountModel): Promise<DbAddAccountResult> {
-    await this.encrypter.encrypt(account.password)
+    await this.hasher.hash(account.password)
     return success({ ...account, id: '' })
   }
 }
