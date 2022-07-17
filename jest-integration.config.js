@@ -1,5 +1,8 @@
-// faz o match para teste de integração com a extensão *.spec.ts
-const rootConfig = require('./jest.config')
-rootConfig.testMatch = ['<rootDir>/src/**/*.spec.ts']
+const rootConfig = require('./jest.config');
 
-module.exports = rootConfig
+const config = { ...rootConfig };
+
+config.testMatch = ['<rootDir>/src/**/*.spec.ts'];
+config.displayName = 'integration-tests';
+
+module.exports = config;

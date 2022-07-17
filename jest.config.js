@@ -1,7 +1,7 @@
-const { resolve } = require('path')
-const root = resolve(__dirname)
+const { resolve } = require('path');
+const root = resolve(__dirname);
 
-module.exports = {
+module.exports = Object.freeze({
   rootDir: root,
   roots: ['<rootDir>/src'],
   collectCoverage: false,
@@ -17,4 +17,4 @@ module.exports = {
   moduleNameMapper: {
     '@src/(.*)': '<rootDir>/src/$1'
   }
-}
+});
