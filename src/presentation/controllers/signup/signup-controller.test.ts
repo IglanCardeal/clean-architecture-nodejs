@@ -25,7 +25,7 @@ const makeEmailValidator = (): EmailValidator => {
 }
 
 const makeAddAccount = (): AddAccountUseCase<DbAddAccountResult> => {
-  class AddAccountStub implements AddAccountUseCase<DbAddAccountResult> {
+  class AddAccountUseCaseStub implements AddAccountUseCase<DbAddAccountResult> {
     async add(account: AddAccountModel): Promise<DbAddAccountResult> {
       account
       const fakeAccount = {
@@ -37,16 +37,10 @@ const makeAddAccount = (): AddAccountUseCase<DbAddAccountResult> => {
       return success(fakeAccount)
     }
   }
-  return new AddAccountStub()
+  return new AddAccountUseCaseStub()
 }
 
-interface SutResponse {
-  emailValidatorStub: EmailValidator
-  sut: SignUpController
-  addAccountUseCaseStub: AddAccountUseCase<DbAddAccountResult>
-}
-
-const makeSut = (): SutResponse => {
+const makeSut = () => {
   const emailValidatorStub = makeEmailValidator()
   const addAccountUseCaseStub = makeAddAccount()
   const sut = new SignUpController(emailValidatorStub, addAccountUseCaseStub)
