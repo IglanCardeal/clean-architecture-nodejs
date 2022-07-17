@@ -167,10 +167,7 @@ describe('SignUp Controller', () => {
     const { sut, addAccountUseCaseStub } = makeSut()
     jest
       .spyOn(addAccountUseCaseStub, 'add')
-      .mockImplementationOnce(async () => {
-        return failure(new DatabaseError())
-      })
-
+      .mockResolvedValueOnce(failure(new DatabaseError()))
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(500)
