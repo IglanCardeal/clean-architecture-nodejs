@@ -4,12 +4,13 @@ import {
   EmailValidator,
   HttpRequest,
   AddAccountUseCase,
-  HttpResponse
+  HttpResponse,
+  AccountModel
 } from './signup-protocols'
 import {
   badRequest,
   serverError,
-  ok
+  created
 } from '@src/presentation/helpers/http-helper'
 import { DbAddAccountResult } from '@src/data/usecases/add-account/add-account-results'
 
@@ -56,7 +57,7 @@ export class SignUpController implements Controller {
         return serverError()
       }
 
-      return ok(account.data)
+      return created<AccountModel>(account.data)
     } catch (error) {
       return serverError()
     }
