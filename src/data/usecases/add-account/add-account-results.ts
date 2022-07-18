@@ -10,4 +10,15 @@ export class DatabaseError implements ApplicationError {
   }
 }
 
-export type DbAddAccountResult = Either<AccountModel, DatabaseError>
+export class HasherError implements ApplicationError {
+  readonly message: string
+
+  constructor(readonly error?: any) {
+    this.message = 'A hasher error ocurred'
+  }
+}
+
+export type DbAddAccountResult = Either<
+  AccountModel,
+  DatabaseError | HasherError
+>

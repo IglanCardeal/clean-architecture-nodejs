@@ -3,8 +3,8 @@ import {
   AddAccountUseCase,
   AddAccountModel
 } from '@src/domain/usecases/add-account'
-import { success } from '@src/shared/either'
-import { DbAddAccountResult } from './add-account-results'
+import { failure, success } from '@src/shared/either'
+import { DbAddAccountResult, HasherError } from './add-account-results'
 
 export class DbAddAccountUseCase
   implements AddAccountUseCase<DbAddAccountResult>
@@ -12,7 +12,11 @@ export class DbAddAccountUseCase
   constructor(private readonly hasher: Hasher) {}
 
   async add(account: AddAccountModel): Promise<DbAddAccountResult> {
-    await this.hasher.hash(account.password)
+    try {
+      await this.hasher.hash(account.password)
+    } catch (error) {
+      return failure(new HasherError(error))
+    }
     return success({ ...account, id: '' })
   }
 }
