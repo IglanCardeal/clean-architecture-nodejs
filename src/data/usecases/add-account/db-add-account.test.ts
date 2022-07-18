@@ -1,4 +1,5 @@
 import { Hasher } from '@src/data/protocols/hasher'
+import { HasherError } from './add-account-results'
 import { DbAddAccountUseCase } from './db-add-account'
 
 class HasherStub implements Hasher {
@@ -25,5 +26,17 @@ describe('DbAddAccountUseCase', () => {
     const hashSpy = jest.spyOn(hasherStub, 'hash')
     await sut.add(account)
     expect(hashSpy).toHaveBeenCalledWith('valid_password')
+  })
+
+  it('Should return HasherError if Hasher throws', async () => {
+    jest.spyOn(hasherStub, 'hash').mockImplementationOnce(async () => {
+      throw new Error('Hasher error')
+    })
+    const sut = makeSut()
+    const result = await sut.add(account)
+    expect(result.isFailure()).toBe(true)
+    if (result.isFailure()) {
+      expect(result.error).toEqual(new HasherError(new Error('Hasher error')))
+    }
   })
 })
