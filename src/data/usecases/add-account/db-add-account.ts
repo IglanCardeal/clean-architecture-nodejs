@@ -1,22 +1,27 @@
-import { Hasher } from '@src/data/protocols/hasher'
+import { failure, success } from '@src/shared/either'
 import {
   AddAccountUseCase,
-  AddAccountModel
-} from '@src/domain/usecases/add-account'
-import { failure, success } from '@src/shared/either'
+  Hasher,
+  AddAccountModel,
+  AddAccountRepository
+} from './db-add-account-protocols'
 import { DbAddAccountResult, HasherError } from './db-add-account-result'
 
 export class DbAddAccountUseCase
   implements AddAccountUseCase<DbAddAccountResult>
 {
-  constructor(private readonly hasher: Hasher) {}
+  constructor(
+    private readonly hasher: Hasher,
+    private readonly addAccountRepository: AddAccountRepository
+  ) {}
 
-  async add(account: AddAccountModel): Promise<DbAddAccountResult> {
+  async add(accountData: AddAccountModel): Promise<DbAddAccountResult> {
     try {
-      await this.hasher.hash(account.password)
+      accountData.password = await this.hasher.hash(accountData.password)
     } catch (error) {
       return failure(new HasherError(error))
     }
-    return success({ ...account, id: '' })
+    await this.addAccountRepository.add(accountData)
+    return success({ ...accountData, id: '' })
   }
 }
