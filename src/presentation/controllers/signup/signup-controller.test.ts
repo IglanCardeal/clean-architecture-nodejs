@@ -1,5 +1,5 @@
 import {
-  DatabaseError,
+  AddAccountRepositoryError,
   DbAddAccountResult
 } from '@src/data/usecases/add-account/db-add-account-result'
 import {
@@ -167,7 +167,7 @@ describe('SignUp Controller', () => {
     const { sut, addAccountUseCaseStub } = makeSut()
     jest
       .spyOn(addAccountUseCaseStub, 'add')
-      .mockResolvedValueOnce(failure(new DatabaseError()))
+      .mockResolvedValueOnce(failure(new AddAccountRepositoryError()))
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(500)
