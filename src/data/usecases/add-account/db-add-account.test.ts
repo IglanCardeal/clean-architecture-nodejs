@@ -82,4 +82,18 @@ describe('DbAddAccountUseCase', () => {
       )
     }
   })
+
+  it('Should return an account on success', async () => {
+    const sut = makeSut()
+    const result = await sut.add(account)
+    expect(result.isSuccess()).toBe(true)
+    if (result.isSuccess()) {
+      expect(result.data).toEqual({
+        id: 'any_id',
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'hashed_password'
+      })
+    }
+  })
 })
