@@ -4,7 +4,7 @@ import {
   AccountModel,
   AddAccountRepository
 } from './db-add-account-protocols'
-import { HasherError } from './db-add-account-result'
+import { HasherError, AddAccountRepositoryError } from './db-add-account-result'
 import { DbAddAccountUseCase } from './db-add-account'
 class HasherStub implements Hasher {
   async hash(_password: string): Promise<string> {
@@ -65,5 +65,21 @@ describe('DbAddAccountUseCase', () => {
       ...account,
       password: 'hashed_password'
     })
+  })
+
+  it('Should return AddAccountRepositoryError if AddAccountRepository throws', async () => {
+    jest
+      .spyOn(addAccountRepositoryStub, 'add')
+      .mockImplementationOnce(async () => {
+        throw new Error('AddAccountRepository error')
+      })
+    const sut = makeSut()
+    const result = await sut.add(account)
+    expect(result.isFailure()).toBe(true)
+    if (result.isFailure()) {
+      expect(result.error).toEqual(
+        new AddAccountRepositoryError(new Error('AddAccountRepository error'))
+      )
+    }
   })
 })
