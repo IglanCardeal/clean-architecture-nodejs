@@ -1,6 +1,5 @@
-import { AccountModel } from '@src/domain/models/account'
-import { ApplicationError } from '@src/shared/core/errors'
-import { Either } from '@src/shared/either'
+import { AccountModel } from './db-add-account-protocols'
+import { ApplicationError, Either } from '@src/shared'
 
 export class DatabaseError implements ApplicationError {
   readonly message: string

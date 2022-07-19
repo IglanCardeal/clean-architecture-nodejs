@@ -1,6 +1,5 @@
-import { Hasher } from '@src/data/protocols/hasher'
+import { Hasher, DbAddAccountUseCase } from './db-add-account-protocols'
 import { HasherError } from './add-account-results'
-import { DbAddAccountUseCase } from './db-add-account'
 
 class HasherStub implements Hasher {
   async hash(_password: string): Promise<string> {
