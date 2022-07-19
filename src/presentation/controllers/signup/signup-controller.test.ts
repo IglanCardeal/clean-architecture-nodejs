@@ -1,7 +1,7 @@
 import {
   DatabaseError,
   DbAddAccountResult
-} from '@src/data/usecases/add-account/add-account-results'
+} from '@src/data/usecases/add-account/db-add-account-result'
 import {
   AddAccountUseCase,
   AddAccountModel
