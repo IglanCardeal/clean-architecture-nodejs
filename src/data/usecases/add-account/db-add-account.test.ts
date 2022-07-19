@@ -1,16 +1,34 @@
-import { Hasher, DbAddAccountUseCase } from './db-add-account-protocols'
+import {
+  Hasher,
+  AddAccountModel,
+  AccountModel,
+  AddAccountRepository
+} from './db-add-account-protocols'
 import { HasherError } from './db-add-account-result'
-
+import { DbAddAccountUseCase } from './db-add-account'
 class HasherStub implements Hasher {
   async hash(_password: string): Promise<string> {
     return 'hashed_password'
   }
 }
 
+class AddAccountRepositoryStub implements AddAccountRepository {
+  async add(_account: AddAccountModel): Promise<AccountModel> {
+    const fakeAccount = {
+      id: 'any_id',
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'hashed_password'
+    }
+    return fakeAccount
+  }
+}
+
 const hasherStub = new HasherStub()
+const addAccountRepositoryStub = new AddAccountRepositoryStub()
 
 const makeSut = () => {
-  return new DbAddAccountUseCase(hasherStub)
+  return new DbAddAccountUseCase(hasherStub, addAccountRepositoryStub)
 }
 
 describe('DbAddAccountUseCase', () => {
@@ -37,5 +55,15 @@ describe('DbAddAccountUseCase', () => {
     if (result.isFailure()) {
       expect(result.error).toEqual(new HasherError(new Error('Hasher error')))
     }
+  })
+
+  it('Should call AddAccountRepository with correct values', async () => {
+    const sut = makeSut()
+    const addSpy = jest.spyOn(addAccountRepositoryStub, 'add')
+    await sut.add(account)
+    expect(addSpy).toHaveBeenCalledWith({
+      ...account,
+      password: 'hashed_password'
+    })
   })
 })
