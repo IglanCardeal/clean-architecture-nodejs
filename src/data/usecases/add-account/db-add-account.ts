@@ -4,7 +4,7 @@ import {
   AddAccountModel
 } from '@src/domain/usecases/add-account'
 import { failure, success } from '@src/shared/either'
-import { DbAddAccountResult, HasherError } from './add-account-results'
+import { DbAddAccountResult, HasherError } from './db-add-account-result'
 
 export class DbAddAccountUseCase
   implements AddAccountUseCase<DbAddAccountResult>
