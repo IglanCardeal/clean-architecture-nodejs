@@ -5,7 +5,11 @@ import {
   AddAccountModel,
   AddAccountRepository
 } from './db-add-account-protocols'
-import { DbAddAccountResult, HasherError } from './db-add-account-result'
+import {
+  AddAccountRepositoryError,
+  DbAddAccountResult,
+  HasherError
+} from './db-add-account-result'
 
 export class DbAddAccountUseCase
   implements AddAccountUseCase<DbAddAccountResult>
@@ -21,7 +25,11 @@ export class DbAddAccountUseCase
     } catch (error) {
       return failure(new HasherError(error))
     }
-    await this.addAccountRepository.add(accountData)
+    try {
+      await this.addAccountRepository.add(accountData)
+    } catch (error) {
+      return failure(new AddAccountRepositoryError(error))
+    }
     return success({ ...accountData, id: '' })
   }
 }
