@@ -26,10 +26,10 @@ export class DbAddAccountUseCase
       return failure(new HasherError(error))
     }
     try {
-      await this.addAccountRepository.add(accountData)
+      const accountCreated = await this.addAccountRepository.add(accountData)
+      return success(accountCreated)
     } catch (error) {
       return failure(new AddAccountRepositoryError(error))
     }
-    return success({ ...accountData, id: '' })
   }
 }
