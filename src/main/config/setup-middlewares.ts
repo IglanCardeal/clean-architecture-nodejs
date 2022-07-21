@@ -1,6 +1,6 @@
 import { Express } from 'express'
-import { bodyParser } from '../middlewares/body-parser'
+import { jsonParser } from '../middlewares/body-parser/json-parser'
 
 export default (app: Express): void => {
-  bodyParser(app)
+  jsonParser(app)
 }
