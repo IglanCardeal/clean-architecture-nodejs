@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
-import express from 'express'
-
-const app = express()
+import { app } from './config/app'
 
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000')
