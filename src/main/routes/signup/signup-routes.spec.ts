@@ -1,5 +1,5 @@
+import { app } from '@src/main/config/app'
 import request from 'supertest'
-import { app } from '../config/app'
 
 describe('SignUp Routes', () => {
   it('Should return an account on success', async () => {
