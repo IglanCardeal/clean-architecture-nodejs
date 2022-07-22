@@ -14,6 +14,7 @@
     "test:u": "yarn test:unit",
     "test:u:w": "yarn test:unit:watch",
     "test:integration": "yarn test -c jest-integration.config.js --runInBand",
+    "test:integration:verbose": "jest --passWithNoTests --verbose -c jest-integration.config.js --runInBand",
     "test:integration:watch": "yarn test:integration --watch",
     "test:i": "yarn test:integration",
     "test:i:w": "yarn test:integration:watch",
@@ -54,6 +55,7 @@
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "express": "^4.18.1",
+    "fast-glob": "^3.2.11",
     "validator": "^13.6.0"
   }
 }
