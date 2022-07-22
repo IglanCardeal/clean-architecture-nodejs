@@ -1,7 +1,9 @@
 import { Express } from 'express'
-import { jsonParser } from '../middlewares/body-parser/json-parser'
-import { contentTypeMiddleware } from '../middlewares/content-type'
-import { corsMiddleware } from '../middlewares/cors'
+import {
+  contentTypeMiddleware,
+  jsonParser,
+  corsMiddleware
+} from '../middlewares'
 
 export default (app: Express): void => {
   jsonParser(app)
