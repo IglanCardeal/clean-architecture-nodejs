@@ -1,0 +1,9 @@
+{
+  "types": {
+    "bugfix": "A bug fix for homologation enviroment",
+    "hotfix": "A bug fix for production enviroment",
+    "debug": "Addition for application debug purpose"
+  },
+  "max-len": 120,
+  "min-len": 20
+}
