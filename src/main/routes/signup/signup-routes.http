@@ -5,10 +5,10 @@
 
 ### 
 
-@name = 'Foo',
-@email = 'foo@mail.com',
-@password = '123foo',
-@passwordConfirmation = '123foo'
+@name = Foo
+@email = foo@mail.com
+@password = 123foo
+@passwordConfirmation = 123foo
 
 POST {{baseurl}}/api/signup
 Content-Type: {{contentType}}
