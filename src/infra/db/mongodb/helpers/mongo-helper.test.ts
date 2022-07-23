@@ -16,4 +16,9 @@ describe('Mongo Helper', () => {
     accountCollection = await sut.getCollection('accounts')
     expect(accountCollection).toBeTruthy()
   })
+
+  it('Should not throw when already disconnect', async () => {
+    await sut.disconnect()
+    await expect(sut.disconnect()).resolves.toBeUndefined()
+  })
 })
