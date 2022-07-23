@@ -35,6 +35,7 @@
     "@types/mongodb": "^4.0.7",
     "@types/node": "^16.9.0",
     "@types/supertest": "^2.0.12",
+    "@types/validator": "^13.7.4",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "eslint": "^7.22.0",
@@ -52,7 +53,6 @@
     "typescript": "*"
   },
   "dependencies": {
-    "@types/validator": "^13.6.3",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "express": "^4.18.1",
