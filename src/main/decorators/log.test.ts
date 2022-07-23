@@ -42,4 +42,15 @@ describe('Log Controller Decorator', () => {
       }
     })
   })
+
+  it('Should return controller handle response with correct values', async () => {
+    const sut = makeSut()
+    const response = await sut.handle(httpRequest)
+    expect(response).toEqual({
+      statusCode: 200,
+      body: {
+        message: 'ok'
+      }
+    })
+  })
 })
