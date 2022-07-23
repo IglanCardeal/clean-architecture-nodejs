@@ -5,53 +5,54 @@ name: Clean Architecture CI
 
 on:
   push:
-    branches: 
-    - main 
-    - master
-    - production 
+    branches:
+      - main
+      - master
+      - production
   pull_request:
     branches:
-    - main 
-    - master
-    - production 
+      - main
+      - master
+      - production
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x] 
+        node-version: [16.x]
         mongodb-version: ['4.0']
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    # - name: Start MongoDB
-    #   uses: supercharge/mongodb-github-action@1.6.0
-    #   with:
-    #     mongodb-version: ${{ matrix.mongodb-version }}
+      # - name: Start MongoDB
+      #   uses: supercharge/mongodb-github-action@1.6.0
+      #   with:
+      #     mongodb-version: ${{ matrix.mongodb-version }}
 
-    - name: Cache Node.js modules
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.OS }}-node-
-          ${{ runner.OS }}-
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
 
-    - name: Install dependencies
-      run: yarn --frozen-lockfile
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
 
-    - name: Run unit test
-      run: yarn test
+      - name: Run unit test
+        run: yarn test:unit
 
+      - name: Run integration test
+        run: yarn test:integration
     # - name: Run functional test
     #   run: yarn test:functional
-
     # - name: Start the build
-    #   run: yarn build 
+    #   run: yarn build
