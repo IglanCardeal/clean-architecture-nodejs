@@ -55,12 +55,12 @@ export class SignUpController implements Controller {
       })
 
       if (account.isFailure()) {
-        return serverError()
+        return serverError(account.error)
       }
 
       return created<AccountModel>(account.data)
-    } catch (error) {
-      return serverError()
+    } catch (error: any) {
+      return serverError(error)
     }
   }
 }

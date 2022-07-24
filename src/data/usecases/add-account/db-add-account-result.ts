@@ -1,18 +1,23 @@
 import { AccountModel } from './db-add-account-protocols'
 import { ApplicationError, Either } from '@src/shared'
 
-export class HasherError implements ApplicationError {
+export class HasherError extends Error implements ApplicationError {
   readonly message: string
 
   constructor(readonly error?: any) {
+    super('HasherError')
     this.message = 'A hasher error ocurred'
   }
 }
 
-export class AddAccountRepositoryError implements ApplicationError {
+export class AddAccountRepositoryError
+  extends Error
+  implements ApplicationError
+{
   readonly message: string
 
   constructor(readonly error?: any) {
+    super('AddAccountRepositoryError')
     this.message = 'A repository error ocurred'
   }
 }
