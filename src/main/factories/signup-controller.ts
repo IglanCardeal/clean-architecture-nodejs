@@ -18,5 +18,5 @@ export const makeSignUpController = () => {
     emailValidator,
     addAccountUseCase
   )
-  return new LogControllerDecorator(signUpController)
+  return new LogControllerDecorator(signUpController, {} as any)
 }
