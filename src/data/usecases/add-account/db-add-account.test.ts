@@ -12,15 +12,16 @@ class HasherStub implements Hasher {
   }
 }
 
+const makeFakeAccount = (): AccountModel => ({
+  id: 'any_id',
+  name: 'valid_name',
+  email: 'valid_email@mail.com',
+  password: 'hashed_password'
+})
+
 class AddAccountRepositoryStub implements AddAccountRepository {
   async add(_account: AddAccountModel): Promise<AccountModel> {
-    const fakeAccount = {
-      id: 'any_id',
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
-      password: 'hashed_password'
-    }
-    return fakeAccount
+    return makeFakeAccount()
   }
 }
 
@@ -47,13 +48,13 @@ describe('DbAddAccountUseCase', () => {
 
   it('Should return HasherError if Hasher throws', async () => {
     jest.spyOn(hasherStub, 'hash').mockImplementationOnce(async () => {
-      throw new Error('Hasher error')
+      throw new Error()
     })
     const sut = makeSut()
     const result = await sut.add(account)
     expect(result.isFailure()).toBe(true)
     if (result.isFailure()) {
-      expect(result.error).toEqual(new HasherError(new Error('Hasher error')))
+      expect(result.error).toEqual(new HasherError())
     }
   })
 
@@ -71,15 +72,13 @@ describe('DbAddAccountUseCase', () => {
     jest
       .spyOn(addAccountRepositoryStub, 'add')
       .mockImplementationOnce(async () => {
-        throw new Error('AddAccountRepository error')
+        throw new Error()
       })
     const sut = makeSut()
     const result = await sut.add(account)
     expect(result.isFailure()).toBe(true)
     if (result.isFailure()) {
-      expect(result.error).toEqual(
-        new AddAccountRepositoryError(new Error('AddAccountRepository error'))
-      )
+      expect(result.error).toEqual(new AddAccountRepositoryError())
     }
   })
 
@@ -88,12 +87,7 @@ describe('DbAddAccountUseCase', () => {
     const result = await sut.add(account)
     expect(result.isSuccess()).toBe(true)
     if (result.isSuccess()) {
-      expect(result.data).toEqual({
-        id: 'any_id',
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'hashed_password'
-      })
+      expect(result.data).toEqual(makeFakeAccount())
     }
   })
 })
