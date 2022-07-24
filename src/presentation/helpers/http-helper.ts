@@ -13,10 +13,10 @@ export const serverError = (error: Error): HttpResponse => ({
   body: new ServerError(error.stack as string)
 })
 
-// export const ok = <T>(data: T): HttpResponse => ({
-//   statusCode: 200,
-//   body: data
-// })
+export const ok = <T>(data: T): HttpResponse => ({
+  statusCode: 200,
+  body: data
+})
 
 export const created = <T>(data: T): HttpResponse => ({
   statusCode: 201,
