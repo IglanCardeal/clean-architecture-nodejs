@@ -77,7 +77,7 @@ describe('Login Controller', () => {
     expect(HttpResponse).toEqual(serverError(new ServerError('')))
   })
 
-  it('Should call Authentication with correct values', async () => {
+  it('Should call AuthenticationUseCase with correct values', async () => {
     const sut = makeSut()
     const authSpy = jest.spyOn(authenticationUseCaseStub, 'auth')
     await sut.handle(httRequest)
@@ -92,5 +92,14 @@ describe('Login Controller', () => {
     jest.spyOn(authenticationUseCaseStub, 'auth').mockResolvedValueOnce('')
     const httpResponse = await sut.handle(httRequest)
     expect(httpResponse).toEqual(unauthorized())
+  })
+
+  it('Should returns 500 if AuthenticationUseCase throws', async () => {
+    const sut = makeSut()
+    jest.spyOn(authenticationUseCaseStub, 'auth').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const httpResponse = await sut.handle(httRequest)
+    expect(httpResponse).toEqual(serverError(new ServerError('')))
   })
 })
