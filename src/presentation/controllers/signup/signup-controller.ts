@@ -5,7 +5,8 @@ import {
   HttpRequest,
   AddAccountUseCase,
   HttpResponse,
-  AccountModel
+  AccountModel,
+  Validation
 } from './signup-protocols'
 import {
   badRequest,
@@ -17,11 +18,14 @@ import { DbAddAccountResult } from '@src/data/usecases/add-account/db-add-accoun
 export class SignUpController implements Controller {
   constructor(
     private readonly emailValidator: EmailValidator,
+    private readonly validation: Validation,
     private readonly addAccountUseCase: AddAccountUseCase<DbAddAccountResult>
   ) {}
 
   public async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
+      this.validation.validate(httpRequest.body)
+
       const requiredFields = [
         'name',
         'email',
