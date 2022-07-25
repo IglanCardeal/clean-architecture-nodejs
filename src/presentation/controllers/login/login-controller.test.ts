@@ -1,11 +1,7 @@
-import {
-  InvalidParamError,
-  MissingParamError,
-  ServerError
-} from '@src/presentation/errors'
-import { badRequest, serverError } from '@src/presentation/helpers/http-helper'
+import { InvalidParamError, MissingParamError } from '@src/presentation/errors'
+import { badRequest } from '@src/presentation/helpers/http-helper'
 import { LoginController } from './login-controller'
-import { EmailValidator } from './login-protocols'
+import { EmailValidator, AuthenticationUseCase } from './login-protocols'
 
 class EmailValidatorStub implements EmailValidator {
   isValid(_email: string): boolean {
@@ -13,8 +9,16 @@ class EmailValidatorStub implements EmailValidator {
   }
 }
 
+class AuthenticationUseCaseStub implements AuthenticationUseCase<string> {
+  async auth({ _email, _password }: any): Promise<string> {
+    return 'auth_token'
+  }
+}
+
+const authenticationUseCaseStub = new AuthenticationUseCaseStub()
 const emailValidatorStub = new EmailValidatorStub()
-const makeSut = () => new LoginController(emailValidatorStub)
+const makeSut = () =>
+  new LoginController(emailValidatorStub, authenticationUseCaseStub)
 
 describe('Login Controller', () => {
   const httRequest = {
@@ -56,12 +60,13 @@ describe('Login Controller', () => {
     expect(HttpResponse).toEqual(badRequest(new InvalidParamError('email')))
   })
 
-  it('Should return 500 if EmailValidator throws', async () => {
+  it('Should call Authentication with correct values', async () => {
     const sut = makeSut()
-    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
-      throw new Error()
+    const authSpy = jest.spyOn(authenticationUseCaseStub, 'auth')
+    await sut.handle(httRequest)
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'any@mail.com',
+      password: 'any_pass'
     })
-    const HttpResponse = await sut.handle(httRequest)
-    expect(HttpResponse).toEqual(serverError(new ServerError('')))
   })
 })
