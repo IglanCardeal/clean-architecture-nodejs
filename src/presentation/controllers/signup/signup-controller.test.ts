@@ -2,10 +2,6 @@ import {
   AddAccountRepositoryError,
   DbAddAccountResult
 } from '@src/data/usecases/add-account/db-add-account-result'
-import {
-  AddAccountUseCase,
-  AddAccountModel
-} from '@src/domain/usecases/add-account'
 import { MissingParamError, InvalidParamError } from '@src/presentation/errors'
 import {
   badRequest,
@@ -15,7 +11,12 @@ import {
 import { EmailValidator } from '@src/presentation/protocols'
 import { failure, success } from '@src/shared/either'
 import { SignUpController } from './signup-controller'
-import { AccountModel } from './signup-protocols'
+import {
+  AccountModel,
+  Validation,
+  AddAccountUseCase,
+  AddAccountModel
+} from './signup-protocols'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -42,11 +43,25 @@ const makeAddAccount = (): AddAccountUseCase<DbAddAccountResult> => {
   return new AddAccountUseCaseStub()
 }
 
+const makeValidation = (): Validation => {
+  class ValidationStub implements Validation {
+    validate(_input: any): void | Error {
+      return undefined
+    }
+  }
+  return new ValidationStub()
+}
+
 const makeSut = () => {
   const emailValidatorStub = makeEmailValidator()
   const addAccountUseCaseStub = makeAddAccount()
-  const sut = new SignUpController(emailValidatorStub, addAccountUseCaseStub)
-  return { sut, emailValidatorStub, addAccountUseCaseStub }
+  const validationStub = makeValidation()
+  const sut = new SignUpController(
+    emailValidatorStub,
+    validationStub,
+    addAccountUseCaseStub
+  )
+  return { sut, emailValidatorStub, addAccountUseCaseStub, validationStub }
 }
 
 describe('SignUp Controller', () => {
@@ -155,6 +170,13 @@ describe('SignUp Controller', () => {
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
     await sut.handle(httpRequest)
     expect(isValidSpy).toHaveBeenCalledWith('foo@email.com')
+  })
+
+  it('Should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    await sut.handle(httpRequest)
+    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 
   it('Should call AddAccount with correct values', async () => {
