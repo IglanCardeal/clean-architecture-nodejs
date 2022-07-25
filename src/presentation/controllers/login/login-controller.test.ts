@@ -3,7 +3,11 @@ import {
   MissingParamError,
   ServerError
 } from '@src/presentation/errors'
-import { badRequest, serverError } from '@src/presentation/helpers/http-helper'
+import {
+  badRequest,
+  serverError,
+  unauthorized
+} from '@src/presentation/helpers/http-helper'
 import { LoginController } from './login-controller'
 import { EmailValidator, AuthenticationUseCase } from './login-protocols'
 
@@ -81,5 +85,12 @@ describe('Login Controller', () => {
       email: 'any@mail.com',
       password: 'any_pass'
     })
+  })
+
+  it('Should returns 401 if credentials are invalid', async () => {
+    const sut = makeSut()
+    jest.spyOn(authenticationUseCaseStub, 'auth').mockResolvedValueOnce('')
+    const httpResponse = await sut.handle(httRequest)
+    expect(httpResponse).toEqual(unauthorized())
   })
 })
