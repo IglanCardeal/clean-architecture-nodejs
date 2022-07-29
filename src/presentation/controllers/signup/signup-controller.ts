@@ -1,7 +1,5 @@
-import { InvalidParamError } from '@src/presentation/errors'
 import {
   Controller,
-  EmailValidator,
   HttpRequest,
   AddAccountUseCase,
   HttpResponse,
@@ -17,7 +15,6 @@ import { DbAddAccountResult } from '@src/data/usecases/add-account/db-add-accoun
 
 export class SignUpController implements Controller {
   constructor(
-    private readonly emailValidator: EmailValidator,
     private readonly validation: Validation,
     private readonly addAccountUseCase: AddAccountUseCase<DbAddAccountResult>
   ) {}
@@ -31,12 +28,6 @@ export class SignUpController implements Controller {
       }
 
       const { name, email, password } = httpRequest.body
-      const isValidEmail = this.emailValidator.isValid(email)
-
-      if (!isValidEmail) {
-        return badRequest(new InvalidParamError('email'))
-      }
-
       const account = await this.addAccountUseCase.add({
         name,
         email,
