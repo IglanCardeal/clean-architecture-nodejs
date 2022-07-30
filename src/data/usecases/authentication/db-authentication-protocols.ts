@@ -1,8 +1,5 @@
-import { AccountModel } from '../add-account/db-add-account-protocols'
-
-export interface FindUserByEmailRepository {
-  find(email: string): Promise<AccountModel>
-}
+export { LoadAccountByEmailRepository } from '@src/data/protocols/repository'
+export * from '@src/domain/models/account'
 
 export interface CompareData {
   password: string
