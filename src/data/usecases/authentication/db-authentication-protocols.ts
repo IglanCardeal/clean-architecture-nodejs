@@ -1,4 +1,4 @@
-export { LoadAccountByEmailRepository } from '@src/data/protocols/repository'
+export { LoadAccountByEmailRepository } from '@src/data/protocols/db'
 export * from '@src/domain/models/account'
 
 export interface CompareData {
