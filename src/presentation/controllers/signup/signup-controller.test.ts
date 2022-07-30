@@ -2,7 +2,7 @@ import {
   AddAccountRepositoryError,
   DbAddAccountResult
 } from '@src/data/usecases/add-account/db-add-account-result'
-import { MissingParamError } from '@src/presentation/errors'
+import { MissingParamError, ServerError } from '@src/presentation/errors'
 import {
   badRequest,
   created,
@@ -83,6 +83,15 @@ describe('SignUp Controller', () => {
       .mockReturnValueOnce(new MissingParamError('any_field'))
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
+  })
+
+  it('Should return 500 if Validation throws', async () => {
+    const { sut, validationStub } = makeSut()
+    jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(serverError(new ServerError('')))
   })
 
   it('Should call AddAccount with correct values', async () => {
