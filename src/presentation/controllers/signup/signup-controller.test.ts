@@ -7,7 +7,7 @@ import {
   badRequest,
   created,
   serverError
-} from '@src/presentation/helpers/http-helper'
+} from '@src/presentation/helpers/http'
 import { failure, success } from '@src/shared/either'
 import { SignUpController } from './signup-controller'
 import {

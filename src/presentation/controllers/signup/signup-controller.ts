@@ -10,7 +10,7 @@ import {
   badRequest,
   serverError,
   created
-} from '@src/presentation/helpers/http-helper'
+} from '@src/presentation/helpers/http'
 import { DbAddAccountResult } from '@src/data/usecases/add-account/db-add-account-result'
 
 export class SignUpController implements Controller {

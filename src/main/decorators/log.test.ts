@@ -1,4 +1,4 @@
-import { ok, serverError } from '@src/presentation/helpers/http-helper'
+import { ok, serverError } from '@src/presentation/helpers/http'
 import {
   Controller,
   HttpRequest,

@@ -4,7 +4,7 @@ import {
   ok,
   serverError,
   unauthorized
-} from '@src/presentation/helpers/http-helper'
+} from '@src/presentation/helpers/http'
 import { LoginController } from './login-controller'
 import { Validation, AuthenticationUseCase } from './login-protocols'
 
