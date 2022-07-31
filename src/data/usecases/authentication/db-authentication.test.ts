@@ -1,7 +1,10 @@
 import { AuthModel } from '@src/domain/usecases/authentication'
 import { AccountModel } from './db-authentication-protocols'
 import { DbAuthenticationUseCase } from './db-authentication'
-import { LoadAccountByEmailRepository } from './db-authentication-protocols'
+import {
+  LoadAccountByEmailRepository,
+  HashComparer
+} from './db-authentication-protocols'
 import { LoadAccountByEmailRepositoryError } from './db-authentication-result'
 import { AccountNotFoundError } from '@src/domain/errors'
 
@@ -18,10 +21,20 @@ class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
   }
 }
 
+class HashComparerStub implements HashComparer {
+  async compare(_password: string, _hash: string): Promise<boolean> {
+    return true
+  }
+}
+
 const loadAccountError = new Error()
 const loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub()
+const hashComparerStub = new HashComparerStub()
 const makeSut = () =>
-  new DbAuthenticationUseCase(loadAccountByEmailRepositoryStub)
+  new DbAuthenticationUseCase(
+    loadAccountByEmailRepositoryStub,
+    hashComparerStub
+  )
 
 describe('DbAuthenticationUseCase', () => {
   const authModel: AuthModel = {
@@ -60,5 +73,12 @@ describe('DbAuthenticationUseCase', () => {
     const error = result.isFailure() && result.error
     expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new AccountNotFoundError())
+  })
+
+  it('Should call HashComparer with correct password', async () => {
+    const sut = makeSut()
+    const loadSpy = jest.spyOn(hashComparerStub, 'compare')
+    await sut.auth(authModel)
+    expect(loadSpy).toHaveBeenCalledWith('any_password', 'hashed_password')
   })
 })
