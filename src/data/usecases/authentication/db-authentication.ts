@@ -4,7 +4,10 @@ import {
   AuthModel
 } from '@src/domain/usecases/authentication'
 import { failure, success } from '@src/shared'
-import { LoadAccountByEmailRepository } from './db-authentication-protocols'
+import {
+  LoadAccountByEmailRepository,
+  HashComparer
+} from './db-authentication-protocols'
 import {
   DbAuthenticationUseCaseResult,
   LoadAccountByEmailRepositoryError
@@ -14,14 +17,16 @@ export class DbAuthenticationUseCase
   implements AuthenticationUseCase<DbAuthenticationUseCaseResult>
 {
   constructor(
-    private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository
+    private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
+    private readonly hashComparer: HashComparer
   ) {}
 
   async auth(authModel: AuthModel): Promise<DbAuthenticationUseCaseResult> {
+    const { email, password } = authModel
     let account
 
     try {
-      account = await this.loadAccountByEmailRepository.load(authModel.email)
+      account = await this.loadAccountByEmailRepository.load(email)
     } catch (error: any) {
       return failure(new LoadAccountByEmailRepositoryError(error.stack))
     }
@@ -29,6 +34,8 @@ export class DbAuthenticationUseCase
     if (!account) {
       return failure(new AccountNotFoundError())
     }
+
+    await this.hashComparer.compare(password, account.password)
 
     return success('')
   }
