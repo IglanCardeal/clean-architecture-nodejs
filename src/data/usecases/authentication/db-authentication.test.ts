@@ -3,6 +3,7 @@ import { AccountModel } from './db-authentication-protocols'
 import { DbAuthenticationUseCase } from './db-authentication'
 import { LoadAccountByEmailRepository } from './db-authentication-protocols'
 import { LoadAccountByEmailRepositoryError } from './db-authentication-result'
+import { AccountNotFoundError } from '@src/domain/errors'
 
 const makeFakeAccount = (): AccountModel => ({
   id: 'any_id',
@@ -12,7 +13,7 @@ const makeFakeAccount = (): AccountModel => ({
 })
 
 class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-  async load(_email: string): Promise<AccountModel> {
+  async load(_email: string): Promise<AccountModel | undefined> {
     return makeFakeAccount()
   }
 }
@@ -48,5 +49,16 @@ describe('DbAuthenticationUseCase', () => {
     expect(error).toEqual(
       new LoadAccountByEmailRepositoryError(loadAccountError.stack)
     )
+  })
+
+  it('Should return an AccountNotFoundError if LoadAccountByEmailRepository returns undefined', async () => {
+    const sut = makeSut()
+    jest
+      .spyOn(loadAccountByEmailRepositoryStub, 'load')
+      .mockResolvedValueOnce(undefined)
+    const result = await sut.auth(authModel)
+    const error = result.isFailure() && result.error
+    expect(result.isFailure()).toBe(true)
+    expect(error).toEqual(new AccountNotFoundError())
   })
 })
