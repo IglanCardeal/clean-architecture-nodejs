@@ -1,3 +1,4 @@
+import { AccountNotFoundError } from '@src/domain/errors'
 import {
   AuthenticationUseCase,
   AuthModel
@@ -17,11 +18,18 @@ export class DbAuthenticationUseCase
   ) {}
 
   async auth(authModel: AuthModel): Promise<DbAuthenticationUseCaseResult> {
+    let account
+
     try {
-      await this.loadAccountByEmailRepository.load(authModel.email)
+      account = await this.loadAccountByEmailRepository.load(authModel.email)
     } catch (error: any) {
       return failure(new LoadAccountByEmailRepositoryError(error.stack))
     }
+
+    if (!account) {
+      return failure(new AccountNotFoundError())
+    }
+
     return success('')
   }
 }
