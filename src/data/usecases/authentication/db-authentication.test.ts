@@ -2,6 +2,7 @@ import { AuthModel } from '@src/domain/usecases/authentication'
 import { AccountModel } from './db-authentication-protocols'
 import { DbAuthenticationUseCase } from './db-authentication'
 import { LoadAccountByEmailRepository } from './db-authentication-protocols'
+import { LoadAccountByEmailRepositoryError } from './db-authentication-result'
 
 const makeFakeAccount = (): AccountModel => ({
   id: 'any_id',
@@ -16,6 +17,7 @@ class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
   }
 }
 
+const loadAccountError = new Error()
 const loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub()
 const makeSut = () =>
   new DbAuthenticationUseCase(loadAccountByEmailRepositoryStub)
@@ -31,5 +33,20 @@ describe('DbAuthenticationUseCase', () => {
     const loadSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'load')
     await sut.auth(authModel)
     expect(loadSpy).toHaveBeenCalledWith('any@mail.com')
+  })
+
+  it('Should return a LoadAccountByEmailRepositoryError if LoadAccountByEmailRepository throws', async () => {
+    const sut = makeSut()
+    jest
+      .spyOn(loadAccountByEmailRepositoryStub, 'load')
+      .mockImplementationOnce(() => {
+        throw loadAccountError
+      })
+    const result = await sut.auth(authModel)
+    const error = result.isFailure() && result.error
+    expect(result.isFailure()).toBe(true)
+    expect(error).toEqual(
+      new LoadAccountByEmailRepositoryError(loadAccountError.stack)
+    )
   })
 })
