@@ -24,9 +24,20 @@ export class HasherComparerError extends Error implements ApplicationError {
   }
 }
 
+export class TokenGeneratorError extends Error implements ApplicationError {
+  readonly message: string
+
+  constructor(readonly stack?: string) {
+    super('TokenGeneratorError')
+    this.message = 'A token generator error ocurred'
+    this.stack = stack
+  }
+}
+
 export type DbAuthenticationUseCaseResult = Either<
   string,
   | LoadAccountByEmailRepositoryError
   | HasherComparerError
   | InvalidCredentialsError
+  | TokenGeneratorError
 >

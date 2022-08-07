@@ -12,7 +12,8 @@ import {
 import {
   DbAuthenticationUseCaseResult,
   HasherComparerError,
-  LoadAccountByEmailRepositoryError
+  LoadAccountByEmailRepositoryError,
+  TokenGeneratorError
 } from './db-authentication-result'
 
 export class DbAuthenticationUseCase
@@ -45,7 +46,6 @@ export class DbAuthenticationUseCase
         password,
         account.password
       )
-      passwordCorrect
     } catch (error: any) {
       return failure(new HasherComparerError(error.stack))
     }
@@ -54,7 +54,11 @@ export class DbAuthenticationUseCase
       return failure(new InvalidCredentialsError())
     }
 
-    await this.tokenGenerator.generate(account.id)
+    try {
+      await this.tokenGenerator.generate(account.id)
+    } catch (error: any) {
+      return failure(new TokenGeneratorError(error.stack))
+    }
 
     return success('')
   }
