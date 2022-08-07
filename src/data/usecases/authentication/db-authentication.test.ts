@@ -3,7 +3,8 @@ import { AccountModel } from './db-authentication-protocols'
 import { DbAuthenticationUseCase } from './db-authentication'
 import {
   LoadAccountByEmailRepository,
-  HashComparer
+  HashComparer,
+  TokenGenerator
 } from './db-authentication-protocols'
 import {
   HasherComparerError,
@@ -30,13 +31,21 @@ class HashComparerStub implements HashComparer {
   }
 }
 
+class TokenGeneratorStub implements TokenGenerator {
+  async generate(_id: string): Promise<string> {
+    return 'access_token'
+  }
+}
+
 const loadAccountError = new Error()
 const loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub()
 const hashComparerStub = new HashComparerStub()
+const tokenGeneratorStub = new TokenGeneratorStub()
 const makeSut = () =>
   new DbAuthenticationUseCase(
     loadAccountByEmailRepositoryStub,
-    hashComparerStub
+    hashComparerStub,
+    tokenGeneratorStub
   )
 
 describe('DbAuthenticationUseCase', () => {
@@ -101,5 +110,12 @@ describe('DbAuthenticationUseCase', () => {
     const error = result.isFailure() && result.error
     expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new InvalidCredentialsError())
+  })
+
+  it('Should call TokenGenerator with correct user id', async () => {
+    const sut = makeSut()
+    const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate')
+    await sut.auth(authModel)
+    expect(generateSpy).toHaveBeenCalledWith('any_id')
   })
 })
