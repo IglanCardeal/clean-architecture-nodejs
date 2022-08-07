@@ -8,7 +8,8 @@ import {
 } from './db-authentication-protocols'
 import {
   HasherComparerError,
-  LoadAccountByEmailRepositoryError
+  LoadAccountByEmailRepositoryError,
+  TokenGeneratorError
 } from './db-authentication-result'
 import { InvalidCredentialsError } from '@src/domain/errors'
 
@@ -117,5 +118,16 @@ describe('DbAuthenticationUseCase', () => {
     const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate')
     await sut.auth(authModel)
     expect(generateSpy).toHaveBeenCalledWith('any_id')
+  })
+
+  it('Should return an TokenGeneratorError if TokenGenerator throws', async () => {
+    const sut = makeSut()
+    jest
+      .spyOn(tokenGeneratorStub, 'generate')
+      .mockRejectedValueOnce(new Error())
+    const result = await sut.auth(authModel)
+    const error = result.isFailure() && result.error
+    expect(result.isFailure()).toBe(true)
+    expect(error).toEqual(new TokenGeneratorError())
   })
 })
