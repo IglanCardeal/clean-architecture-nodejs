@@ -87,10 +87,19 @@ describe('DbAuthenticationUseCase', () => {
 
   it('Should return an HasherComparerError if HasherComparer throws', async () => {
     const sut = makeSut()
-    jest.spyOn(hashComparerStub, 'compare').mockRejectedValue(new Error())
+    jest.spyOn(hashComparerStub, 'compare').mockRejectedValueOnce(new Error())
     const result = await sut.auth(authModel)
     const error = result.isFailure() && result.error
     expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new HasherComparerError())
+  })
+
+  it('Should return an InvalidCredentialsError if HashComparer returns false', async () => {
+    const sut = makeSut()
+    jest.spyOn(hashComparerStub, 'compare').mockResolvedValueOnce(false)
+    const result = await sut.auth(authModel)
+    const error = result.isFailure() && result.error
+    expect(result.isFailure()).toBe(true)
+    expect(error).toEqual(new InvalidCredentialsError())
   })
 })
