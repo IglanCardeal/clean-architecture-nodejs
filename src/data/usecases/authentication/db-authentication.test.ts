@@ -5,7 +5,10 @@ import {
   LoadAccountByEmailRepository,
   HashComparer
 } from './db-authentication-protocols'
-import { LoadAccountByEmailRepositoryError } from './db-authentication-result'
+import {
+  HasherComparerError,
+  LoadAccountByEmailRepositoryError
+} from './db-authentication-result'
 import { AccountNotFoundError } from '@src/domain/errors'
 
 const makeFakeAccount = (): AccountModel => ({
@@ -75,10 +78,19 @@ describe('DbAuthenticationUseCase', () => {
     expect(error).toEqual(new AccountNotFoundError())
   })
 
-  it('Should call HashComparer with correct password', async () => {
+  it('Should call HashComparer with correct values', async () => {
     const sut = makeSut()
     const loadSpy = jest.spyOn(hashComparerStub, 'compare')
     await sut.auth(authModel)
     expect(loadSpy).toHaveBeenCalledWith('any_password', 'hashed_password')
+  })
+
+  it('Should return an HasherComparerError if HasherComparer throws', async () => {
+    const sut = makeSut()
+    jest.spyOn(hashComparerStub, 'compare').mockRejectedValue(new Error())
+    const result = await sut.auth(authModel)
+    const error = result.isFailure() && result.error
+    expect(result.isFailure()).toBe(true)
+    expect(error).toEqual(new HasherComparerError())
   })
 })
