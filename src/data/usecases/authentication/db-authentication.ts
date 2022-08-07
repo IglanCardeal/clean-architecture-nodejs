@@ -48,6 +48,10 @@ export class DbAuthenticationUseCase
       return failure(new HasherComparerError(error.stack))
     }
 
+    if (!passwordCorrect) {
+      return failure(new InvalidCredentialsError())
+    }
+
     return success('')
   }
 }
