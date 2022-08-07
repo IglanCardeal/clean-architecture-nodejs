@@ -6,7 +6,8 @@ import {
 import { failure, success } from '@src/shared'
 import {
   LoadAccountByEmailRepository,
-  HashComparer
+  HashComparer,
+  TokenGenerator
 } from './db-authentication-protocols'
 import {
   DbAuthenticationUseCaseResult,
@@ -19,7 +20,8 @@ export class DbAuthenticationUseCase
 {
   constructor(
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
-    private readonly hashComparer: HashComparer
+    private readonly hashComparer: HashComparer,
+    private readonly tokenGenerator: TokenGenerator
   ) {}
 
   async auth(authModel: AuthModel): Promise<DbAuthenticationUseCaseResult> {
@@ -51,6 +53,8 @@ export class DbAuthenticationUseCase
     if (!passwordCorrect) {
       return failure(new InvalidCredentialsError())
     }
+
+    await this.tokenGenerator.generate(account.id)
 
     return success('')
   }

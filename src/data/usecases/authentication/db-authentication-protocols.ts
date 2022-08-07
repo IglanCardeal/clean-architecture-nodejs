@@ -1,5 +1,5 @@
 export { LoadAccountByEmailRepository } from '@src/data/protocols/db'
-export { HashComparer } from '@src/data/protocols/crypto'
+export { HashComparer, TokenGenerator } from '@src/data/protocols/crypto'
 export * from '@src/domain/models/account'
 
 export interface CompareData {
