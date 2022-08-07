@@ -3,10 +3,10 @@ export interface DomainError {
   readonly error?: any
 }
 
-export class AccountNotFoundError implements DomainError {
+export class InvalidCredentialsError implements DomainError {
   readonly message: string
 
   constructor() {
-    this.message = 'Account not found'
+    this.message = 'E-mail or password is invalid'
   }
 }

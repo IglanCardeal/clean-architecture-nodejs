@@ -1,5 +1,5 @@
 import { ApplicationError, Either } from '@src/shared'
-import { AccountNotFoundError } from '@src/domain/errors'
+import { InvalidCredentialsError } from '@src/domain/errors'
 
 export class LoadAccountByEmailRepositoryError
   extends Error
@@ -26,5 +26,7 @@ export class HasherComparerError extends Error implements ApplicationError {
 
 export type DbAuthenticationUseCaseResult = Either<
   string,
-  AccountNotFoundError | LoadAccountByEmailRepositoryError | HasherComparerError
+  | LoadAccountByEmailRepositoryError
+  | HasherComparerError
+  | InvalidCredentialsError
 >

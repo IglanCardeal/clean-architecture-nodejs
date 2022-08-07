@@ -1,4 +1,4 @@
-import { AccountNotFoundError } from '@src/domain/errors'
+import { InvalidCredentialsError } from '@src/domain/errors'
 import {
   AuthenticationUseCase,
   AuthModel
@@ -33,11 +33,17 @@ export class DbAuthenticationUseCase
     }
 
     if (!account) {
-      return failure(new AccountNotFoundError())
+      return failure(new InvalidCredentialsError())
     }
 
+    let passwordCorrect: boolean
+
     try {
-      await this.hashComparer.compare(password, account.password)
+      passwordCorrect = await this.hashComparer.compare(
+        password,
+        account.password
+      )
+      passwordCorrect
     } catch (error: any) {
       return failure(new HasherComparerError(error.stack))
     }
