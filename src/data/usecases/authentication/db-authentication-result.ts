@@ -14,7 +14,17 @@ export class LoadAccountByEmailRepositoryError
   }
 }
 
+export class HasherComparerError extends Error implements ApplicationError {
+  readonly message: string
+
+  constructor(readonly stack?: string) {
+    super('HasherComparerError')
+    this.message = 'A hasher error ocurred while comparing hash and password'
+    this.stack = stack
+  }
+}
+
 export type DbAuthenticationUseCaseResult = Either<
   string,
-  AccountNotFoundError | LoadAccountByEmailRepositoryError
+  AccountNotFoundError | LoadAccountByEmailRepositoryError | HasherComparerError
 >

@@ -10,6 +10,7 @@ import {
 } from './db-authentication-protocols'
 import {
   DbAuthenticationUseCaseResult,
+  HasherComparerError,
   LoadAccountByEmailRepositoryError
 } from './db-authentication-result'
 
@@ -35,7 +36,11 @@ export class DbAuthenticationUseCase
       return failure(new AccountNotFoundError())
     }
 
-    await this.hashComparer.compare(password, account.password)
+    try {
+      await this.hashComparer.compare(password, account.password)
+    } catch (error: any) {
+      return failure(new HasherComparerError(error.stack))
+    }
 
     return success('')
   }
