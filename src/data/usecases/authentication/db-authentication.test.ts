@@ -9,7 +9,7 @@ import {
   HasherComparerError,
   LoadAccountByEmailRepositoryError
 } from './db-authentication-result'
-import { AccountNotFoundError } from '@src/domain/errors'
+import { InvalidCredentialsError } from '@src/domain/errors'
 
 const makeFakeAccount = (): AccountModel => ({
   id: 'any_id',
@@ -67,7 +67,7 @@ describe('DbAuthenticationUseCase', () => {
     )
   })
 
-  it('Should return an AccountNotFoundError if LoadAccountByEmailRepository returns undefined', async () => {
+  it('Should return an InvalidCredentialsError if LoadAccountByEmailRepository returns undefined', async () => {
     const sut = makeSut()
     jest
       .spyOn(loadAccountByEmailRepositoryStub, 'load')
@@ -75,7 +75,7 @@ describe('DbAuthenticationUseCase', () => {
     const result = await sut.auth(authModel)
     const error = result.isFailure() && result.error
     expect(result.isFailure()).toBe(true)
-    expect(error).toEqual(new AccountNotFoundError())
+    expect(error).toEqual(new InvalidCredentialsError())
   })
 
   it('Should call HashComparer with correct values', async () => {
