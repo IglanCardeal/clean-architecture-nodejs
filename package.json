@@ -10,7 +10,7 @@
     "test": "jest --passWithNoTests --silent",
     "test:verbose": "jest --passWithNoTests --verbose",
     "test:unit": "yarn test",
-    "test:unit:watch": "yarn test --watch",
+    "test:unit:watch": "yarn test --onlyChanged --watch",
     "test:u": "yarn test:unit",
     "test:u:w": "yarn test:unit:watch",
     "test:integration": "yarn test -c jest-integration.config.js --runInBand",
