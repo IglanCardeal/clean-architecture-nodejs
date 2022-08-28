@@ -6,7 +6,8 @@ export class UUIDGeneratorAdapter implements UUIDGenerator {
     try {
       return crypto.randomUUID()
     } catch (error) {
-      return 'any'
+      const temporaryId = Date.now() * Math.random()
+      return `${temporaryId}`
     }
   }
 }
