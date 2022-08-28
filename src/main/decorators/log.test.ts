@@ -3,7 +3,11 @@ import {
   Controller,
   HttpRequest,
   HttpResponse,
-  LogErrorRepository
+  LogDataError,
+  LogDataRequest,
+  LogDataResponse,
+  LogRepository,
+  UUIDGenerator
 } from '@src/presentation/protocols'
 import { LogControllerDecorator } from './log'
 
@@ -13,16 +17,27 @@ class AnyControllerStub implements Controller {
   }
 }
 
-class LogErrorRepositoryStub implements LogErrorRepository {
-  async logError(_stack: string): Promise<void> {
+class LogRepositoryStub implements LogRepository {
+  async logError(_data: LogDataError): Promise<void> {
+    return undefined
+  }
+
+  async logInfo(_data: LogDataRequest | LogDataResponse): Promise<void> {
     return undefined
   }
 }
 
-const logErrorRepositoryStub = new LogErrorRepositoryStub()
+class UUIDGeneratorStub implements UUIDGenerator {
+  generate(): string {
+    return 'unique_id'
+  }
+}
+
+const logRepositoryStub = new LogRepositoryStub()
 const anyControllerStub = new AnyControllerStub()
+const uuidStub = new UUIDGeneratorStub()
 const makeSut = () =>
-  new LogControllerDecorator(anyControllerStub, logErrorRepositoryStub)
+  new LogControllerDecorator(anyControllerStub, logRepositoryStub, uuidStub)
 const makeServerError = () => {
   const anyServerErrorStub = new Error()
   anyServerErrorStub.stack = 'any_stack'
@@ -46,17 +61,36 @@ describe('Log Controller Decorator', () => {
     expect(anyControllerHandleSpy).toHaveBeenCalledWith(httpRequest)
   })
 
-  it('Should return controller handle response with correct values', async () => {
+  it('Should return controller handle response with correct values and the transaction id', async () => {
     const sut = makeSut()
     const response = await sut.handle(httpRequest)
-    expect(response).toEqual(ok('ok'))
+    expect(response).toEqual({ ...ok('ok'), transactionId: 'unique_id' })
   })
 
-  it('Should call LogErrorRepository with the correct error if the controller returns a server error ', async () => {
-    jest.spyOn(anyControllerStub, 'handle').mockResolvedValue(makeServerError())
-    const logSpy = jest.spyOn(logErrorRepositoryStub, 'logError')
+  it('Should call LogRepository with the correct request data and transaction id', async () => {
+    const logInfoSpy = jest.spyOn(logRepositoryStub, 'logInfo')
     const sut = makeSut()
     await sut.handle(httpRequest)
-    expect(logSpy).toHaveBeenCalledWith('any_stack')
+    expect(logInfoSpy).toHaveBeenCalledWith({
+      ...ok('ok'),
+      transactionId: 'unique_id'
+    })
+  })
+
+  it('Should call LogRepository with the correct error and transaction id if the controller returns a server error', async () => {
+    jest.spyOn(anyControllerStub, 'handle').mockResolvedValue(makeServerError())
+    const logErrorSpy = jest.spyOn(logRepositoryStub, 'logError')
+    const sut = makeSut()
+    await sut.handle(httpRequest)
+    expect(logErrorSpy).toHaveBeenCalledWith({
+      body: {
+        email: 'foo@mail.com',
+        name: 'Foo',
+        password: '123foo',
+        passwordConfirmation: '123foo'
+      },
+      stack: 'any_stack',
+      transactionId: 'unique_id'
+    })
   })
 })
