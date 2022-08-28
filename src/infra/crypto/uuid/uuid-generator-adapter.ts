@@ -3,6 +3,10 @@ import { UUIDGenerator } from '@src/presentation/protocols'
 
 export class UUIDGeneratorAdapter implements UUIDGenerator {
   generate(): string {
-    return crypto.randomUUID()
+    try {
+      return crypto.randomUUID()
+    } catch (error) {
+      return 'any'
+    }
   }
 }
