@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import { UUIDGeneratorAdapter } from './uuid-generator-adapter'
 
 jest.mock('crypto', () => ({
@@ -13,5 +14,14 @@ describe('UUID Generator Adapter', () => {
     const sut = makeSut()
     const uuid = sut.generate()
     expect(uuid).toBe('unique_id')
+  })
+
+  it('Should not throw if crypto module throws', () => {
+    jest.spyOn(crypto, 'randomUUID').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const sut = makeSut()
+    const uuid = sut.generate()
+    expect(uuid).toBeDefined()
   })
 })
