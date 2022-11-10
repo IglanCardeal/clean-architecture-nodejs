@@ -3,11 +3,12 @@ import {
   AuthenticationUseCase,
   AuthModel
 } from '@src/domain/usecases/authentication'
-import { failure, success } from '@src/shared'
+import { Either, failure, success } from '@src/shared'
 import {
   LoadAccountByEmailRepository,
   HashComparer,
-  TokenGenerator
+  TokenGenerator,
+  AccountModel
 } from './db-authentication-protocols'
 import {
   DbAuthenticationUseCaseResult,
@@ -27,39 +28,65 @@ export class DbAuthenticationUseCase
 
   async auth(authModel: AuthModel): Promise<DbAuthenticationUseCaseResult> {
     const { email, password } = authModel
-    let account
+    const accountFinded = await this.loadAccountByEmail(email)
 
+    if (accountFinded.isFailure()) return failure(accountFinded.error)
+    if (!accountFinded.data) return failure(new InvalidCredentialsError())
+
+    const { password: hashedPassword } = accountFinded.data
+    const passwordCheckResult = await this.checkAccountPassword(
+      password,
+      hashedPassword
+    )
+
+    if (passwordCheckResult.isFailure())
+      return failure(passwordCheckResult.error)
+    if (!passwordCheckResult.data) return failure(new InvalidCredentialsError())
+
+    const accessTokenResult = await this.generateAccessToken(
+      accountFinded.data.id
+    )
+
+    if (accessTokenResult.isFailure()) return failure(accessTokenResult.error)
+
+    const { data: accessToken } = accessTokenResult
+
+    return success(accessToken)
+  }
+
+  private async loadAccountByEmail(
+    email: string
+  ): Promise<
+    Either<AccountModel | undefined, LoadAccountByEmailRepositoryError>
+  > {
     try {
-      account = await this.loadAccountByEmailRepository.load(email)
+      const data = await this.loadAccountByEmailRepository.load(email)
+      return success(data)
     } catch (error: any) {
       return failure(new LoadAccountByEmailRepositoryError(error.stack))
     }
+  }
 
-    if (!account) {
-      return failure(new InvalidCredentialsError())
-    }
-
-    let passwordCorrect: boolean
-
+  private async checkAccountPassword(
+    password: string,
+    hash: string
+  ): Promise<Either<boolean, HasherComparerError>> {
     try {
-      passwordCorrect = await this.hashComparer.compare(
-        password,
-        account.password
-      )
+      const result = await this.hashComparer.compare(password, hash)
+      return success(result)
     } catch (error: any) {
       return failure(new HasherComparerError(error.stack))
     }
+  }
 
-    if (!passwordCorrect) {
-      return failure(new InvalidCredentialsError())
-    }
-
+  private async generateAccessToken(
+    accountId: string
+  ): Promise<Either<string, TokenGeneratorError>> {
     try {
-      await this.tokenGenerator.generate(account.id)
+      const token = await this.tokenGenerator.generate(accountId)
+      return success(token)
     } catch (error: any) {
       return failure(new TokenGeneratorError(error.stack))
     }
-
-    return success('')
   }
 }
