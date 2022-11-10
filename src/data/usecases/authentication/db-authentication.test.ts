@@ -130,4 +130,12 @@ describe('DbAuthenticationUseCase', () => {
     expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new TokenGeneratorError())
   })
+
+  it('Should return an access token when success', async () => {
+    const sut = makeSut()
+    const result = await sut.auth(authModel)
+    const data = result.isSuccess() && result.data
+    expect(result.isSuccess()).toBe(true)
+    expect(data).toBe('access_token')
+  })
 })
