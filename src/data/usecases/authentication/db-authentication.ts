@@ -15,7 +15,8 @@ import {
   DbAuthenticationUseCaseResult,
   HasherComparerError,
   LoadAccountByEmailRepositoryError,
-  TokenGeneratorError
+  TokenGeneratorError,
+  UpdateAccessTokenRepositoryError
 } from './db-authentication-result'
 
 export class DbAuthenticationUseCase
@@ -53,9 +54,27 @@ export class DbAuthenticationUseCase
 
     const { data: accessToken } = accessTokenResult
 
-    await this.updateAccessTokenRepository.update(userId, accessToken)
+    const updateAccountAccessTokenResult = await this.updateAccountAccessToken(
+      userId,
+      accessToken
+    )
+
+    if (updateAccountAccessTokenResult.isFailure())
+      return failure(updateAccountAccessTokenResult.error)
 
     return success(accessToken)
+  }
+
+  private async updateAccountAccessToken(
+    userId: string,
+    accessToken: string
+  ): Promise<Either<void, UpdateAccessTokenRepositoryError>> {
+    try {
+      await this.updateAccessTokenRepository.update(userId, accessToken)
+      return success(undefined)
+    } catch (error: any) {
+      return failure(new UpdateAccessTokenRepositoryError(error.stack))
+    }
   }
 
   private async loadAccountByEmail(

@@ -14,6 +14,20 @@ export class LoadAccountByEmailRepositoryError
   }
 }
 
+export class UpdateAccessTokenRepositoryError
+  extends Error
+  implements ApplicationError
+{
+  readonly message: string
+
+  constructor(readonly stack?: string) {
+    super('UpdateAccessTokenRepositoryError')
+    this.message =
+      'A repository error ocurred while updating account access token'
+    this.stack = stack
+  }
+}
+
 export class HasherComparerError extends Error implements ApplicationError {
   readonly message: string
 
@@ -37,7 +51,8 @@ export class TokenGeneratorError extends Error implements ApplicationError {
 export type DbAuthenticationUseCaseResult = Either<
   string,
   | LoadAccountByEmailRepositoryError
+  | UpdateAccessTokenRepositoryError
   | HasherComparerError
-  | InvalidCredentialsError
   | TokenGeneratorError
+  | InvalidCredentialsError
 >
