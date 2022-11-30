@@ -23,4 +23,12 @@ describe('TokenGenerator Adapter', () => {
     const result = await sut.generate(accountId)
     expect(result).toBe('token')
   })
+
+  it('Should throw if jsonwebtoken sign throws', async () => {
+    const sut = makeSut()
+    jest.spyOn(jwt, 'sign').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    await expect(sut.generate(accountId)).rejects.toThrow()
+  })
 })
