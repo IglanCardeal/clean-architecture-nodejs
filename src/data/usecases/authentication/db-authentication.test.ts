@@ -43,7 +43,7 @@ class TokenGeneratorStub implements TokenGenerator {
 }
 
 class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-  async update(_userId: string, _acessToken: string): Promise<void> {
+  async update(_accountId: string, _acessToken: string): Promise<void> {
     return undefined
   }
 }

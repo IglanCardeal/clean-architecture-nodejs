@@ -36,7 +36,7 @@ export class DbAuthenticationUseCase
     if (accountFinded.isFailure()) return failure(accountFinded.error)
     if (!accountFinded.data) return failure(new InvalidCredentialsError())
 
-    const { password: hashedPassword, id: userId } = accountFinded.data
+    const { password: hashedPassword, id: accountId } = accountFinded.data
     const passwordCheckResult = await this.checkAccountPassword(
       password,
       hashedPassword
@@ -55,7 +55,7 @@ export class DbAuthenticationUseCase
     const { data: accessToken } = accessTokenResult
 
     const updateAccountAccessTokenResult = await this.updateAccountAccessToken(
-      userId,
+      accountId,
       accessToken
     )
 
@@ -66,11 +66,11 @@ export class DbAuthenticationUseCase
   }
 
   private async updateAccountAccessToken(
-    userId: string,
+    accountId: string,
     accessToken: string
   ): Promise<Either<void, UpdateAccessTokenRepositoryError>> {
     try {
-      await this.updateAccessTokenRepository.update(userId, accessToken)
+      await this.updateAccessTokenRepository.update(accountId, accessToken)
       return success(undefined)
     } catch (error: any) {
       return failure(new UpdateAccessTokenRepositoryError(error.stack))
