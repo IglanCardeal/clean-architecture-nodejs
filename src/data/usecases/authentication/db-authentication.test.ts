@@ -12,7 +12,8 @@ import {
 import {
   HasherComparerError,
   LoadAccountByEmailRepositoryError,
-  TokenGeneratorError
+  TokenGeneratorError,
+  UpdateAccessTokenRepositoryError
 } from './db-authentication-result'
 import { InvalidCredentialsError } from '@src/domain/errors'
 
@@ -115,13 +116,6 @@ describe('DbAuthenticationUseCase', () => {
     expect(error).toEqual(new HasherComparerError())
   })
 
-  it('Should call UpdateAccessTokenRepository with correct values', async () => {
-    const sut = makeSut()
-    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'update')
-    await sut.auth(authModel)
-    expect(updateSpy).toHaveBeenCalledWith('any_id', 'access_token')
-  })
-
   it('Should return an InvalidCredentialsError if HashComparer returns false', async () => {
     const sut = makeSut()
     jest.spyOn(hashComparerStub, 'compare').mockResolvedValueOnce(false)
@@ -149,7 +143,27 @@ describe('DbAuthenticationUseCase', () => {
     expect(error).toEqual(new TokenGeneratorError())
   })
 
-  it('Should return an access token when success', async () => {
+  it('Should call UpdateAccessTokenRepository with correct values', async () => {
+    const sut = makeSut()
+    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'update')
+    await sut.auth(authModel)
+    expect(updateSpy).toHaveBeenCalledWith('any_id', 'access_token')
+  })
+
+  it('Should return an UpdateAccessTokenRepositoryError when UpdateAccessTokenRepository throws', async () => {
+    jest
+      .spyOn(updateAccessTokenRepositoryStub, 'update')
+      .mockImplementationOnce(async () => {
+        return Promise.reject(new UpdateAccessTokenRepositoryError())
+      })
+    const sut = makeSut()
+    const result = await sut.auth(authModel)
+    const error = result.isFailure() && result.error
+    expect(result.isFailure()).toBe(true)
+    expect(error).toEqual(new UpdateAccessTokenRepositoryError())
+  })
+
+  it('Should return an access token on success', async () => {
     const sut = makeSut()
     const result = await sut.auth(authModel)
     const data = result.isSuccess() && result.data
