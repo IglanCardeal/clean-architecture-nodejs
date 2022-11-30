@@ -1,4 +1,7 @@
-export { LoadAccountByEmailRepository } from '@src/data/protocols/db'
+export {
+  LoadAccountByEmailRepository,
+  UpdateAccessTokenRepository
+} from '@src/data/protocols/db'
 export { HashComparer, TokenGenerator } from '@src/data/protocols/crypto'
 export * from '@src/domain/models/account'
 

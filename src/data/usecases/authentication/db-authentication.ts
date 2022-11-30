@@ -8,7 +8,8 @@ import {
   LoadAccountByEmailRepository,
   HashComparer,
   TokenGenerator,
-  AccountModel
+  AccountModel,
+  UpdateAccessTokenRepository
 } from './db-authentication-protocols'
 import {
   DbAuthenticationUseCaseResult,
@@ -23,7 +24,8 @@ export class DbAuthenticationUseCase
   constructor(
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly hashComparer: HashComparer,
-    private readonly tokenGenerator: TokenGenerator
+    private readonly tokenGenerator: TokenGenerator,
+    private readonly updateAccessTokenRepository: UpdateAccessTokenRepository
   ) {}
 
   async auth(authModel: AuthModel): Promise<DbAuthenticationUseCaseResult> {
@@ -33,7 +35,7 @@ export class DbAuthenticationUseCase
     if (accountFinded.isFailure()) return failure(accountFinded.error)
     if (!accountFinded.data) return failure(new InvalidCredentialsError())
 
-    const { password: hashedPassword } = accountFinded.data
+    const { password: hashedPassword, id: userId } = accountFinded.data
     const passwordCheckResult = await this.checkAccountPassword(
       password,
       hashedPassword
@@ -50,6 +52,8 @@ export class DbAuthenticationUseCase
     if (accessTokenResult.isFailure()) return failure(accessTokenResult.error)
 
     const { data: accessToken } = accessTokenResult
+
+    await this.updateAccessTokenRepository.update(userId, accessToken)
 
     return success(accessToken)
   }
