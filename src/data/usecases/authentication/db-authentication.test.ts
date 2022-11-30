@@ -1,5 +1,8 @@
 import { AuthModel } from '@src/domain/usecases/authentication'
-import { AccountModel } from './db-authentication-protocols'
+import {
+  AccountModel,
+  UpdateAccessTokenRepository
+} from './db-authentication-protocols'
 import { DbAuthenticationUseCase } from './db-authentication'
 import {
   LoadAccountByEmailRepository,
@@ -38,15 +41,23 @@ class TokenGeneratorStub implements TokenGenerator {
   }
 }
 
+class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
+  async update(_userId: string, _acessToken: string): Promise<void> {
+    return undefined
+  }
+}
+
 const loadAccountError = new Error()
 const loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub()
 const hashComparerStub = new HashComparerStub()
+const updateAccessTokenRepositoryStub = new UpdateAccessTokenRepositoryStub()
 const tokenGeneratorStub = new TokenGeneratorStub()
 const makeSut = () =>
   new DbAuthenticationUseCase(
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
-    tokenGeneratorStub
+    tokenGeneratorStub,
+    updateAccessTokenRepositoryStub
   )
 
 describe('DbAuthenticationUseCase', () => {
@@ -95,13 +106,20 @@ describe('DbAuthenticationUseCase', () => {
     expect(loadSpy).toHaveBeenCalledWith('any_password', 'hashed_password')
   })
 
-  it('Should return an HasherComparerError if HasherComparer throws', async () => {
+  it('Should return a HasherComparerError if HasherComparer throws', async () => {
     const sut = makeSut()
     jest.spyOn(hashComparerStub, 'compare').mockRejectedValueOnce(new Error())
     const result = await sut.auth(authModel)
     const error = result.isFailure() && result.error
     expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new HasherComparerError())
+  })
+
+  it('Should call UpdateAccessTokenRepository with correct values', async () => {
+    const sut = makeSut()
+    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'update')
+    await sut.auth(authModel)
+    expect(updateSpy).toHaveBeenCalledWith('any_id', 'access_token')
   })
 
   it('Should return an InvalidCredentialsError if HashComparer returns false', async () => {
@@ -120,7 +138,7 @@ describe('DbAuthenticationUseCase', () => {
     expect(generateSpy).toHaveBeenCalledWith('any_id')
   })
 
-  it('Should return an TokenGeneratorError if TokenGenerator throws', async () => {
+  it('Should return a TokenGeneratorError if TokenGenerator throws', async () => {
     const sut = makeSut()
     jest
       .spyOn(tokenGeneratorStub, 'generate')
