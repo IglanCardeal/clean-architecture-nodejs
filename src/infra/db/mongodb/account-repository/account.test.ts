@@ -1,12 +1,14 @@
+import { Collection, Document } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { AccountMongoRepository } from './account'
 
 const makeSut = () => new AccountMongoRepository()
 
 describe('Account MongoDB Repository', () => {
+  let accountCollection: Collection<Document>
+
   const insertFakeAccount = async ({ name, email, password }: any) => {
-    const accounts = await MongoHelper.getCollection('accounts')
-    await accounts.insertOne({
+    return accountCollection.insertOne({
       name,
       email,
       password
@@ -15,6 +17,7 @@ describe('Account MongoDB Repository', () => {
 
   beforeAll(async () => {
     await MongoHelper.connect()
+    accountCollection = await MongoHelper.getCollection('accounts')
   })
 
   afterAll(async () => {
@@ -22,8 +25,7 @@ describe('Account MongoDB Repository', () => {
   })
 
   beforeEach(async () => {
-    const accounts = await MongoHelper.getCollection('accounts')
-    await accounts.deleteMany({})
+    await accountCollection.deleteMany({})
   })
 
   it('Should return an account on add success', async () => {
@@ -66,5 +68,25 @@ describe('Account MongoDB Repository', () => {
     const sut = makeSut()
     const account = await sut.loadByEmail('valid_email2@mail.com')
     expect(account).toBeUndefined()
+  })
+
+  it('Should update account access token on updateAccessToken success', async () => {
+    const { insertedId: fakeAccountId } = await insertFakeAccount({
+      name: 'valid_name3',
+      email: 'valid_email3@mail.com',
+      password: 'hashed_password3'
+    })
+    const accountBefore = await accountCollection.findOne({
+      _id: fakeAccountId
+    })
+    expect(accountBefore).toBeTruthy()
+    expect(accountBefore?.accessToken).toBeUndefined()
+    const sut = makeSut()
+    await sut.updateAccessToken(fakeAccountId.toString(), 'any_token')
+    const accountAfter = await accountCollection.findOne({
+      _id: fakeAccountId
+    })
+    expect(accountAfter).toBeTruthy()
+    expect(accountAfter?.accessToken).toBe('any_token')
   })
 })
