@@ -70,7 +70,10 @@ export class DbAuthenticationUseCase
     accessToken: string
   ): Promise<Either<void, UpdateAccessTokenRepositoryError>> {
     try {
-      await this.updateAccessTokenRepository.update(accountId, accessToken)
+      await this.updateAccessTokenRepository.updateAccessToken(
+        accountId,
+        accessToken
+      )
       return success(undefined)
     } catch (error: any) {
       return failure(new UpdateAccessTokenRepositoryError(error.stack))

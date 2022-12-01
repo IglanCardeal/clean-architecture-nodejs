@@ -43,7 +43,10 @@ class TokenGeneratorStub implements TokenGenerator {
 }
 
 class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-  async update(_accountId: string, _acessToken: string): Promise<void> {
+  async updateAccessToken(
+    _accountId: string,
+    _acessToken: string
+  ): Promise<void> {
     return undefined
   }
 }
@@ -145,14 +148,17 @@ describe('DbAuthenticationUseCase', () => {
 
   it('Should call UpdateAccessTokenRepository with correct values', async () => {
     const sut = makeSut()
-    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'update')
+    const updateSpy = jest.spyOn(
+      updateAccessTokenRepositoryStub,
+      'updateAccessToken'
+    )
     await sut.auth(authModel)
     expect(updateSpy).toHaveBeenCalledWith('any_id', 'access_token')
   })
 
   it('Should return an UpdateAccessTokenRepositoryError when UpdateAccessTokenRepository throws', async () => {
     jest
-      .spyOn(updateAccessTokenRepositoryStub, 'update')
+      .spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken')
       .mockImplementationOnce(async () => {
         return Promise.reject(new UpdateAccessTokenRepositoryError())
       })
