@@ -1,4 +1,10 @@
-import { Collection, Document, InsertOneResult, MongoClient } from 'mongodb'
+import {
+  Collection,
+  Document,
+  InsertOneResult,
+  MongoClient,
+  WithId
+} from 'mongodb'
 
 const twentyFiveSeconds = 25_000
 
@@ -18,16 +24,22 @@ export const MongoHelper = {
     this.client = null as any
   },
 
-  async getCollection(name: string): Promise<Collection> {
+  async getCollection<T extends Document>(
+    name: string
+  ): Promise<Collection<T>> {
     if (!this.client) {
       await this.connect(this.uri)
     }
-    return this.client.db().collection(name)
+    return this.client.db().collection<T>(name)
   },
 
   mapInsertedIdToString: ({
     insertedId
   }: InsertOneResult<Document>): string => {
     return insertedId.toString()
+  },
+
+  mapDocumentIdToString: ({ _id }: WithId<Document>): string => {
+    return _id.toString()
   }
 }
