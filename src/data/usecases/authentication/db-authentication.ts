@@ -83,7 +83,7 @@ export class DbAuthenticationUseCase
     Either<AccountModel | undefined, LoadAccountByEmailRepositoryError>
   > {
     try {
-      const data = await this.loadAccountByEmailRepository.load(email)
+      const data = await this.loadAccountByEmailRepository.loadByEmail(email)
       return success(data)
     } catch (error: any) {
       return failure(new LoadAccountByEmailRepositoryError(error.stack))
