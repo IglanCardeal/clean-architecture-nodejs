@@ -1,11 +1,11 @@
 import { DbAddAccountUseCase } from '@src/data/usecases/add-account/db-add-account'
 import { SignUpController } from '@src/presentation/controllers/signup/signup-controller'
 import { BcryptAdapter } from '@src/infra/crypto/bcrypt/bcrypt-adapter'
-import { AccountMongoRepository } from '@src/infra/db/mongodb/account/account-mongo-repository'
-import { LogControllerDecorator } from '../../decorators/log'
-import { LogMongoRepository } from '@src/infra/db/mongodb/log/log-mongo-repository'
-import { makeSignUpValidations } from './signup-validations'
 import { UUIDGeneratorAdapter } from '@src/infra/crypto/uuid/uuid-generator-adapter'
+import { AccountMongoRepository } from '@src/infra/db/mongodb'
+import { LogMongoRepository } from '@src/infra/db/mongodb'
+import { LogControllerDecorator } from '../../decorators/log'
+import { makeSignUpValidations } from './signup-validations'
 
 export const makeSignUpController = () => {
   const SALT = 12
