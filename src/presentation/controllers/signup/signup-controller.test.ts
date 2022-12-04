@@ -15,7 +15,7 @@ import {
   Validation,
   AddAccountUseCase,
   AddAccountModel
-} from './signup-protocols'
+} from './signup-controller-protocols'
 
 const makeFakeAccount = (): AccountModel => ({
   id: 'valid_id',

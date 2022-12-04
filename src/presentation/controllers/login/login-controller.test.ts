@@ -6,7 +6,7 @@ import {
   unauthorized
 } from '@src/presentation/helpers/http'
 import { LoginController } from './login-controller'
-import { Validation, AuthenticationUseCase } from './login-protocols'
+import { Validation, AuthenticationUseCase } from './login-controller-protocols'
 
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {

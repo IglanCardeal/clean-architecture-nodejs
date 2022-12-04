@@ -5,7 +5,7 @@ import {
   HttpResponse,
   AccountModel,
   Validation
-} from './signup-protocols'
+} from './signup-controller-protocols'
 import {
   badRequest,
   serverError,
