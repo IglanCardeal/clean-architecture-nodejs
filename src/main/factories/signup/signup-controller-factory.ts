@@ -5,7 +5,7 @@ import { UUIDGeneratorAdapter } from '@src/infra/crypto/uuid/uuid-generator-adap
 import { AccountMongoRepository } from '@src/infra/db/mongodb'
 import { LogMongoRepository } from '@src/infra/db/mongodb'
 import { LogControllerDecorator } from '../../decorators/log-controller-decorator'
-import { makeSignUpValidations } from './signup-validations'
+import { makeSignUpValidations } from './signup-validations-factory'
 
 export const makeSignUpController = () => {
   const SALT = 12
