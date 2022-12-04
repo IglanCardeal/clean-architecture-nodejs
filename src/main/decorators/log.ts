@@ -2,10 +2,9 @@ import {
   Controller,
   HttpRequest,
   HttpResponse,
-  LogDataResponse,
-  LogRepository,
   UUIDGenerator
 } from '@src/presentation/protocols'
+import { LogTransactionId, LogRepository } from '@src/data/protocols/db'
 
 export class LogControllerDecorator implements Controller {
   constructor(
@@ -16,7 +15,7 @@ export class LogControllerDecorator implements Controller {
 
   async handle(
     httRequest: HttpRequest
-  ): Promise<HttpResponse & LogDataResponse> {
+  ): Promise<HttpResponse & LogTransactionId> {
     const transactionId = this.uuid.generate()
 
     this.logRepository.logInfo({

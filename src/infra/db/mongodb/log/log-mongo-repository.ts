@@ -1,13 +1,12 @@
 import {
   LogDataError,
-  LogDataRequest,
-  LogDataResponse,
+  LogTransactionId,
   LogRepository
-} from '@src/presentation/protocols'
+} from '@src/data/protocols/db'
 import { MongoHelper } from '../helpers/mongo-helper'
 
 export class LogMongoRepository implements LogRepository {
-  async logError(data: LogDataError): Promise<void> {
+  async logError<T extends LogDataError>(data: T): Promise<void> {
     const errorCollection = await MongoHelper.getCollection('errors')
     await errorCollection.insertOne({
       ...data,
@@ -15,7 +14,7 @@ export class LogMongoRepository implements LogRepository {
     })
   }
 
-  async logInfo(data: LogDataRequest | LogDataResponse): Promise<void> {
+  async logInfo<T extends LogTransactionId>(data: T): Promise<void> {
     const infoCollection = await MongoHelper.getCollection('infos')
     await infoCollection.insertOne({
       ...data,

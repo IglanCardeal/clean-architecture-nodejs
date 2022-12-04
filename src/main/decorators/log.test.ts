@@ -1,12 +1,13 @@
 import { ok, serverError } from '@src/presentation/helpers/http'
 import {
+  LogDataError,
+  LogTransactionId,
+  LogRepository
+} from '@src/data/protocols/db'
+import {
   Controller,
   HttpRequest,
   HttpResponse,
-  LogDataError,
-  LogDataRequest,
-  LogDataResponse,
-  LogRepository,
   UUIDGenerator
 } from '@src/presentation/protocols'
 import { LogControllerDecorator } from './log'
@@ -18,11 +19,11 @@ class AnyControllerStub implements Controller {
 }
 
 class LogRepositoryStub implements LogRepository {
-  async logError(_data: LogDataError): Promise<void> {
+  async logError<T extends LogDataError>(_data: T): Promise<void> {
     return undefined
   }
 
-  async logInfo(_data: LogDataRequest | LogDataResponse): Promise<void> {
+  async logInfo<T extends LogTransactionId>(_data: T): Promise<void> {
     return undefined
   }
 }
