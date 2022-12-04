@@ -10,7 +10,7 @@ import {
   HttpResponse,
   UUIDGenerator
 } from '@src/presentation/protocols'
-import { LogControllerDecorator } from './log'
+import { LogControllerDecorator } from './log-controller-decorator'
 
 class AnyControllerStub implements Controller {
   async handle(_httRequest: HttpRequest): Promise<HttpResponse> {

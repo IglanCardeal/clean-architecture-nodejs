@@ -4,7 +4,7 @@ import { BcryptAdapter } from '@src/infra/crypto/bcrypt/bcrypt-adapter'
 import { UUIDGeneratorAdapter } from '@src/infra/crypto/uuid/uuid-generator-adapter'
 import { AccountMongoRepository } from '@src/infra/db/mongodb'
 import { LogMongoRepository } from '@src/infra/db/mongodb'
-import { LogControllerDecorator } from '../../decorators/log'
+import { LogControllerDecorator } from '../../decorators/log-controller-decorator'
 import { makeSignUpValidations } from './signup-validations'
 
 export const makeSignUpController = () => {
