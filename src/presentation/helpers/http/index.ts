@@ -9,10 +9,10 @@ export const badRequest = (error: Error): HttpResponse => ({
   }
 })
 
-export const unauthorized = (): HttpResponse => ({
+export const unauthorized = (error: Error): HttpResponse => ({
   statusCode: 401,
   body: {
-    message: new UnauthorizedError().message
+    message: new UnauthorizedError(error.message)
   }
 })
 
