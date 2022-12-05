@@ -3,10 +3,12 @@ export interface DomainError {
   readonly error?: any
 }
 
-export class InvalidCredentialsError implements DomainError {
+export class InvalidCredentialsError extends Error implements DomainError {
   readonly message: string
 
   constructor() {
+    super('DomainError')
+    this.name = 'InvalidCredentialsError'
     this.message = 'E-mail or password is invalid'
   }
 }
