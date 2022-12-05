@@ -1,4 +1,4 @@
-import { AccountModel } from './db-add-account-protocols'
+import { AccountModel } from './db-add-account-usecase-protocols'
 import { ApplicationError, Either } from '@src/shared'
 
 export class HasherError extends Error implements ApplicationError {

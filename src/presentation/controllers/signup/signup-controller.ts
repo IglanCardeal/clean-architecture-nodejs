@@ -11,7 +11,7 @@ import {
   serverError,
   created
 } from '@src/presentation/helpers/http'
-import { DbAddAccountResult } from '@src/data/usecases/add-account/db-add-account-result'
+import { DbAddAccountResult } from '@src/data/usecases/add-account/db-add-account-usecase-result'
 
 export class SignUpController implements Controller {
   constructor(

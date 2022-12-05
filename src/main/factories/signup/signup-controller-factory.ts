@@ -1,4 +1,4 @@
-import { DbAddAccountUseCase } from '@src/data/usecases/add-account/db-add-account'
+import { DbAddAccountUseCase } from '@src/data/usecases/add-account/db-add-account-usecase'
 import { SignUpController } from '@src/presentation/controllers/signup/signup-controller'
 import { BcryptAdapter } from '@src/infra/crypto/bcrypt/bcrypt-adapter'
 import { UUIDGeneratorAdapter } from '@src/infra/crypto/uuid/uuid-generator-adapter'

@@ -1,4 +1,4 @@
-import { DbAuthenticationUseCaseResult } from '@src/data/usecases/authentication/db-authentication-result'
+import { DbAuthenticationUseCaseResult } from '@src/data/usecases/authentication/db-authentication-usecase-result'
 import { InvalidCredentialsError } from '@src/domain/errors'
 import {
   badRequest,

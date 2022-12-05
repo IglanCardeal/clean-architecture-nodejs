@@ -2,19 +2,19 @@ import { AuthModel } from '@src/domain/usecases/authentication'
 import {
   AccountModel,
   UpdateAccessTokenRepository
-} from './db-authentication-protocols'
-import { DbAuthenticationUseCase } from './db-authentication'
+} from './db-authentication-usecase-protocols'
+import { DbAuthenticationUseCase } from './db-authentication-usecase'
 import {
   LoadAccountByEmailRepository,
   HashComparer,
   TokenGenerator
-} from './db-authentication-protocols'
+} from './db-authentication-usecase-protocols'
 import {
   HasherComparerError,
   LoadAccountByEmailRepositoryError,
   TokenGeneratorError,
   UpdateAccessTokenRepositoryError
-} from './db-authentication-result'
+} from './db-authentication-usecase-result'
 import { InvalidCredentialsError } from '@src/domain/errors'
 
 const makeFakeAccount = (): AccountModel => ({

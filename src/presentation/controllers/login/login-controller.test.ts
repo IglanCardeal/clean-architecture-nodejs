@@ -4,7 +4,7 @@ import {
   LoadAccountByEmailRepositoryError,
   TokenGeneratorError,
   UpdateAccessTokenRepositoryError
-} from '@src/data/usecases/authentication/db-authentication-result'
+} from '@src/data/usecases/authentication/db-authentication-usecase-result'
 import { InvalidCredentialsError } from '@src/domain/errors'
 import { MissingParamError, ServerError } from '@src/presentation/errors'
 import {

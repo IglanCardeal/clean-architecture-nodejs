@@ -3,9 +3,12 @@ import {
   AddAccountModel,
   AccountModel,
   AddAccountRepository
-} from './db-add-account-protocols'
-import { HasherError, AddAccountRepositoryError } from './db-add-account-result'
-import { DbAddAccountUseCase } from './db-add-account'
+} from './db-add-account-usecase-protocols'
+import {
+  HasherError,
+  AddAccountRepositoryError
+} from './db-add-account-usecase-result'
+import { DbAddAccountUseCase } from './db-add-account-usecase'
 class HasherStub implements Hasher {
   async hash(_password: string): Promise<string> {
     return 'hashed_password'

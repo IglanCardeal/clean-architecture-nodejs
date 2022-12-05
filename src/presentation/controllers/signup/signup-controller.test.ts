@@ -1,7 +1,7 @@
 import {
   AddAccountRepositoryError,
   DbAddAccountResult
-} from '@src/data/usecases/add-account/db-add-account-result'
+} from '@src/data/usecases/add-account/db-add-account-usecase-result'
 import { MissingParamError, ServerError } from '@src/presentation/errors'
 import {
   badRequest,

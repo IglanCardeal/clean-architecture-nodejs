@@ -10,14 +10,14 @@ import {
   TokenGenerator,
   AccountModel,
   UpdateAccessTokenRepository
-} from './db-authentication-protocols'
+} from './db-authentication-usecase-protocols'
 import {
   DbAuthenticationUseCaseResult,
   HasherComparerError,
   LoadAccountByEmailRepositoryError,
   TokenGeneratorError,
   UpdateAccessTokenRepositoryError
-} from './db-authentication-result'
+} from './db-authentication-usecase-result'
 
 export class DbAuthenticationUseCase
   implements AuthenticationUseCase<DbAuthenticationUseCaseResult>

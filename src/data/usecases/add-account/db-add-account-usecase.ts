@@ -5,12 +5,12 @@ import {
   AddAccountModel,
   AccountModel,
   AddAccountRepository
-} from './db-add-account-protocols'
+} from './db-add-account-usecase-protocols'
 import {
   AddAccountRepositoryError,
   DbAddAccountResult,
   HasherError
-} from './db-add-account-result'
+} from './db-add-account-usecase-result'
 
 export class DbAddAccountUseCase
   implements AddAccountUseCase<DbAddAccountResult>
