@@ -1,3 +1,5 @@
+import { DbAuthenticationUseCaseResult } from '@src/data/usecases/authentication/db-authentication-result'
+import { InvalidCredentialsError } from '@src/domain/errors'
 import {
   badRequest,
   ok,
@@ -14,7 +16,7 @@ import {
 export class LoginController implements Controller {
   constructor(
     private readonly validation: Validation,
-    private readonly authenticationUseCase: AuthenticationUseCase<string>
+    private readonly authenticationUseCase: AuthenticationUseCase<DbAuthenticationUseCaseResult>
   ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -26,14 +28,22 @@ export class LoginController implements Controller {
       }
 
       const { email, password } = httpRequest.body
-      const accessToken = await this.authenticationUseCase.auth({
+      const result = await this.authenticationUseCase.auth({
         email,
         password
       })
 
-      if (!accessToken) {
-        return unauthorized()
+      if (result.isFailure()) {
+        const { error } = result
+        switch (error.constructor) {
+          case InvalidCredentialsError:
+            return unauthorized(error)
+          default:
+            return serverError(error)
+        }
       }
+
+      const accessToken = result.isSuccess() && result.data
 
       return ok({ accessToken })
     } catch (error: any) {
