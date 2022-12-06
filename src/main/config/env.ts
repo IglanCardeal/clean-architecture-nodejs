@@ -1,4 +1,12 @@
+import * as dotenv from 'dotenv'
+
+dotenv.config()
+
+const { env } = process
+
 export const ENV = {
-  mongoUrl: process.env.MONGO_URL || 'mongodb://localhost:27017/clean-node-api',
-  port: process.env.PORT || 3000
+  mongoUrl: env.MONGO_URL || 'mongodb://localhost:27017/clean-node-api',
+  port: env.PORT || 3000,
+  bcryptSalt: Number(env.SALT) || 12,
+  tokenSecret: 'any_secret'
 }
