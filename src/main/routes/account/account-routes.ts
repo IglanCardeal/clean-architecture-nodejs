@@ -8,7 +8,7 @@ import {
 const signUpRouteAdapted = routeAdapter(makeSignUpController())
 const loginRouteAdapted = routeAdapter(makeLoginController())
 
-export default (router: Router) => {
+export const accountRoutesSetup = (router: Router) => {
   router.post('/signup', signUpRouteAdapted)
   router.post('/login', loginRouteAdapted)
 }

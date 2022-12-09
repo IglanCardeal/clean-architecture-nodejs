@@ -1,11 +1,11 @@
 import { Express, Router } from 'express'
-import accountRoutes from '@src/main/routes/account/account-routes'
+import { accountRoutesSetup } from '@src/main/routes'
 
 export const setupRoutes = (app: Express): void => {
-  const routes = [accountRoutes]
+  const routesSetup = [accountRoutesSetup]
 
   const router = Router()
   app.use('/api', router)
 
-  routes.forEach((route) => route(router))
+  routesSetup.forEach((route) => route(router))
 }
