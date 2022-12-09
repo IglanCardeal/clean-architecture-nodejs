@@ -72,10 +72,20 @@ describe('Account Routes', () => {
       await request(app)
         .post(`/api/${ACCOUNT_ROUTE_PREFIX}/login`)
         .send({
-          email: 'invalid@mail.com',
+          email: 'notfound@mail.com',
           password: 'foo'
         })
         .expect(401)
+    })
+
+    it('Should return status code 400 if email is invalid', async () => {
+      await request(app)
+        .post(`/api/${ACCOUNT_ROUTE_PREFIX}/login`)
+        .send({
+          email: 'invalidmail.com',
+          password: 'foo'
+        })
+        .expect(400)
     })
   })
 })
