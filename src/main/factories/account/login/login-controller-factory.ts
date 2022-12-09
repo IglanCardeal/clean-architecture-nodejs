@@ -1,3 +1,4 @@
+import { ENV } from '@src/main/config/env'
 import { DbAuthenticationUseCase } from '@src/data/usecases/authentication/db-authentication-usecase'
 import { BcryptAdapter } from '@src/infra/crypto/bcrypt/bcrypt-adapter'
 import { TokenGeneratorAdapter } from '@src/infra/crypto/jwt/jwt-adpter'
@@ -12,10 +13,11 @@ import { Controller } from '@src/presentation/protocols'
 import { makeLoginValidations } from './login-validations-factory'
 
 export const makeLoginController = (): Controller => {
+  const { bcryptSalt, tokenSecret } = ENV
+  const hasherAdapter = new BcryptAdapter(bcryptSalt)
   const loginValidations = makeLoginValidations()
   const accountRepository = new AccountMongoRepository()
-  const hasherAdapter = new BcryptAdapter(12)
-  const tokenGeneratorAdapter = new TokenGeneratorAdapter('any_secret')
+  const tokenGeneratorAdapter = new TokenGeneratorAdapter(tokenSecret)
   const authUseCase = new DbAuthenticationUseCase(
     accountRepository,
     hasherAdapter,
