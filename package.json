@@ -7,6 +7,7 @@
     "dev": "NODE_ENV=development tsnd -r tsconfig-paths/register --respawn --ignore-watch node_modules src/main/server.ts",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "yarn run lint --fix",
+    "jest:clear": "jest --clearCache",
     "test": "jest --passWithNoTests --silent",
     "test:verbose": "jest --passWithNoTests --verbose",
     "test:unit": "yarn test",
