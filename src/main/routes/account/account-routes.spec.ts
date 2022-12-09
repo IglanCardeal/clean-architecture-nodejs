@@ -4,6 +4,10 @@ import request from 'supertest'
 import { ACCOUNT_ROUTE_PREFIX } from './account-routes'
 
 describe('Account Routes', () => {
+  const createFakeAccount = async (data: any) => {
+    await request(app).post(`/api/${ACCOUNT_ROUTE_PREFIX}/signup`).send(data)
+  }
+
   beforeAll(async () => {
     await MongoHelper.connect()
   })
@@ -33,7 +37,7 @@ describe('Account Routes', () => {
 
   describe(`POST /api/${ACCOUNT_ROUTE_PREFIX}/login`, () => {
     it('Should return status code 200 on success', async () => {
-      await request(app).post(`/api/${ACCOUNT_ROUTE_PREFIX}/signup`).send({
+      await createFakeAccount({
         name: 'Foo2',
         email: 'foo2@mail.com',
         password: '567foo',
@@ -46,6 +50,32 @@ describe('Account Routes', () => {
           password: '567foo'
         })
         .expect(200)
+    })
+
+    it('Should return status code 401 if password is incorrect', async () => {
+      await createFakeAccount({
+        name: 'Foo2',
+        email: 'foo2@mail.com',
+        password: '567foo',
+        passwordConfirmation: '567foo'
+      })
+      await request(app)
+        .post(`/api/${ACCOUNT_ROUTE_PREFIX}/login`)
+        .send({
+          email: 'foo2@mail.com',
+          password: 'invalid_pass'
+        })
+        .expect(401)
+    })
+
+    it('Should return status code 401 if email not found', async () => {
+      await request(app)
+        .post(`/api/${ACCOUNT_ROUTE_PREFIX}/login`)
+        .send({
+          email: 'invalid@mail.com',
+          password: 'foo'
+        })
+        .expect(401)
     })
   })
 })
