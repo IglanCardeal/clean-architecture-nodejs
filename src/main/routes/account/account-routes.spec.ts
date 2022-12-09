@@ -43,13 +43,16 @@ describe('Account Routes', () => {
         password: '567foo',
         passwordConfirmation: '567foo'
       })
-      await request(app)
+      const response = await request(app)
         .post(`/api/${ACCOUNT_ROUTE_PREFIX}/login`)
         .send({
           email: 'foo2@mail.com',
           password: '567foo'
         })
         .expect(200)
+      expect(response.body).toEqual({
+        accessToken: expect.any(String)
+      })
     })
 
     it('Should return status code 401 if password is incorrect', async () => {
