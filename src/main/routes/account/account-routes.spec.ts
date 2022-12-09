@@ -1,6 +1,7 @@
 import { MongoHelper } from '@src/infra/db/mongodb/helpers/mongo-helper'
 import { app } from '@src/main/config/app'
 import request from 'supertest'
+import { ACCOUNT_ROUTE_PREFIX } from './account-routes'
 
 describe('Account Routes', () => {
   beforeAll(async () => {
@@ -16,10 +17,10 @@ describe('Account Routes', () => {
     await accounts.deleteMany({})
   })
 
-  describe('POST /api/signup', () => {
+  describe(`POST /api/${ACCOUNT_ROUTE_PREFIX}/signup`, () => {
     it('Should return status code 201 on success', async () => {
       await request(app)
-        .post('/api/signup')
+        .post(`/api/${ACCOUNT_ROUTE_PREFIX}/signup`)
         .send({
           name: 'Foo',
           email: 'foo@mail.com',
@@ -30,16 +31,16 @@ describe('Account Routes', () => {
     })
   })
 
-  describe('POST /api/login', () => {
+  describe(`POST /api/${ACCOUNT_ROUTE_PREFIX}/login`, () => {
     it('Should return status code 200 on success', async () => {
-      await request(app).post('/api/signup').send({
+      await request(app).post(`/api/${ACCOUNT_ROUTE_PREFIX}/signup`).send({
         name: 'Foo',
         email: 'foo@mail.com',
         password: '123foo',
         passwordConfirmation: '123foo'
       })
       await request(app)
-        .post('/api/login')
+        .post(`/api/${ACCOUNT_ROUTE_PREFIX}/login`)
         .send({
           email: 'foo@mail.com',
           password: '123foo'
