@@ -6,6 +6,7 @@ export const corsMiddleware = (app: Express) => {
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.setHeader('access-control-allow-methods', '*')
     res.setHeader('access-control-allow-headers', '*')
+    res.setHeader('x-powered-by', '*')
     next()
   })
 }
