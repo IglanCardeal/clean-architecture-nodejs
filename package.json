@@ -19,6 +19,7 @@
     "test:integration:watch": "yarn test:integration --watch",
     "test:i": "yarn test:integration",
     "test:i:w": "yarn test:integration:watch",
+    "test:i:v": "yarn test:integration:verbose",
     "test:staged": "yarn test --findRelatedTests",
     "test:coverage": "yarn test --coverage",
     "test:ci": "yarn test:coverage && yarn test:i",
