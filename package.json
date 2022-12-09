@@ -58,7 +58,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
-    "fast-glob": "^3.2.11",
     "jsonwebtoken": "^8.5.1",
     "validator": "^13.6.0"
   }
