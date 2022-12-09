@@ -34,16 +34,16 @@ describe('Account Routes', () => {
   describe(`POST /api/${ACCOUNT_ROUTE_PREFIX}/login`, () => {
     it('Should return status code 200 on success', async () => {
       await request(app).post(`/api/${ACCOUNT_ROUTE_PREFIX}/signup`).send({
-        name: 'Foo',
-        email: 'foo@mail.com',
-        password: '123foo',
-        passwordConfirmation: '123foo'
+        name: 'Foo2',
+        email: 'foo2@mail.com',
+        password: '567foo',
+        passwordConfirmation: '567foo'
       })
       await request(app)
         .post(`/api/${ACCOUNT_ROUTE_PREFIX}/login`)
         .send({
-          email: 'foo@mail.com',
-          password: '123foo'
+          email: 'foo2@mail.com',
+          password: '567foo'
         })
         .expect(200)
     })
