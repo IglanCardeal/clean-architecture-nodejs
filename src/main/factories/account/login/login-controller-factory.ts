@@ -13,11 +13,11 @@ import { Controller } from '@src/presentation/protocols'
 import { makeLoginValidations } from './login-validations-factory'
 
 export const makeLoginController = (): Controller => {
-  const { bcryptSalt, tokenSecret } = ENV
+  const { bcryptSalt, jwtSecret } = ENV
   const hasherAdapter = new BcryptAdapter(bcryptSalt)
   const loginValidations = makeLoginValidations()
   const accountRepository = new AccountMongoRepository()
-  const tokenGeneratorAdapter = new TokenGeneratorAdapter(tokenSecret)
+  const tokenGeneratorAdapter = new TokenGeneratorAdapter(jwtSecret)
   const authUseCase = new DbAuthenticationUseCase(
     accountRepository,
     hasherAdapter,
