@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "rimraf dist && tsc -p tsconfig.prod.json",
+    "start": "NODE_ENV=production node dist/main/server.js",
     "dev": "NODE_ENV=development tsnd -r tsconfig-paths/register --respawn --ignore-watch node_modules src/main/server.ts",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "yarn run lint --fix",
@@ -49,6 +51,7 @@
     "husky": "^7.0.2",
     "jest": "^27.1.1",
     "lint-staged": "^11.1.2",
+    "rimraf": "^3.0.2",
     "supertest": "^6.2.4",
     "ts-jest": "^27.0.5",
     "ts-node-dev": "^2.0.0",
