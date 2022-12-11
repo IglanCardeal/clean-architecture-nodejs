@@ -4,7 +4,7 @@ WORKDIR /usr/app
 
 COPY ./package.json .
 
-RUN npm i -s --only=prod
+RUN npm i -s
 
 COPY ./dist ./dist
 
