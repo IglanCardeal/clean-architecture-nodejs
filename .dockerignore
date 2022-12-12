@@ -1,0 +1,10 @@
+.git
+dist
+.github
+coverage
+node_modules
+.husky
+.vscode
+docker-volumes
+data
+app

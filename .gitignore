@@ -1,4 +1,6 @@
 dist
+data
+app
 globalConfig.json
 
 # Logs
