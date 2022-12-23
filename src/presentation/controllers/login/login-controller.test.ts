@@ -3,7 +3,8 @@ import {
   HasherComparerError,
   LoadAccountByEmailRepositoryError,
   TokenGeneratorError,
-  UpdateAccessTokenRepositoryError
+  UpdateAccessTokenRepositoryError,
+  UserAccessToken
 } from '@src/data/usecases/authentication/db-authentication-usecase-result'
 import { InvalidCredentialsError } from '@src/domain/errors'
 import { MissingParamError, ServerError } from '@src/presentation/errors'
@@ -33,7 +34,7 @@ class AuthenticationUseCaseStub
     _email,
     _password
   }: any): Promise<DbAuthenticationUseCaseResult> {
-    return success('auth_token')
+    return success(new UserAccessToken('auth_token'))
   }
 }
 

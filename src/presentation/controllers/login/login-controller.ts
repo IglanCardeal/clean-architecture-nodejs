@@ -43,9 +43,9 @@ export class LoginController implements Controller {
         }
       }
 
-      const accessToken = result.isSuccess() && result.data
+      const { token } = result.data
 
-      return ok({ accessToken })
+      return ok({ accessToken: token })
     } catch (error: any) {
       return serverError(error)
     }

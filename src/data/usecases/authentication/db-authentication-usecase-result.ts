@@ -48,8 +48,12 @@ export class TokenGeneratorError extends Error implements ApplicationError {
   }
 }
 
+export class UserAccessToken {
+  constructor(public token: string) {}
+}
+
 export type DbAuthenticationUseCaseResult = Either<
-  string,
+  UserAccessToken,
   | LoadAccountByEmailRepositoryError
   | UpdateAccessTokenRepositoryError
   | HasherComparerError

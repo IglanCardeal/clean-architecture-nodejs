@@ -16,7 +16,8 @@ import {
   HasherComparerError,
   LoadAccountByEmailRepositoryError,
   TokenGeneratorError,
-  UpdateAccessTokenRepositoryError
+  UpdateAccessTokenRepositoryError,
+  UserAccessToken
 } from './db-authentication-usecase-result'
 
 export class DbAuthenticationUseCase
@@ -62,7 +63,7 @@ export class DbAuthenticationUseCase
     if (updateAccountAccessTokenResult.isFailure())
       return failure(updateAccountAccessTokenResult.error)
 
-    return success(accessToken)
+    return success(new UserAccessToken(accessToken))
   }
 
   private async updateAccountAccessToken(

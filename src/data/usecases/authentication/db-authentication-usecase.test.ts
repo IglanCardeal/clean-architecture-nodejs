@@ -13,7 +13,8 @@ import {
   HasherComparerError,
   LoadAccountByEmailRepositoryError,
   TokenGeneratorError,
-  UpdateAccessTokenRepositoryError
+  UpdateAccessTokenRepositoryError,
+  UserAccessToken
 } from './db-authentication-usecase-result'
 import { InvalidCredentialsError } from '@src/domain/errors'
 
@@ -174,6 +175,6 @@ describe('DbAuthenticationUseCase', () => {
     const result = await sut.auth(authModel)
     const data = result.isSuccess() && result.data
     expect(result.isSuccess()).toBe(true)
-    expect(data).toBe('access_token')
+    expect(data).toEqual(new UserAccessToken('access_token'))
   })
 })
