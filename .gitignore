@@ -1,5 +1,5 @@
 dist
-data
+docker-volumes
 app
 globalConfig.json
 

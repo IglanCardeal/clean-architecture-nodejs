@@ -5,7 +5,7 @@ services:
     container_name: mongo-container
     image: mongo
     volumes:
-      - ./data:/data/db
+      - ./:/data/db
     ports:
       - "27017:27017"
 
@@ -18,5 +18,6 @@ services:
       - ./:/usr/app
     ports:
       - "3000:3000"
+      - "9222:9222"
     depends_on:
       - mongo
