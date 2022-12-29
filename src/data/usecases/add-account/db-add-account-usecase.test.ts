@@ -9,6 +9,7 @@ import {
   AddAccountRepositoryError
 } from './db-add-account-usecase-result'
 import { DbAddAccountUseCase } from './db-add-account-usecase'
+import { LoadAccountByEmailRepository } from '../authentication/db-authentication-usecase-protocols'
 class HasherStub implements Hasher {
   async hash(_password: string): Promise<string> {
     return 'hashed_password'
@@ -22,6 +23,12 @@ const makeFakeAccount = (): AccountModel => ({
   password: 'hashed_password'
 })
 
+class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
+  async loadByEmail(_email: string): Promise<AccountModel | undefined> {
+    return undefined
+  }
+}
+
 class AddAccountRepositoryStub implements AddAccountRepository {
   async add(_account: AddAccountModel): Promise<AccountModel> {
     return makeFakeAccount()
@@ -29,10 +36,15 @@ class AddAccountRepositoryStub implements AddAccountRepository {
 }
 
 const hasherStub = new HasherStub()
+const loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub()
 const addAccountRepositoryStub = new AddAccountRepositoryStub()
 
 const makeSut = () => {
-  return new DbAddAccountUseCase(hasherStub, addAccountRepositoryStub)
+  return new DbAddAccountUseCase(
+    hasherStub,
+    addAccountRepositoryStub,
+    loadAccountByEmailRepositoryStub
+  )
 }
 
 describe('DbAddAccountUseCase', () => {
@@ -41,6 +53,16 @@ describe('DbAddAccountUseCase', () => {
     email: 'valid_email@mail.com',
     password: 'valid_password'
   }
+
+  it('Should call LoadAccountByEmailRepository with correct email', async () => {
+    const loadByEmailSpy = jest.spyOn(
+      loadAccountByEmailRepositoryStub,
+      'loadByEmail'
+    )
+    const sut = makeSut()
+    await sut.add(account)
+    expect(loadByEmailSpy).toHaveBeenCalledWith('valid_email@mail.com')
+  })
 
   it('Should call Hasher with correct password', async () => {
     const sut = makeSut()
