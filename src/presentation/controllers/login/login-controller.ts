@@ -64,10 +64,6 @@ export class LoginController implements Controller {
     switch (error.constructor) {
       case InvalidCredentialsError:
         return unauthorized(error)
-      case LoadAccountByEmailRepositoryError:
-      case UpdateAccessTokenRepositoryError:
-      case HasherComparerError:
-      case TokenGeneratorError:
       default:
         return serverError(error)
     }
