@@ -1,4 +1,5 @@
 import { failure, success, Either } from '@src/shared/either'
+import { LoadAccountByEmailRepository } from '../authentication/db-authentication-usecase-protocols'
 import {
   AddAccountUseCase,
   Hasher,
@@ -17,10 +18,13 @@ export class DbAddAccountUseCase
 {
   constructor(
     private readonly hasher: Hasher,
-    private readonly addAccountRepository: AddAccountRepository
+    private readonly addAccountRepository: AddAccountRepository,
+    private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository
   ) {}
 
   async add(accountData: AddAccountModel): Promise<DbAddAccountResult> {
+    await this.loadAccountByEmailRepository.loadByEmail(accountData.email)
+
     const hashedPassword = await this.hashPassword(accountData.password)
 
     if (hashedPassword.isFailure()) return failure(hashedPassword.error)
