@@ -25,17 +25,12 @@ export class DbAddAccountUseCase
   ) {}
 
   async add(accountData: AddAccountModel): Promise<DbAddAccountResult> {
-    let emailAlreadyInUse
-    try {
-      emailAlreadyInUse = await this.loadAccountByEmailRepository.loadByEmail(
-        accountData.email
-      )
-    } catch (error: any) {
-      return failure(new LoadAccountByEmailRepositoryError(error.stack))
-    }
+    const verifyEmailAlreadyInUseResult = await this.verifyEmailAlreadyInUse(
+      accountData.email
+    )
 
-    if (emailAlreadyInUse) {
-      return failure(new EmailAlreadyInUseError())
+    if (verifyEmailAlreadyInUseResult.isFailure()) {
+      return failure(verifyEmailAlreadyInUseResult.error)
     }
 
     const hashedPassword = await this.hashPassword(accountData.password)
@@ -52,14 +47,20 @@ export class DbAddAccountUseCase
     return success(accountCreated.data)
   }
 
-  private async saveAccount(
-    accountData: AddAccountModel
-  ): Promise<Either<AccountModel, AddAccountRepositoryError>> {
+  private async verifyEmailAlreadyInUse(
+    email: string
+  ): Promise<
+    Either<'ok', EmailAlreadyInUseError | LoadAccountByEmailRepositoryError>
+  > {
     try {
-      const accountCreated = await this.addAccountRepository.add(accountData)
-      return success(accountCreated)
+      const emailAlreadyInUse =
+        await this.loadAccountByEmailRepository.loadByEmail(email)
+      if (emailAlreadyInUse) {
+        return failure(new EmailAlreadyInUseError())
+      }
+      return success('ok')
     } catch (error: any) {
-      return failure(new AddAccountRepositoryError(error.stack))
+      return failure(new LoadAccountByEmailRepositoryError(error.stack))
     }
   }
 
@@ -71,6 +72,17 @@ export class DbAddAccountUseCase
       return success(hashedPassword)
     } catch (error: any) {
       return failure(new HasherError(error.stack))
+    }
+  }
+
+  private async saveAccount(
+    accountData: AddAccountModel
+  ): Promise<Either<AccountModel, AddAccountRepositoryError>> {
+    try {
+      const accountCreated = await this.addAccountRepository.add(accountData)
+      return success(accountCreated)
+    } catch (error: any) {
+      return failure(new AddAccountRepositoryError(error.stack))
     }
   }
 }
