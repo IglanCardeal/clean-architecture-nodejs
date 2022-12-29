@@ -14,6 +14,7 @@ export const makeSignUpController = () => {
   const accountMongoRepository = new AccountMongoRepository()
   const addAccountUseCase = new DbAddAccountUseCase(
     hasher,
+    accountMongoRepository,
     accountMongoRepository
   )
   const signUpValidations = makeSignUpValidations()
