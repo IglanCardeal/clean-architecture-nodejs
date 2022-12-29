@@ -1,3 +1,4 @@
+import { EmailAlreadyInUseError } from '@src/domain/errors'
 import { failure, success, Either } from '@src/shared/either'
 import { LoadAccountByEmailRepository } from '../authentication/db-authentication-usecase-protocols'
 import {
@@ -23,7 +24,12 @@ export class DbAddAccountUseCase
   ) {}
 
   async add(accountData: AddAccountModel): Promise<DbAddAccountResult> {
-    await this.loadAccountByEmailRepository.loadByEmail(accountData.email)
+    const emailAlreadyInUse =
+      await this.loadAccountByEmailRepository.loadByEmail(accountData.email)
+
+    if (emailAlreadyInUse) {
+      return failure(new EmailAlreadyInUseError())
+    }
 
     const hashedPassword = await this.hashPassword(accountData.password)
 
