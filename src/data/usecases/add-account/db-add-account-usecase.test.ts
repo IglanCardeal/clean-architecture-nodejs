@@ -6,7 +6,8 @@ import {
 } from './db-add-account-usecase-protocols'
 import {
   HasherError,
-  AddAccountRepositoryError
+  AddAccountRepositoryError,
+  LoadAccountByEmailRepositoryError
 } from './db-add-account-usecase-result'
 import { DbAddAccountUseCase } from './db-add-account-usecase'
 import { LoadAccountByEmailRepository } from '../authentication/db-authentication-usecase-protocols'
@@ -65,7 +66,7 @@ describe('DbAddAccountUseCase', () => {
     expect(loadByEmailSpy).toHaveBeenCalledWith('valid_email@mail.com')
   })
 
-  it('Should return a EmailAlreadyInUseError when an account was found by the given email address', async () => {
+  it('Should return an EmailAlreadyInUseError when an account was found by the given email address', async () => {
     jest
       .spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
       .mockResolvedValueOnce(makeFakeAccount())
@@ -74,6 +75,17 @@ describe('DbAddAccountUseCase', () => {
     const error = result.isFailure() && result.error
     expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new EmailAlreadyInUseError())
+  })
+
+  it('Should return a LoadAccountByEmailRepositoryError if  LoadAccountByEmailRepository throws', async () => {
+    jest
+      .spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
+      .mockRejectedValueOnce(new Error())
+    const sut = makeSut()
+    const result = await sut.add(account)
+    const error = result.isFailure() && result.error
+    expect(result.isFailure()).toBe(true)
+    expect(error).toEqual(new LoadAccountByEmailRepositoryError())
   })
 
   it('Should call Hasher with correct password', async () => {
