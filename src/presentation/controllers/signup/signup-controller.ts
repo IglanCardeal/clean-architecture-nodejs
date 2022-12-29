@@ -28,10 +28,10 @@ export class SignUpController implements Controller {
 
   public async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const error = this.validation.validate(httpRequest.body)
+      const validationError = this.validation.validate(httpRequest.body)
 
-      if (error) {
-        return badRequest(error)
+      if (validationError) {
+        return badRequest(validationError)
       }
 
       const { name, email, password } = httpRequest.body
@@ -42,21 +42,27 @@ export class SignUpController implements Controller {
       })
 
       if (addAccountUseCaseResult.isFailure()) {
-        const { error } = addAccountUseCaseResult
-        switch (error.constructor) {
-          case EmailAlreadyInUseError:
-            return conflict(error)
-          case LoadAccountByEmailRepositoryError:
-          case AddAccountRepositoryError:
-          case HasherError:
-          default:
-            return serverError(error)
-        }
+        return this.handleFailure(addAccountUseCaseResult.error)
       }
 
       return created<AccountModel>(addAccountUseCaseResult.data)
     } catch (error: any) {
       return serverError(error)
+    }
+  }
+
+  private handleFailure(
+    error:
+      | EmailAlreadyInUseError
+      | LoadAccountByEmailRepositoryError
+      | AddAccountRepositoryError
+      | HasherError
+  ): HttpResponse {
+    switch (error.constructor) {
+      case EmailAlreadyInUseError:
+        return conflict(error)
+      default:
+        return serverError(error)
     }
   }
 }
