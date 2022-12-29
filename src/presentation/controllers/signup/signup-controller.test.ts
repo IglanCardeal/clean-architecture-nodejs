@@ -2,9 +2,11 @@ import {
   AddAccountRepositoryError,
   DbAddAccountResult
 } from '@src/data/usecases/add-account/db-add-account-usecase-result'
+import { EmailAlreadyInUseError } from '@src/domain/errors'
 import { MissingParamError, ServerError } from '@src/presentation/errors'
 import {
   badRequest,
+  conflict,
   created,
   serverError
 } from '@src/presentation/helpers/http'
@@ -103,6 +105,15 @@ describe('SignUp Controller', () => {
       email: 'foo@email.com',
       password: '123456'
     })
+  })
+
+  it('Should return 409 if the given request data generates a conflict', async () => {
+    const { sut, addAccountUseCaseStub } = makeSut()
+    jest
+      .spyOn(addAccountUseCaseStub, 'add')
+      .mockResolvedValueOnce(failure(new EmailAlreadyInUseError()))
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(conflict(new EmailAlreadyInUseError()))
   })
 
   it('Should return 200 if valid data is provided', async () => {
