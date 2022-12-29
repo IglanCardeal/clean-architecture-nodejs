@@ -10,6 +10,7 @@ import {
 } from './db-add-account-usecase-result'
 import { DbAddAccountUseCase } from './db-add-account-usecase'
 import { LoadAccountByEmailRepository } from '../authentication/db-authentication-usecase-protocols'
+import { EmailAlreadyInUseError } from '@src/domain/errors'
 class HasherStub implements Hasher {
   async hash(_password: string): Promise<string> {
     return 'hashed_password'
@@ -62,6 +63,17 @@ describe('DbAddAccountUseCase', () => {
     const sut = makeSut()
     await sut.add(account)
     expect(loadByEmailSpy).toHaveBeenCalledWith('valid_email@mail.com')
+  })
+
+  it('Should return a EmailAlreadyInUseError when an account was found by the given email address', async () => {
+    jest
+      .spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
+      .mockResolvedValueOnce(makeFakeAccount())
+    const sut = makeSut()
+    const result = await sut.add(account)
+    const error = result.isFailure() && result.error
+    expect(result.isFailure()).toBe(true)
+    expect(error).toEqual(new EmailAlreadyInUseError())
   })
 
   it('Should call Hasher with correct password', async () => {
