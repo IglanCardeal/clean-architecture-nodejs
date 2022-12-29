@@ -9,6 +9,13 @@ export const badRequest = (error: Error): HttpResponse => ({
   }
 })
 
+export const conflict = (error: Error): HttpResponse => ({
+  statusCode: 409,
+  body: {
+    message: error.message
+  }
+})
+
 export const unauthorized = (error: Error): HttpResponse => ({
   statusCode: 401,
   body: {

@@ -9,9 +9,16 @@ import {
 import {
   badRequest,
   serverError,
-  created
+  created,
+  conflict
 } from '@src/presentation/helpers/http'
-import { DbAddAccountResult } from '@src/data/usecases/add-account/db-add-account-usecase-result'
+import {
+  AddAccountRepositoryError,
+  DbAddAccountResult,
+  HasherError,
+  LoadAccountByEmailRepositoryError
+} from '@src/data/usecases/add-account/db-add-account-usecase-result'
+import { EmailAlreadyInUseError } from '@src/domain/errors'
 
 export class SignUpController implements Controller {
   constructor(
@@ -28,17 +35,26 @@ export class SignUpController implements Controller {
       }
 
       const { name, email, password } = httpRequest.body
-      const account = await this.addAccountUseCase.add({
+      const addAccountUseCaseResult = await this.addAccountUseCase.add({
         name,
         email,
         password
       })
 
-      if (account.isFailure()) {
-        return serverError(account.error)
+      if (addAccountUseCaseResult.isFailure()) {
+        const { error } = addAccountUseCaseResult
+        switch (error.constructor) {
+          case EmailAlreadyInUseError:
+            return conflict(error)
+          case LoadAccountByEmailRepositoryError:
+          case AddAccountRepositoryError:
+          case HasherError:
+          default:
+            return serverError(error)
+        }
       }
 
-      return created<AccountModel>(account.data)
+      return created<AccountModel>(addAccountUseCaseResult.data)
     } catch (error: any) {
       return serverError(error)
     }
