@@ -11,7 +11,8 @@ import {
 import {
   AddAccountRepositoryError,
   DbAddAccountResult,
-  HasherError
+  HasherError,
+  LoadAccountByEmailRepositoryError
 } from './db-add-account-usecase-result'
 
 export class DbAddAccountUseCase
@@ -24,8 +25,14 @@ export class DbAddAccountUseCase
   ) {}
 
   async add(accountData: AddAccountModel): Promise<DbAddAccountResult> {
-    const emailAlreadyInUse =
-      await this.loadAccountByEmailRepository.loadByEmail(accountData.email)
+    let emailAlreadyInUse
+    try {
+      emailAlreadyInUse = await this.loadAccountByEmailRepository.loadByEmail(
+        accountData.email
+      )
+    } catch (error: any) {
+      return failure(new LoadAccountByEmailRepositoryError(error.stack))
+    }
 
     if (emailAlreadyInUse) {
       return failure(new EmailAlreadyInUseError())
@@ -51,8 +58,8 @@ export class DbAddAccountUseCase
     try {
       const accountCreated = await this.addAccountRepository.add(accountData)
       return success(accountCreated)
-    } catch (error) {
-      return failure(new AddAccountRepositoryError(error))
+    } catch (error: any) {
+      return failure(new AddAccountRepositoryError(error.stack))
     }
   }
 
@@ -62,8 +69,8 @@ export class DbAddAccountUseCase
     try {
       const hashedPassword = await this.hasher.hash(password)
       return success(hashedPassword)
-    } catch (error) {
-      return failure(new HasherError(error))
+    } catch (error: any) {
+      return failure(new HasherError(error.stack))
     }
   }
 }

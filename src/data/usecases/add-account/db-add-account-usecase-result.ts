@@ -5,9 +5,10 @@ import { EmailAlreadyInUseError } from '@src/domain/errors'
 export class HasherError extends Error implements ApplicationError {
   readonly message: string
 
-  constructor(readonly error?: any) {
+  constructor(readonly stack?: string) {
     super('HasherError')
     this.message = 'A hasher error ocurred'
+    this.stack = stack
   }
 }
 
@@ -17,9 +18,10 @@ export class AddAccountRepositoryError
 {
   readonly message: string
 
-  constructor(readonly error?: any) {
+  constructor(readonly stack?: string) {
     super('AddAccountRepositoryError')
     this.message = 'A repository error ocurred'
+    this.stack = stack
   }
 }
 
@@ -29,9 +31,10 @@ export class LoadAccountByEmailRepositoryError
 {
   readonly message: string
 
-  constructor(readonly error?: any) {
+  constructor(readonly stack?: any) {
     super('LoadAccountByEmailRepositoryError')
     this.message = 'A repository error ocurred'
+    this.stack = stack
   }
 }
 
