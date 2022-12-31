@@ -29,22 +29,25 @@ export class DbAddAccountUseCase
       accountData.email
     )
 
-    if (verifyEmailAlreadyInUseResult.isFailure()) {
+    if (verifyEmailAlreadyInUseResult.isFailure())
       return failure(verifyEmailAlreadyInUseResult.error)
-    }
 
-    const hashedPassword = await this.hashPassword(accountData.password)
+    const hashAccountPasswordResult = await this.hashAccountPassword(
+      accountData.password
+    )
 
-    if (hashedPassword.isFailure()) return failure(hashedPassword.error)
+    if (hashAccountPasswordResult.isFailure())
+      return failure(hashAccountPasswordResult.error)
 
-    const accountCreated = await this.saveAccount({
+    const createNewAccountResult = await this.createNewAccount({
       ...accountData,
-      password: hashedPassword.data
+      password: hashAccountPasswordResult.data
     })
 
-    if (accountCreated.isFailure()) return failure(accountCreated.error)
+    if (createNewAccountResult.isFailure())
+      return failure(createNewAccountResult.error)
 
-    return success(accountCreated.data)
+    return success(createNewAccountResult.data)
   }
 
   private async verifyEmailAlreadyInUse(
@@ -64,7 +67,7 @@ export class DbAddAccountUseCase
     }
   }
 
-  private async hashPassword(
+  private async hashAccountPassword(
     password: string
   ): Promise<Either<string, HasherError>> {
     try {
@@ -75,7 +78,7 @@ export class DbAddAccountUseCase
     }
   }
 
-  private async saveAccount(
+  private async createNewAccount(
     accountData: AddAccountModel
   ): Promise<Either<AccountModel, AddAccountRepositoryError>> {
     try {

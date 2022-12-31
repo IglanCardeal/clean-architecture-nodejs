@@ -31,45 +31,55 @@ export class DbAuthenticationUseCase
   ) {}
 
   async auth(authModel: AuthModel): Promise<DbAuthenticationUseCaseResult> {
-    const { email, password } = authModel
-    const accountFinded = await this.loadAccountByEmail(email)
+    const { email, password: passwordInformed } = authModel
+    const loadAccountByEmailResult = await this.loadAccountByEmail(email)
 
-    if (accountFinded.isFailure()) return failure(accountFinded.error)
-    if (!accountFinded.data) return failure(new InvalidCredentialsError())
+    if (loadAccountByEmailResult.isFailure())
+      return failure(loadAccountByEmailResult.error)
 
-    const { password: hashedPassword, id: accountId } = accountFinded.data
-    const passwordCheckResult = await this.checkAccountPassword(
-      password,
-      hashedPassword
-    )
+    if (!loadAccountByEmailResult.data)
+      return failure(new InvalidCredentialsError())
 
-    if (passwordCheckResult.isFailure())
-      return failure(passwordCheckResult.error)
-    if (!passwordCheckResult.data) return failure(new InvalidCredentialsError())
+    const { password: hashedAccountPassword, id: accountId } =
+      loadAccountByEmailResult.data
+    const isAccountPasswordCorrectResult = await this.isAccountPasswordCorrect({
+      passwordInformed,
+      hashedAccountPassword
+    })
 
-    const accessTokenResult = await this.generateAccessToken(
-      accountFinded.data.id
-    )
+    if (isAccountPasswordCorrectResult.isFailure())
+      return failure(isAccountPasswordCorrectResult.error)
 
-    if (accessTokenResult.isFailure()) return failure(accessTokenResult.error)
+    if (!isAccountPasswordCorrectResult.data)
+      return failure(new InvalidCredentialsError())
 
-    const { data: accessToken } = accessTokenResult
+    const generateAccessTokenByAccountIdResult =
+      await this.generateAccessTokenByAccountId(accountId)
 
-    const updateAccountAccessTokenResult = await this.updateAccountAccessToken(
-      accountId,
-      accessToken
-    )
+    if (generateAccessTokenByAccountIdResult.isFailure())
+      return failure(generateAccessTokenByAccountIdResult.error)
 
-    if (updateAccountAccessTokenResult.isFailure())
-      return failure(updateAccountAccessTokenResult.error)
+    const { data: accountAccessToken } = generateAccessTokenByAccountIdResult
 
-    return success(new UserAccessToken(accessToken))
+    const updateAccountgenerateAccessTokenByAccountIdResult =
+      await this.updateAccountAccessToken({
+        accountId,
+        accessToken: accountAccessToken
+      })
+
+    if (updateAccountgenerateAccessTokenByAccountIdResult.isFailure())
+      return failure(updateAccountgenerateAccessTokenByAccountIdResult.error)
+
+    return success(new UserAccessToken(accountAccessToken))
   }
 
-  private async updateAccountAccessToken(
-    accountId: string,
+  private async updateAccountAccessToken({
+    accessToken,
+    accountId
+  }: {
+    accountId: string
     accessToken: string
-  ): Promise<Either<void, UpdateAccessTokenRepositoryError>> {
+  }): Promise<Either<void, UpdateAccessTokenRepositoryError>> {
     try {
       await this.updateAccessTokenRepository.updateAccessToken(
         accountId,
@@ -94,19 +104,25 @@ export class DbAuthenticationUseCase
     }
   }
 
-  private async checkAccountPassword(
-    password: string,
-    hash: string
-  ): Promise<Either<boolean, HasherComparerError>> {
+  private async isAccountPasswordCorrect({
+    passwordInformed,
+    hashedAccountPassword
+  }: {
+    passwordInformed: string
+    hashedAccountPassword: string
+  }): Promise<Either<boolean, HasherComparerError>> {
     try {
-      const result = await this.hashComparer.compare(password, hash)
+      const result = await this.hashComparer.compare(
+        passwordInformed,
+        hashedAccountPassword
+      )
       return success(result)
     } catch (error: any) {
       return failure(new HasherComparerError(error.stack))
     }
   }
 
-  private async generateAccessToken(
+  private async generateAccessTokenByAccountId(
     accountId: string
   ): Promise<Either<string, TokenGeneratorError>> {
     try {
