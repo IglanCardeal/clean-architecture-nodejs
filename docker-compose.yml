@@ -4,20 +4,20 @@ services:
   mongo:
     container_name: mongo-container
     image: mongo
+    command: mongod --quiet --logpath /dev/null
     volumes:
-      - ./docker-volumes/:/data/db
+      - ./docker-volumes:/data/db
     ports:
       - "27017:27017"
-    external_links:
-      - mongo
 
   api:
     container_name: api-container
-    build: .
-    image: api
-    command: npm run dev
+    image: node:16
+    working_dir: /usr/app
+    command: bash -c "npm i -q && npm run start"
     volumes:
-      - ./docker-volumes/:/usr/app
+      - ./dist/:/usr/app/dist/
+      - ./package.json:/usr/app/package.json
     ports:
       - "3000:3000"
       - "9222:9222"
