@@ -5,9 +5,11 @@ services:
     container_name: mongo-container
     image: mongo
     volumes:
-      - ./:/data/db
+      - ./docker-volumes/:/data/db
     ports:
       - "27017:27017"
+    external_links:
+      - mongo
 
   api:
     container_name: api-container
@@ -15,7 +17,7 @@ services:
     image: api
     command: npm run dev
     volumes:
-      - ./:/usr/app
+      - ./docker-volumes/:/usr/app
     ports:
       - "3000:3000"
       - "9222:9222"
