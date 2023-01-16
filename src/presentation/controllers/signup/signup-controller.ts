@@ -48,7 +48,13 @@ export class SignUpController implements Controller {
         return this.handleFailure(addAccountUseCaseResult.error)
       }
 
-      await this.authenticationUseCase.auth({ email, password })
+      const authenticationUseCaseResult = await this.authenticationUseCase.auth(
+        { email, password }
+      )
+
+      if (authenticationUseCaseResult.isFailure()) {
+        return this.handleFailure(authenticationUseCaseResult.error)
+      }
 
       return created<AccountModel>(addAccountUseCaseResult.data)
     } catch (error: any) {
