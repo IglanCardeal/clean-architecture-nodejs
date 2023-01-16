@@ -153,4 +153,13 @@ describe('SignUp Controller', () => {
       password: '123456'
     })
   })
+
+  it('Should returns 500 if AuthenticationUseCase returns any error', async () => {
+    const { sut } = makeSut()
+    jest
+      .spyOn(authenticationUseCaseStub, 'auth')
+      .mockResolvedValueOnce(failure(new Error('any')))
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(serverError(new Error('any')))
+  })
 })
