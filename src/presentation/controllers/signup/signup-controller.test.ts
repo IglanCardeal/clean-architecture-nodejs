@@ -2,6 +2,10 @@ import {
   AddAccountRepositoryError,
   DbAddAccountResult
 } from '@src/data/usecases/add-account/db-add-account-usecase-result'
+import {
+  DbAuthenticationUseCaseResult,
+  UserAccessToken
+} from '@src/data/usecases/authentication/db-authentication-usecase-result'
 import { EmailAlreadyInUseError } from '@src/domain/errors'
 import { MissingParamError, ServerError } from '@src/presentation/errors'
 import {
@@ -16,7 +20,8 @@ import {
   AccountModel,
   Validation,
   AddAccountUseCase,
-  AddAccountModel
+  AddAccountModel,
+  AuthenticationUseCase
 } from './signup-controller-protocols'
 
 const makeFakeAccount = (): AccountModel => ({
@@ -44,10 +49,27 @@ const makeValidation = (): Validation => {
   return new ValidationStub()
 }
 
+class AuthenticationUseCaseStub
+  implements AuthenticationUseCase<DbAuthenticationUseCaseResult>
+{
+  async auth({
+    _email,
+    _password
+  }: any): Promise<DbAuthenticationUseCaseResult> {
+    return success(new UserAccessToken('auth_token'))
+  }
+}
+
+const addAccountUseCaseStub = makeAddAccount()
+const validationStub = makeValidation()
+const authenticationUseCaseStub = new AuthenticationUseCaseStub()
+
 const makeSut = () => {
-  const addAccountUseCaseStub = makeAddAccount()
-  const validationStub = makeValidation()
-  const sut = new SignUpController(validationStub, addAccountUseCaseStub)
+  const sut = new SignUpController(
+    validationStub,
+    addAccountUseCaseStub,
+    authenticationUseCaseStub
+  )
   return { sut, addAccountUseCaseStub, validationStub }
 }
 
@@ -120,5 +142,15 @@ describe('SignUp Controller', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(created(makeFakeAccount()))
+  })
+
+  it('Should call AuthenticationUseCase with correct values', async () => {
+    const { sut } = makeSut()
+    const authSpy = jest.spyOn(authenticationUseCaseStub, 'auth')
+    await sut.handle(httpRequest)
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'foo@email.com',
+      password: '123456'
+    })
   })
 })
