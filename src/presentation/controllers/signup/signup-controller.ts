@@ -4,7 +4,8 @@ import {
   AddAccountUseCase,
   HttpResponse,
   AccountModel,
-  Validation
+  Validation,
+  AuthenticationUseCase
 } from './signup-controller-protocols'
 import {
   badRequest,
@@ -19,11 +20,13 @@ import {
   LoadAccountByEmailRepositoryError
 } from '@src/data/usecases/add-account/db-add-account-usecase-result'
 import { EmailAlreadyInUseError } from '@src/domain/errors'
+import { DbAuthenticationUseCaseResult } from '@src/data/usecases/authentication/db-authentication-usecase-result'
 
 export class SignUpController implements Controller {
   constructor(
     private readonly validation: Validation,
-    private readonly addAccountUseCase: AddAccountUseCase<DbAddAccountResult>
+    private readonly addAccountUseCase: AddAccountUseCase<DbAddAccountResult>,
+    private readonly authenticationUseCase: AuthenticationUseCase<DbAuthenticationUseCaseResult>
   ) {}
 
   public async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -44,6 +47,8 @@ export class SignUpController implements Controller {
       if (addAccountUseCaseResult.isFailure()) {
         return this.handleFailure(addAccountUseCaseResult.error)
       }
+
+      await this.authenticationUseCase.auth({ email, password })
 
       return created<AccountModel>(addAccountUseCaseResult.data)
     } catch (error: any) {
