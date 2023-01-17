@@ -138,10 +138,10 @@ describe('SignUp Controller', () => {
     expect(httpResponse).toEqual(conflict(new EmailAlreadyInUseError()))
   })
 
-  it('Should return 200 if valid data is provided', async () => {
+  it('Should return 201 if valid data is provided', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(created(makeFakeAccount()))
+    expect(httpResponse).toEqual(created({ accessToken: 'auth_token' }))
   })
 
   it('Should call AuthenticationUseCase with correct values', async () => {
