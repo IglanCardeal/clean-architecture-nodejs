@@ -3,7 +3,6 @@ import {
   HttpRequest,
   AddAccountUseCase,
   HttpResponse,
-  AccountModel,
   Validation,
   AuthenticationUseCase
 } from './signup-controller-protocols'
@@ -56,7 +55,11 @@ export class SignUpController implements Controller {
         return this.handleFailure(authenticationUseCaseResult.error)
       }
 
-      return created<AccountModel>(addAccountUseCaseResult.data)
+      const { token: accessToken } = authenticationUseCaseResult.data
+
+      return created({
+        accessToken
+      })
     } catch (error: any) {
       return serverError(error)
     }
