@@ -73,7 +73,6 @@ describe('DbAddAccountUseCase', () => {
     const sut = makeSut()
     const result = await sut.add(account)
     const error = result.isFailure() && result.error
-    expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new EmailAlreadyInUseError())
   })
 
@@ -84,7 +83,6 @@ describe('DbAddAccountUseCase', () => {
     const sut = makeSut()
     const result = await sut.add(account)
     const error = result.isFailure() && result.error
-    expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new LoadAccountByEmailRepositoryError())
   })
 
@@ -101,7 +99,6 @@ describe('DbAddAccountUseCase', () => {
     })
     const sut = makeSut()
     const result = await sut.add(account)
-    expect(result.isFailure()).toBe(true)
     if (result.isFailure()) {
       expect(result.error).toEqual(new HasherError())
     }
@@ -125,7 +122,6 @@ describe('DbAddAccountUseCase', () => {
       })
     const sut = makeSut()
     const result = await sut.add(account)
-    expect(result.isFailure()).toBe(true)
     if (result.isFailure()) {
       expect(result.error).toEqual(new AddAccountRepositoryError())
     }

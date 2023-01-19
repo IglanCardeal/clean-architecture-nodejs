@@ -87,7 +87,6 @@ describe('DbAuthenticationUseCase', () => {
       })
     const result = await sut.auth(authModel)
     const error = result.isFailure() && result.error
-    expect(result.isFailure()).toBe(true)
     expect(error).toEqual(
       new LoadAccountByEmailRepositoryError(loadAccountError.stack)
     )
@@ -100,7 +99,6 @@ describe('DbAuthenticationUseCase', () => {
       .mockResolvedValueOnce(undefined)
     const result = await sut.auth(authModel)
     const error = result.isFailure() && result.error
-    expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new InvalidCredentialsError())
   })
 
@@ -116,7 +114,6 @@ describe('DbAuthenticationUseCase', () => {
     jest.spyOn(hashComparerStub, 'compare').mockRejectedValueOnce(new Error())
     const result = await sut.auth(authModel)
     const error = result.isFailure() && result.error
-    expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new HasherComparerError())
   })
 
@@ -125,7 +122,6 @@ describe('DbAuthenticationUseCase', () => {
     jest.spyOn(hashComparerStub, 'compare').mockResolvedValueOnce(false)
     const result = await sut.auth(authModel)
     const error = result.isFailure() && result.error
-    expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new InvalidCredentialsError())
   })
 
@@ -143,7 +139,6 @@ describe('DbAuthenticationUseCase', () => {
       .mockRejectedValueOnce(new Error())
     const result = await sut.auth(authModel)
     const error = result.isFailure() && result.error
-    expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new TokenGeneratorError())
   })
 
@@ -166,7 +161,6 @@ describe('DbAuthenticationUseCase', () => {
     const sut = makeSut()
     const result = await sut.auth(authModel)
     const error = result.isFailure() && result.error
-    expect(result.isFailure()).toBe(true)
     expect(error).toEqual(new UpdateAccessTokenRepositoryError())
   })
 
