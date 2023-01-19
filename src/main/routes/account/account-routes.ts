@@ -3,7 +3,7 @@ import { routeAdapter } from '@src/main/adapters/express/express-route-adapter'
 import {
   makeLoginController,
   makeSignUpController
-} from '@src/main/factories/account'
+} from '@src/main/factories/controllers/account'
 
 // `/api/ACCOUNT_ROUTE_PREFIX/...`
 export const ACCOUNT_ROUTE_PREFIX = 'account'
