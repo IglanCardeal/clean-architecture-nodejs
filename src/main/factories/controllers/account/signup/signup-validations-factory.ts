@@ -1,10 +1,10 @@
-import { EmailValidatorAdapter } from '@src/main/adapters/validators/email-validator-adapter'
+import { EmailValidatorAdapter } from '@src/infra/validators/email-validator-adapter'
 import {
   CompareFieldsValidation,
   EmailValidation,
   RequiredFieldValidation,
   ValidationComposite
-} from '@src/presentation/helpers/validations'
+} from '@src/validations/validators'
 import { Validation } from '@src/presentation/protocols'
 
 const emailValidatorAdapter = new EmailValidatorAdapter()

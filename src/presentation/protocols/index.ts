@@ -1,5 +1,4 @@
 export * from './controller'
-export * from './email-validator'
 export * from './http'
 export * from './validation'
 export * from './uuid-generator'
