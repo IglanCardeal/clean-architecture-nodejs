@@ -1,4 +1,8 @@
-import { badRequest, serverError } from '@src/presentation/helpers/http'
+import {
+  badRequest,
+  noContent,
+  serverError
+} from '@src/presentation/helpers/http'
 import {
   Controller,
   Validation,
@@ -28,7 +32,7 @@ export class AddSurveyController implements Controller {
         answers
       })
 
-      return {} as any
+      return noContent()
     } catch (error: any) {
       return serverError(error.stack)
     }
