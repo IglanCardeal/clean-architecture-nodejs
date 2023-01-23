@@ -1,3 +1,13 @@
+export interface AddSurveyModel {
+  question: string
+  answers: SurveyAnswer[]
+}
+
+export interface SurveyAnswer {
+  image: string
+  answer: string
+}
+
 export interface AddSurveyUseCase<T> {
-  add<S>(data: S): Promise<T>
+  add(data: AddSurveyModel): Promise<T>
 }
