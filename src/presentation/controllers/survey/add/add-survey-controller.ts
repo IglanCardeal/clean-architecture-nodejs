@@ -1,4 +1,4 @@
-import { badRequest } from '@src/presentation/helpers/http'
+import { badRequest, serverError } from '@src/presentation/helpers/http'
 import {
   Controller,
   Validation,
@@ -14,19 +14,23 @@ export class AddSurveyController implements Controller {
   ) {}
 
   async handle(httRequest: HttpRequest): Promise<HttpResponse> {
-    const validationError = this.validation.validate(httRequest.body)
+    try {
+      const validationError = this.validation.validate(httRequest.body)
 
-    if (validationError) {
-      return badRequest(validationError)
+      if (validationError) {
+        return badRequest(validationError)
+      }
+
+      const { question, answers } = httRequest.body
+
+      await this.addSurveyUseCase.add({
+        question,
+        answers
+      })
+
+      return {} as any
+    } catch (error: any) {
+      return serverError(error.stack)
     }
-
-    const { question, answers } = httRequest.body
-
-    await this.addSurveyUseCase.add({
-      question,
-      answers
-    })
-
-    return {} as any
   }
 }
