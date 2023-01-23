@@ -1,7 +1,7 @@
 import { badRequest } from '@src/presentation/helpers/http'
-import { Validation } from './add-survey-protocols'
 import {
   Controller,
+  Validation,
   HttpRequest,
   HttpResponse,
   AddSurveyUseCase
@@ -20,7 +20,12 @@ export class AddSurveyController implements Controller {
       return badRequest(validationError)
     }
 
-    await this.addSurveyUseCase.add(httRequest.body)
+    const { question, answers } = httRequest.body
+
+    await this.addSurveyUseCase.add({
+      question,
+      answers
+    })
 
     return {} as any
   }
