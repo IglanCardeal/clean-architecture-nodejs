@@ -13,4 +13,4 @@ export class AddSurveyRepositoryError
   }
 }
 
-export type DbAddAccountResult = Either<void, AddSurveyRepositoryError>
+export type DbAddSurveyResult = Either<void, AddSurveyRepositoryError>
