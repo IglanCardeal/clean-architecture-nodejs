@@ -8,13 +8,14 @@ import {
   Validation,
   HttpRequest,
   HttpResponse,
-  AddSurveyUseCase
+  AddSurveyUseCase,
+  DbAddSurveyResult
 } from './add-survey-protocols'
 
 export class AddSurveyController implements Controller {
   constructor(
     private readonly validation: Validation,
-    private readonly addSurveyUseCase: AddSurveyUseCase<any>
+    private readonly addSurveyUseCase: AddSurveyUseCase<DbAddSurveyResult>
   ) {}
 
   async handle(httRequest: HttpRequest): Promise<HttpResponse> {
@@ -27,14 +28,18 @@ export class AddSurveyController implements Controller {
 
       const { question, answers } = httRequest.body
 
-      await this.addSurveyUseCase.add({
+      const addSurveyUseCaseResult = await this.addSurveyUseCase.add({
         question,
         answers
       })
 
+      if (addSurveyUseCaseResult.isFailure()) {
+        return serverError(addSurveyUseCaseResult.error)
+      }
+
       return noContent()
     } catch (error: any) {
-      return serverError(error.stack)
+      return serverError(error)
     }
   }
 }
