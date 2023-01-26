@@ -38,28 +38,33 @@ class AuthenticationUseCaseStub
   }
 }
 
-const authenticationUseCaseStub = new AuthenticationUseCaseStub()
-const validationStub = makeValidation()
-const makeSut = () =>
-  new LoginController(validationStub, authenticationUseCaseStub)
+const makeSut = () => {
+  const authenticationUseCaseStub = new AuthenticationUseCaseStub()
+  const validationStub = makeValidation()
+  return {
+    sut: new LoginController(validationStub, authenticationUseCaseStub),
+    validationStub,
+    authenticationUseCaseStub
+  }
+}
+const makeFakeRequest = () => ({
+  body: {
+    email: 'any@mail.com',
+    password: 'any_pass'
+  }
+})
 
 describe('Login Controller', () => {
-  const httpRequest = {
-    body: {
-      email: 'any@mail.com',
-      password: 'any_pass'
-    }
-  }
+  const httpRequest = makeFakeRequest()
+  const { sut, authenticationUseCaseStub, validationStub } = makeSut()
 
   it('Should call Validation with correct values', async () => {
-    const sut = makeSut()
     const validateSpy = jest.spyOn(validationStub, 'validate')
     await sut.handle(httpRequest)
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 
   it('Should return 400 if Validation returns an error', async () => {
-    const sut = makeSut()
     jest
       .spyOn(validationStub, 'validate')
       .mockReturnValueOnce(new MissingParamError('any_field'))
@@ -68,7 +73,6 @@ describe('Login Controller', () => {
   })
 
   it('Should return 500 if Validation throws', async () => {
-    const sut = makeSut()
     jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => {
       throw new Error()
     })
@@ -77,7 +81,6 @@ describe('Login Controller', () => {
   })
 
   it('Should call AuthenticationUseCase with correct values', async () => {
-    const sut = makeSut()
     const authSpy = jest.spyOn(authenticationUseCaseStub, 'auth')
     await sut.handle(httpRequest)
     expect(authSpy).toHaveBeenCalledWith({
@@ -87,7 +90,6 @@ describe('Login Controller', () => {
   })
 
   it('Should returns 401 if credentials are invalid', async () => {
-    const sut = makeSut()
     jest
       .spyOn(authenticationUseCaseStub, 'auth')
       .mockResolvedValueOnce(failure(new InvalidCredentialsError()))
@@ -96,7 +98,6 @@ describe('Login Controller', () => {
   })
 
   it('Should returns 500 if AuthenticationUseCase returns a LoadAccountByEmailRepositoryError', async () => {
-    const sut = makeSut()
     jest
       .spyOn(authenticationUseCaseStub, 'auth')
       .mockResolvedValueOnce(failure(new LoadAccountByEmailRepositoryError()))
@@ -107,7 +108,6 @@ describe('Login Controller', () => {
   })
 
   it('Should returns 500 if AuthenticationUseCase returns a UpdateAccessTokenRepositoryError', async () => {
-    const sut = makeSut()
     jest
       .spyOn(authenticationUseCaseStub, 'auth')
       .mockResolvedValueOnce(failure(new UpdateAccessTokenRepositoryError()))
@@ -118,7 +118,6 @@ describe('Login Controller', () => {
   })
 
   it('Should returns 500 if AuthenticationUseCase returns a HasherComparerError', async () => {
-    const sut = makeSut()
     jest
       .spyOn(authenticationUseCaseStub, 'auth')
       .mockResolvedValueOnce(failure(new HasherComparerError()))
@@ -127,7 +126,6 @@ describe('Login Controller', () => {
   })
 
   it('Should returns 500 if AuthenticationUseCase returns a TokenGeneratorError', async () => {
-    const sut = makeSut()
     jest
       .spyOn(authenticationUseCaseStub, 'auth')
       .mockResolvedValueOnce(failure(new TokenGeneratorError()))
@@ -136,7 +134,6 @@ describe('Login Controller', () => {
   })
 
   it('Should returns 200 if valid credentials are provided', async () => {
-    const sut = makeSut()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(ok({ accessToken: 'auth_token' }))
   })

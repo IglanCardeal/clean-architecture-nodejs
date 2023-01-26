@@ -60,20 +60,30 @@ class AuthenticationUseCaseStub
   }
 }
 
-const addAccountUseCaseStub = makeAddAccount()
-const validationStub = makeValidation()
-const authenticationUseCaseStub = new AuthenticationUseCaseStub()
-
 const makeSut = () => {
+  const addAccountUseCaseStub = makeAddAccount()
+  const validationStub = makeValidation()
+  const authenticationUseCaseStub = new AuthenticationUseCaseStub()
   const sut = new SignUpController(
     validationStub,
     addAccountUseCaseStub,
     authenticationUseCaseStub
   )
-  return { sut, addAccountUseCaseStub, validationStub }
+  return {
+    sut,
+    addAccountUseCaseStub,
+    authenticationUseCaseStub,
+    validationStub
+  }
 }
 
 describe('SignUp Controller', () => {
+  const {
+    sut,
+    addAccountUseCaseStub,
+    authenticationUseCaseStub,
+    validationStub
+  } = makeSut()
   const httpRequest = {
     body: {
       name: 'foo name',
@@ -84,7 +94,6 @@ describe('SignUp Controller', () => {
   }
 
   it('Should return 500 if AddAccount returns an database error', async () => {
-    const { sut, addAccountUseCaseStub } = makeSut()
     const addAccountRepositoryError = new AddAccountRepositoryError()
     jest
       .spyOn(addAccountUseCaseStub, 'add')
@@ -94,14 +103,12 @@ describe('SignUp Controller', () => {
   })
 
   it('Should call Validation with correct values', async () => {
-    const { sut, validationStub } = makeSut()
     const validateSpy = jest.spyOn(validationStub, 'validate')
     await sut.handle(httpRequest)
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 
   it('Should return 400 if Validation returns an error', async () => {
-    const { sut, validationStub } = makeSut()
     jest
       .spyOn(validationStub, 'validate')
       .mockReturnValueOnce(new MissingParamError('any_field'))
@@ -110,7 +117,6 @@ describe('SignUp Controller', () => {
   })
 
   it('Should return 500 if Validation throws', async () => {
-    const { sut, validationStub } = makeSut()
     jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => {
       throw new Error()
     })
@@ -119,7 +125,6 @@ describe('SignUp Controller', () => {
   })
 
   it('Should call AddAccount with correct values', async () => {
-    const { sut, addAccountUseCaseStub } = makeSut()
     const addSpy = jest.spyOn(addAccountUseCaseStub, 'add')
     await sut.handle(httpRequest)
     expect(addSpy).toHaveBeenCalledWith({
@@ -130,7 +135,6 @@ describe('SignUp Controller', () => {
   })
 
   it('Should return 409 if the given request data generates a conflict', async () => {
-    const { sut, addAccountUseCaseStub } = makeSut()
     jest
       .spyOn(addAccountUseCaseStub, 'add')
       .mockResolvedValueOnce(failure(new EmailAlreadyInUseError()))
@@ -139,13 +143,11 @@ describe('SignUp Controller', () => {
   })
 
   it('Should return 201 if valid data is provided', async () => {
-    const { sut } = makeSut()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(created({ accessToken: 'auth_token' }))
   })
 
   it('Should call AuthenticationUseCase with correct values', async () => {
-    const { sut } = makeSut()
     const authSpy = jest.spyOn(authenticationUseCaseStub, 'auth')
     await sut.handle(httpRequest)
     expect(authSpy).toHaveBeenCalledWith({
@@ -155,7 +157,6 @@ describe('SignUp Controller', () => {
   })
 
   it('Should returns 500 if AuthenticationUseCase returns any error', async () => {
-    const { sut } = makeSut()
     jest
       .spyOn(authenticationUseCaseStub, 'auth')
       .mockResolvedValueOnce(failure(new Error('any')))

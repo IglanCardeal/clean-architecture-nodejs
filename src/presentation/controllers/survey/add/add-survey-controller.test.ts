@@ -24,12 +24,16 @@ class DbAddSurveyUseCaseStub implements AddSurveyUseCase<DbAddSurveyResult> {
   }
 }
 
-const validationStub = new ValidationStub()
-const dbAddSurveyUseCaseStub = new DbAddSurveyUseCaseStub()
-
 const makeSut = () => {
-  return new AddSurveyController(validationStub, dbAddSurveyUseCaseStub)
+  const validationStub = new ValidationStub()
+  const dbAddSurveyUseCaseStub = new DbAddSurveyUseCaseStub()
+  return {
+    sut: new AddSurveyController(validationStub, dbAddSurveyUseCaseStub),
+    validationStub,
+    dbAddSurveyUseCaseStub
+  }
 }
+
 const makeFakeRequest = (): HttpRequest => ({
   body: {
     question: 'any',
@@ -43,25 +47,23 @@ const makeFakeRequest = (): HttpRequest => ({
 })
 
 describe('Add Survey Controller', () => {
+  const { sut, validationStub, dbAddSurveyUseCaseStub } = makeSut()
+  const httpRequest = makeFakeRequest()
+
   it('Should call Valitation with correct values', async () => {
     const validateSpy = jest.spyOn(validationStub, 'validate')
-    const sut = makeSut()
-    const httpRequest = makeFakeRequest()
     await sut.handle(httpRequest)
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 
   it('Should return 400 if validation fails', async () => {
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new Error())
-    const sut = makeSut()
-    const result = await sut.handle(makeFakeRequest())
+    const result = await sut.handle(httpRequest)
     expect(result).toEqual(badRequest(new Error()))
   })
 
   it('Should call AddSurveyUseCase with correct values', async () => {
     const addSpy = jest.spyOn(dbAddSurveyUseCaseStub, 'add')
-    const sut = makeSut()
-    const httpRequest = makeFakeRequest()
     await sut.handle(httpRequest)
     expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
   })
@@ -70,14 +72,13 @@ describe('Add Survey Controller', () => {
     jest
       .spyOn(dbAddSurveyUseCaseStub, 'add')
       .mockRejectedValueOnce(failure(new Error()))
-    const sut = makeSut()
-    const result = await sut.handle(makeFakeRequest())
+    const result = await sut.handle(httpRequest)
     expect(result).toEqual(serverError(new Error()))
   })
 
   it('Should return 204 on success', async () => {
-    const sut = makeSut()
-    const result = await sut.handle(makeFakeRequest())
+    const { sut } = makeSut()
+    const result = await sut.handle(httpRequest)
     expect(result).toEqual(noContent())
   })
 })
