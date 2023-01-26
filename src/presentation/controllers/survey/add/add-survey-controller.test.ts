@@ -3,11 +3,13 @@ import {
   noContent,
   serverError
 } from '@src/presentation/helpers/http'
+import { failure, success } from '@src/shared'
 import { AddSurveyController } from './add-survey-controller'
 import {
   HttpRequest,
   Validation,
-  AddSurveyUseCase
+  AddSurveyUseCase,
+  DbAddSurveyResult
 } from './add-survey-protocols'
 
 class ValidationStub implements Validation {
@@ -16,9 +18,9 @@ class ValidationStub implements Validation {
   }
 }
 
-class DbAddSurveyUseCaseStub implements AddSurveyUseCase<any> {
+class DbAddSurveyUseCaseStub implements AddSurveyUseCase<DbAddSurveyResult> {
   async add(_data: any): Promise<any> {
-    return {}
+    return success({})
   }
 }
 
@@ -65,7 +67,9 @@ describe('Add Survey Controller', () => {
   })
 
   it('Should return 500 if AddSurveyUseCase throws', async () => {
-    jest.spyOn(dbAddSurveyUseCaseStub, 'add').mockRejectedValueOnce(new Error())
+    jest
+      .spyOn(dbAddSurveyUseCaseStub, 'add')
+      .mockRejectedValueOnce(failure(new Error()))
     const sut = makeSut()
     const result = await sut.handle(makeFakeRequest())
     expect(result).toEqual(serverError(new Error()))
