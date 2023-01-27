@@ -62,6 +62,14 @@ describe('Add Survey Controller', () => {
     expect(result).toEqual(badRequest(new Error()))
   })
 
+  it('Should return 500 if Validation throws', async () => {
+    jest.spyOn(validationStub, 'validate').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
   it('Should call AddSurveyUseCase with correct values', async () => {
     const addSpy = jest.spyOn(dbAddSurveyUseCaseStub, 'add')
     await sut.handle(httpRequest)
@@ -71,7 +79,7 @@ describe('Add Survey Controller', () => {
   it('Should return 500 if AddSurveyUseCase throws', async () => {
     jest
       .spyOn(dbAddSurveyUseCaseStub, 'add')
-      .mockRejectedValueOnce(failure(new Error()))
+      .mockResolvedValueOnce(failure(new Error()))
     const result = await sut.handle(httpRequest)
     expect(result).toEqual(serverError(new Error()))
   })
