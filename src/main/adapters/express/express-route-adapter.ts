@@ -7,13 +7,17 @@ import { Request, Response } from 'express'
 
 export const routeAdapter = (controller: Controller) => {
   return async (req: Request, res: Response) => {
-    const httpRequest: HttpRequest = { body: req.body }
-    const httpResponse: HttpResponse = await controller.handle(httpRequest)
-    if (httpResponse.statusCode === 500) {
-      return res.status(httpResponse.statusCode).json({
+    const httpRequest = <HttpRequest>{ body: req.body }
+    const { statusCode, body }: HttpResponse = await controller.handle(
+      httpRequest
+    )
+
+    if (statusCode === 500) {
+      return res.status(statusCode).json({
         message: 'Internal Server Error'
       })
     }
-    return res.status(httpResponse.statusCode).json(httpResponse.body)
+
+    return res.status(statusCode).json(body)
   }
 }
