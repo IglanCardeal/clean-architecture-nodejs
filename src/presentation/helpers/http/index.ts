@@ -39,6 +39,6 @@ export const created = <T>(data: T): HttpResponse => ({
 })
 
 export const noContent = (): HttpResponse => ({
-  statusCode: 201,
+  statusCode: 204,
   body: null
 })
