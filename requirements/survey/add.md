@@ -2,10 +2,10 @@
 
 > ## Caso de sucesso
 
-- [ ] Recebe uma requisição do tipo **POST** na rota **/api/surveys**
+- [x] Recebe uma requisição do tipo **POST** na rota **/api/surveys**
 - [ ] Valida se a requisição foi feita por um **admin**
-- [ ] Valida dados obrigatórios **question** e **answers**
-- [ ] **Cria** uma enquete com os dados fornecidos
+- [x] Valida dados obrigatórios **question** e **answers**
+- [x] **Cria** uma enquete com os dados fornecidos
 - [x] Retorna **204**, sem dados
 
 > ## Exceções
