@@ -9,12 +9,14 @@ import {
 } from './auth-middleware-protocols'
 
 class LoadAccountByTokenUseCaseStub
-  implements LoadAccountByTokenUseCase<AccountModel>
+  implements LoadAccountByTokenUseCase<AccountModel | AccessDeniedError>
 {
   async load({
     accessToken: _accessToken,
     role: _role
-  }: LoadAccountByTokenUseCaseProps): Promise<AccountModel> {
+  }: LoadAccountByTokenUseCaseProps): Promise<
+    AccountModel | AccessDeniedError
+  > {
     return makeFakeAccountModel()
   }
 }
@@ -56,5 +58,13 @@ describe('Auth Middleware', () => {
     expect(loadSpy).toHaveBeenCalledWith({
       accessToken: 'any_token'
     })
+  })
+
+  it('should return 403 if LoadAccountByTokenUseCase returns AccessDeniedError', async () => {
+    jest
+      .spyOn(loadAccountByTokenUseCaseStub, 'load')
+      .mockResolvedValueOnce(new AccessDeniedError())
+    const result = await sut.handle(httpRequest)
+    expect(result).toEqual(forbidden(new AccessDeniedError()))
   })
 })
