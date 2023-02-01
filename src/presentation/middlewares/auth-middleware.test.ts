@@ -35,16 +35,16 @@ const makeFakeRequest = (): HttpRequest => ({
   }
 })
 
-const makeSut = () => {
+const makeSut = (role?: string) => {
   const loadAccountByTokenUseCaseStub = new LoadAccountByTokenUseCaseStub()
   return {
-    sut: new AuthMiddleware(loadAccountByTokenUseCaseStub),
+    sut: new AuthMiddleware(loadAccountByTokenUseCaseStub, role),
     loadAccountByTokenUseCaseStub
   }
 }
 
 describe('Auth Middleware', () => {
-  const { sut, loadAccountByTokenUseCaseStub } = makeSut()
+  const { sut, loadAccountByTokenUseCaseStub } = makeSut('any_role')
   const httpRequest = makeFakeRequest()
 
   it('should return 403 if no x-access-token is provided', async () => {
@@ -56,7 +56,8 @@ describe('Auth Middleware', () => {
     const loadSpy = jest.spyOn(loadAccountByTokenUseCaseStub, 'load')
     await sut.handle(httpRequest)
     expect(loadSpy).toHaveBeenCalledWith({
-      accessToken: 'any_token'
+      accessToken: 'any_token',
+      role: 'any_role'
     })
   })
 
