@@ -10,7 +10,9 @@ import { AccessDeniedError } from '@src/presentation/errors'
 
 export class AuthMiddleware implements Middleware {
   constructor(
-    private readonly loadAccountByTokenUseCase: LoadAccountByTokenUseCase<AccountModel>
+    private readonly loadAccountByTokenUseCase: LoadAccountByTokenUseCase<
+      AccountModel | AccessDeniedError
+    >
   ) {}
 
   async handle(httRequest: HttpRequest): Promise<HttpResponse> {
@@ -20,7 +22,12 @@ export class AuthMiddleware implements Middleware {
       return forbidden(new AccessDeniedError())
     }
 
-    await this.loadAccountByTokenUseCase.load({ accessToken })
+    const loadAccountByTokenUseCaseResult =
+      await this.loadAccountByTokenUseCase.load({ accessToken })
+
+    if (loadAccountByTokenUseCaseResult instanceof AccessDeniedError) {
+      return forbidden(new AccessDeniedError())
+    }
 
     return <any>{}
   }
