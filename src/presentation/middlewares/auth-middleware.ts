@@ -5,7 +5,7 @@ import {
   LoadAccountByTokenUseCase,
   AccountModel
 } from './auth-middleware-protocols'
-import { forbidden } from '@src/presentation/helpers/http'
+import { forbidden, ok } from '@src/presentation/helpers/http'
 import { AccessDeniedError } from '@src/presentation/errors'
 
 export class AuthMiddleware implements Middleware {
@@ -29,6 +29,8 @@ export class AuthMiddleware implements Middleware {
       return forbidden(new AccessDeniedError())
     }
 
-    return <any>{}
+    return ok({
+      accountId: loadAccountByTokenUseCaseResult.id
+    })
   }
 }
