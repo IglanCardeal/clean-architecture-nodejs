@@ -1,5 +1,5 @@
 import { AuthMiddleware } from './auth-middleware'
-import { forbidden } from '@src/presentation/helpers/http'
+import { forbidden, ok } from '@src/presentation/helpers/http'
 import { AccessDeniedError } from '@src/presentation/errors'
 import {
   AccountModel,
@@ -66,5 +66,10 @@ describe('Auth Middleware', () => {
       .mockResolvedValueOnce(new AccessDeniedError())
     const result = await sut.handle(httpRequest)
     expect(result).toEqual(forbidden(new AccessDeniedError()))
+  })
+
+  it('should return 200 if LoadAccountByTokenUseCase returns an AccountModel', async () => {
+    const result = await sut.handle(httpRequest)
+    expect(result).toEqual(ok({ accountId: 'any_id' }))
   })
 })
