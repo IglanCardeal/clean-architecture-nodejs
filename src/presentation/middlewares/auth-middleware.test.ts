@@ -48,7 +48,7 @@ describe('Auth Middleware', () => {
   const httpRequest = makeFakeRequest()
 
   it('should return 403 if no x-access-token is provided', async () => {
-    const result = await sut.handle({ headers: {} })
+    const result = await sut.handle({})
     expect(result).toEqual(forbidden(new AccessDeniedError()))
   })
 
