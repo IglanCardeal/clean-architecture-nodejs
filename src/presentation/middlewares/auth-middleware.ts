@@ -12,7 +12,8 @@ export class AuthMiddleware implements Middleware {
   constructor(
     private readonly loadAccountByTokenUseCase: LoadAccountByTokenUseCase<
       AccountModel | AccessDeniedError
-    >
+    >,
+    private readonly role?: string
   ) {}
 
   async handle(httRequest: HttpRequest): Promise<HttpResponse> {
@@ -24,7 +25,10 @@ export class AuthMiddleware implements Middleware {
       }
 
       const loadAccountByTokenUseCaseResult =
-        await this.loadAccountByTokenUseCase.load({ accessToken })
+        await this.loadAccountByTokenUseCase.load({
+          accessToken,
+          role: this.role
+        })
 
       if (loadAccountByTokenUseCaseResult instanceof AccessDeniedError) {
         return forbidden(new AccessDeniedError())
