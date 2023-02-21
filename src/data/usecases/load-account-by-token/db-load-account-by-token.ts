@@ -7,7 +7,8 @@ import {
 } from './db-load-account-by-token-protocols'
 import {
   DbLoadAccountByTokenUsecaseResult,
-  DecrypterError
+  DecrypterError,
+  LoadAccountByTokenRepositoryError
 } from './db-load-account-by-token-result'
 
 export class DbLoadAccountByTokenUsecase
@@ -29,7 +30,11 @@ export class DbLoadAccountByTokenUsecase
       return failure(new DecrypterError(error.stack))
     }
 
-    await this.loadAccountByTokenRepository.loadByToken(accountId, props.role)
+    try {
+      await this.loadAccountByTokenRepository.loadByToken(accountId, props.role)
+    } catch (error: any) {
+      return failure(new LoadAccountByTokenRepositoryError(error.stack))
+    }
 
     return {} as any
   }

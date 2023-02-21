@@ -11,7 +11,20 @@ export class DecrypterError extends Error implements ApplicationError {
   }
 }
 
+export class LoadAccountByTokenRepositoryError
+  extends Error
+  implements ApplicationError
+{
+  readonly message: string
+
+  constructor(readonly stack?: string) {
+    super('LoadAccountByTokenRepositoryError')
+    this.message = 'A repository error ocurred while loading account by token'
+    this.stack = stack
+  }
+}
+
 export type DbLoadAccountByTokenUsecaseResult = Either<
   AccountModel,
-  DecrypterError
+  DecrypterError | LoadAccountByTokenRepositoryError
 >
