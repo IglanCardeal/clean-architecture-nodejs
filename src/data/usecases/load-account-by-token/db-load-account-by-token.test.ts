@@ -5,7 +5,10 @@ import {
   LoadAccountByTokenRepository,
   LoadAccountByTokenUseCaseProps
 } from './db-load-account-by-token-protocols'
-import { DecrypterError } from './db-load-account-by-token-result'
+import {
+  DecrypterError,
+  LoadAccountByTokenRepositoryError
+} from './db-load-account-by-token-result'
 
 class DecrypterStub implements Decrypter {
   async decrypt(_value: string): Promise<string> {
@@ -70,5 +73,14 @@ describe('DbLoadAccountByToken Usecase', () => {
     )
     await sut.load(props)
     expect(loadByTokenSpy).toHaveBeenCalledWith('account_id', 'user')
+  })
+
+  it('Should return a LoadAccountByTokenRepositoryError when LoadAccountByTokenRepository throws', async () => {
+    jest
+      .spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
+      .mockRejectedValueOnce(new Error())
+    const result = await sut.load(props)
+    const error = result.isFailure() && result.error
+    expect(error).toEqual(new LoadAccountByTokenRepositoryError())
   })
 })
