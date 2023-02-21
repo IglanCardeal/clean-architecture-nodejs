@@ -1,3 +1,4 @@
+import { InvalidAccountTokenOrRoleError } from '@src/domain/errors'
 import { DbLoadAccountByTokenUsecase } from './db-load-account-by-token'
 import {
   AccountModel,
@@ -82,5 +83,14 @@ describe('DbLoadAccountByToken Usecase', () => {
     const result = await sut.load(props)
     const error = result.isFailure() && result.error
     expect(error).toEqual(new LoadAccountByTokenRepositoryError())
+  })
+
+  it('Should return a InvalidAccountTokenOrRoleError when no account found', async () => {
+    jest
+      .spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
+      .mockResolvedValueOnce(undefined)
+    const result = await sut.load(props)
+    const error = result.isFailure() && result.error
+    expect(error).toEqual(new InvalidAccountTokenOrRoleError())
   })
 })
