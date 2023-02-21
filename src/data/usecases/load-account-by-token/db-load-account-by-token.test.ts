@@ -85,12 +85,18 @@ describe('DbLoadAccountByToken Usecase', () => {
     expect(error).toEqual(new LoadAccountByTokenRepositoryError())
   })
 
-  it('Should return a InvalidAccountTokenOrRoleError when no account found', async () => {
+  it('Should return an InvalidAccountTokenOrRoleError when no account found', async () => {
     jest
       .spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
       .mockResolvedValueOnce(undefined)
     const result = await sut.load(props)
     const error = result.isFailure() && result.error
     expect(error).toEqual(new InvalidAccountTokenOrRoleError())
+  })
+
+  it('Should return an account on success', async () => {
+    const result = await sut.load(props)
+    const account = result.isSuccess() && result.data
+    expect(account).toEqual(makeFakeAccount())
   })
 })
