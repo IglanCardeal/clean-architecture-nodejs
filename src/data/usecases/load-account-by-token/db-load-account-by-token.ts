@@ -1,5 +1,5 @@
 import { InvalidAccountTokenOrRoleError } from '@src/domain/errors'
-import { failure } from '@src/shared'
+import { failure, success } from '@src/shared'
 import {
   Decrypter,
   LoadAccountByTokenRepository,
@@ -46,6 +46,6 @@ export class DbLoadAccountByTokenUsecase
       return failure(new InvalidAccountTokenOrRoleError())
     }
 
-    return {} as any
+    return success(account)
   }
 }
