@@ -1,6 +1,8 @@
 import { DbLoadAccountByTokenUsecase } from './db-load-account-by-token'
 import {
+  AccountModel,
   Decrypter,
+  LoadAccountByTokenRepository,
   LoadAccountByTokenUseCaseProps
 } from './db-load-account-by-token-protocols'
 import { DecrypterError } from './db-load-account-by-token-result'
@@ -11,11 +13,32 @@ class DecrypterStub implements Decrypter {
   }
 }
 
+const makeFakeAccount = () => ({
+  id: 'any_id',
+  name: 'valid_name',
+  email: 'valid_email@mail.com',
+  password: 'hashed_password'
+})
+class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
+  async loadByToken(
+    _accountId: string,
+    _role?: string
+  ): Promise<AccountModel | undefined> {
+    return makeFakeAccount()
+  }
+}
+
 const makeSut = () => {
   const decrypterStub = new DecrypterStub()
+  const loadAccountByTokenRepositoryStub =
+    new LoadAccountByTokenRepositoryStub()
   return {
-    sut: new DbLoadAccountByTokenUsecase(decrypterStub),
-    decrypterStub
+    sut: new DbLoadAccountByTokenUsecase(
+      decrypterStub,
+      loadAccountByTokenRepositoryStub
+    ),
+    decrypterStub,
+    loadAccountByTokenRepositoryStub
   }
 }
 const makeFakeProps = (): LoadAccountByTokenUseCaseProps => ({
@@ -24,7 +47,7 @@ const makeFakeProps = (): LoadAccountByTokenUseCaseProps => ({
 })
 
 describe('DbLoadAccountByToken Usecase', () => {
-  const { decrypterStub, sut } = makeSut()
+  const { decrypterStub, sut, loadAccountByTokenRepositoryStub } = makeSut()
   const props = makeFakeProps()
 
   it('Should call Decrypter with correct values', async () => {
@@ -38,5 +61,14 @@ describe('DbLoadAccountByToken Usecase', () => {
     const result = await sut.load(props)
     const error = result.isFailure() && result.error
     expect(error).toEqual(new DecrypterError())
+  })
+
+  it('Should call LoadAccountByTokenRepository with correct values', async () => {
+    const loadByTokenSpy = jest.spyOn(
+      loadAccountByTokenRepositoryStub,
+      'loadByToken'
+    )
+    await sut.load(props)
+    expect(loadByTokenSpy).toHaveBeenCalledWith('account_id', 'user')
   })
 })
