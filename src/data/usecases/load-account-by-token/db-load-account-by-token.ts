@@ -1,3 +1,4 @@
+import { InvalidAccountTokenOrRoleError } from '@src/domain/errors'
 import { failure } from '@src/shared'
 import {
   Decrypter,
@@ -30,10 +31,19 @@ export class DbLoadAccountByTokenUsecase
       return failure(new DecrypterError(error.stack))
     }
 
+    let account
+
     try {
-      await this.loadAccountByTokenRepository.loadByToken(accountId, props.role)
+      account = await this.loadAccountByTokenRepository.loadByToken(
+        accountId,
+        props.role
+      )
     } catch (error: any) {
       return failure(new LoadAccountByTokenRepositoryError(error.stack))
+    }
+
+    if (!account) {
+      return failure(new InvalidAccountTokenOrRoleError())
     }
 
     return {} as any

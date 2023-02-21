@@ -22,3 +22,16 @@ export class EmailAlreadyInUseError extends Error implements DomainError {
     this.message = 'E-mail address already in use'
   }
 }
+
+export class InvalidAccountTokenOrRoleError
+  extends Error
+  implements DomainError
+{
+  readonly message: string
+
+  constructor() {
+    super('DomainError')
+    this.name = 'InvalidAccountTokenOrRoleError'
+    this.message = 'The account token or role is invalid'
+  }
+}

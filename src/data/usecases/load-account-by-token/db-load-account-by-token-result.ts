@@ -1,3 +1,4 @@
+import { InvalidAccountTokenOrRoleError } from '@src/domain/errors'
 import { ApplicationError, Either } from '@src/shared'
 import { AccountModel } from './db-load-account-by-token-protocols'
 
@@ -26,5 +27,7 @@ export class LoadAccountByTokenRepositoryError
 
 export type DbLoadAccountByTokenUsecaseResult = Either<
   AccountModel,
-  DecrypterError | LoadAccountByTokenRepositoryError
+  | DecrypterError
+  | LoadAccountByTokenRepositoryError
+  | InvalidAccountTokenOrRoleError
 >
