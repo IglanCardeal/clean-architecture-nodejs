@@ -53,5 +53,13 @@ describe('JWT TokenGenerator Adapter', () => {
       const result = await sut.decrypt(accessToken)
       expect(result).toBe('account_id')
     })
+
+    it('Should throw if jsonwebtoken verify throws', async () => {
+      const sut = makeSut()
+      jest.spyOn(jwt, 'verify').mockImplementationOnce(() => {
+        throw new Error()
+      })
+      await expect(sut.decrypt(accessToken)).rejects.toThrow()
+    })
   })
 })
