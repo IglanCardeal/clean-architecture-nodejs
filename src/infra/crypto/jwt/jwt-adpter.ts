@@ -10,7 +10,10 @@ export class TokenGeneratorAdapter implements TokenGenerator, Decrypter {
   }
 
   async decrypt(token: string): Promise<string> {
-    jwt.verify(token, this.jwtSecret)
-    return ''
+    const { accountId } = jwt.verify(token, this.jwtSecret) as Record<
+      string,
+      string
+    >
+    return accountId
   }
 }
