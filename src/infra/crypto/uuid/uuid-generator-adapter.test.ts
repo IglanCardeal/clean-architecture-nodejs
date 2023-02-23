@@ -10,8 +10,9 @@ jest.mock('crypto', () => ({
 const makeSut = () => new UUIDGeneratorAdapter()
 
 describe('UUID Generator Adapter', () => {
+  const sut = makeSut()
+
   it('Should return a UUID string on success', () => {
-    const sut = makeSut()
     const uuid = sut.generate()
     expect(uuid).toBe('unique_id')
   })
@@ -20,7 +21,6 @@ describe('UUID Generator Adapter', () => {
     jest.spyOn(crypto, 'randomUUID').mockImplementationOnce(() => {
       throw new Error()
     })
-    const sut = makeSut()
     const uuid = sut.generate()
     expect(uuid).toBeDefined()
   })
@@ -29,7 +29,6 @@ describe('UUID Generator Adapter', () => {
     jest.spyOn(crypto, 'randomUUID').mockImplementationOnce(() => {
       throw new Error()
     })
-    const sut = makeSut()
     const uuid = sut.generate()
     expect(uuid).toBeDefined()
     expect(uuid.length).toBeTruthy()

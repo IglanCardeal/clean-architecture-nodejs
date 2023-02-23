@@ -5,6 +5,7 @@ import { LogMongoRepository } from './log-mongo-repository'
 describe('Log Mongo Repository', () => {
   let errorsCollection: Collection
   let infosCollection: Collection
+  const sut = new LogMongoRepository()
 
   beforeAll(async () => {
     await MongoHelper.connect()
@@ -22,14 +23,12 @@ describe('Log Mongo Repository', () => {
   })
 
   it('Should create an error log on success', async () => {
-    const sut = new LogMongoRepository()
     await sut.logError({ stack: 'any_stack', transactionId: 'any_id' })
     const count = await errorsCollection.countDocuments()
     expect(count).toBe(1)
   })
 
   it('Should create an info log on success', async () => {
-    const sut = new LogMongoRepository()
     await sut.logInfo({ body: 'any_body', transactionId: 'any_id' })
     const count = await infosCollection.countDocuments()
     expect(count).toBe(1)
