@@ -3,14 +3,17 @@ import jwt from 'jsonwebtoken'
 import { TokenGeneratorAdapter } from './jwt-adpter'
 
 jest.mock('jsonwebtoken', () => ({
-  sign: () => 'token'
+  sign: () => 'token',
+  verify: () => 'account_id'
 }))
 
 const secret = 'any_secret'
-const accountId = 'any_id'
 const makeSut = () => new TokenGeneratorAdapter(secret)
 
 describe('JWT TokenGenerator Adapter', () => {
+  const accountId = 'any_id'
+  const accessToken = 'any_token'
+
   describe('sign()', () => {
     it('Should call jsonwebtoken sign with correct values', async () => {
       const sut = makeSut()
@@ -34,6 +37,15 @@ describe('JWT TokenGenerator Adapter', () => {
         throw new Error()
       })
       await expect(sut.generate(accountId)).rejects.toThrow()
+    })
+  })
+
+  describe('decrypt()', () => {
+    it('Should call jsonwebtoken verify with correct values', async () => {
+      const sut = makeSut()
+      const verifySpy = jest.spyOn(jwt, 'verify')
+      await sut.decrypt(accessToken)
+      expect(verifySpy).toHaveBeenCalledWith('any_token', 'any_secret')
     })
   })
 })
