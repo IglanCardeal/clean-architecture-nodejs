@@ -34,44 +34,50 @@ describe('Account MongoDB Repository', () => {
     await accountCollection.deleteMany({})
   })
 
-  it('Should return an account on add success', async () => {
-    const account = await sut.add(makeFakeAccountData())
-    expect(account).toEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        ...makeFakeAccountData()
-      })
-    )
-  })
-
-  it('Should return an account on loadByEmail success', async () => {
-    await insertFakeAccount(makeFakeAccountData())
-    const account = await sut.loadByEmail('valid_email@mail.com')
-    expect(account).toEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        ...makeFakeAccountData()
-      })
-    )
-  })
-
-  it('Should return undefined if loadByEmail fails', async () => {
-    const account = await sut.loadByEmail('valid_email2@mail.com')
-    expect(account).toBeUndefined()
-  })
-
-  it('Should update account access token on updateAccessToken success', async () => {
-    const { insertedId: fakeAccountId } = await insertFakeAccount(
-      makeFakeAccountData()
-    )
-    const accountBefore = await accountCollection.findOne({
-      _id: fakeAccountId
+  describe('add()', () => {
+    it('Should return an account on add success', async () => {
+      const account = await sut.add(makeFakeAccountData())
+      expect(account).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          ...makeFakeAccountData()
+        })
+      )
     })
-    expect(accountBefore?.accessToken).toBeUndefined()
-    await sut.updateAccessToken(fakeAccountId.toString(), 'any_token')
-    const accountAfter = await accountCollection.findOne({
-      _id: fakeAccountId
+  })
+
+  describe('loadByEmail()', () => {
+    it('Should return an account on loadByEmail success', async () => {
+      await insertFakeAccount(makeFakeAccountData())
+      const account = await sut.loadByEmail('valid_email@mail.com')
+      expect(account).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          ...makeFakeAccountData()
+        })
+      )
     })
-    expect(accountAfter?.accessToken).toBe('any_token')
+
+    it('Should return undefined if loadByEmail fails', async () => {
+      const account = await sut.loadByEmail('valid_email2@mail.com')
+      expect(account).toBeUndefined()
+    })
+  })
+
+  describe('updateAccessToken()', () => {
+    it('Should update account access token on updateAccessToken success', async () => {
+      const { insertedId: fakeAccountId } = await insertFakeAccount(
+        makeFakeAccountData()
+      )
+      const accountBefore = await accountCollection.findOne({
+        _id: fakeAccountId
+      })
+      expect(accountBefore?.accessToken).toBeUndefined()
+      await sut.updateAccessToken(fakeAccountId.toString(), 'any_token')
+      const accountAfter = await accountCollection.findOne({
+        _id: fakeAccountId
+      })
+      expect(accountAfter?.accessToken).toBe('any_token')
+    })
   })
 })
