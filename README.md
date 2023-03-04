@@ -58,7 +58,7 @@ O objetivo do treinamento é mostrar como criar uma API com uma arquitetura bem 
 
 ---
 
-#### Problemas
+## Problemas
 
 Caso ocorra um erro ao executar os commits devido ao `husky` ou aos `git hooks`, como:
 
@@ -76,4 +76,4 @@ Para resolvê-lo, tente executar (em um ambiente linux) os comandos para liberar
 [~/clean-architecture-nodejs]$
 ```
 
-Ref: https://stackoverflow.com/questions/8598639/why-is-my-git-pre-commit-hook-not-executable-by-default
+Ref: <https://stackoverflow.com/questions/8598639/why-is-my-git-pre-commit-hook-not-executable-by-default>
