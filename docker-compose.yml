@@ -8,7 +8,7 @@ services:
     volumes:
       - ./docker-volumes:/data/db
     ports:
-      - "27017:27017"
+      - '27017:27017'
 
   api:
     container_name: api-container
@@ -19,7 +19,7 @@ services:
       - ./dist/:/usr/app/dist/
       - ./package.json:/usr/app/package.json
     ports:
-      - "3000:3000"
-      - "9222:9222"
+      - '3000:3000'
+      - '9222:9222'
     depends_on:
       - mongo
