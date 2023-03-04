@@ -118,5 +118,10 @@ describe('Account MongoDB Repository', () => {
         })
       )
     })
+
+    it('Should return undefined whe no account found by token', async () => {
+      const account = await sut.loadByToken('invalid_token')
+      expect(account).toBeUndefined()
+    })
   })
 })
