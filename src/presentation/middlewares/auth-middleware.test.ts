@@ -2,22 +2,22 @@ import { AuthMiddleware } from './auth-middleware'
 import { forbidden, ok, serverError } from '@src/presentation/helpers/http'
 import { AccessDeniedError } from '@src/presentation/errors'
 import {
-  AccountModel,
   HttpRequest,
   LoadAccountByTokenUseCase,
-  LoadAccountByTokenUseCaseProps
+  LoadAccountByTokenUseCaseProps,
+  DbLoadAccountByTokenUsecaseResult
 } from './auth-middleware-protocols'
+import { failure, success } from '@src/shared'
+import { LoadAccountByTokenRepositoryError } from '@src/data/usecases/load-account-by-token/db-load-account-by-token-result'
 
 class LoadAccountByTokenUseCaseStub
-  implements LoadAccountByTokenUseCase<AccountModel | AccessDeniedError>
+  implements LoadAccountByTokenUseCase<DbLoadAccountByTokenUsecaseResult>
 {
   async load({
     accessToken: _accessToken,
     role: _role
-  }: LoadAccountByTokenUseCaseProps): Promise<
-    AccountModel | AccessDeniedError
-  > {
-    return makeFakeAccountModel()
+  }: LoadAccountByTokenUseCaseProps): Promise<DbLoadAccountByTokenUsecaseResult> {
+    return success(makeFakeAccountModel())
   }
 }
 
@@ -64,7 +64,7 @@ describe('Auth Middleware', () => {
   it('should return 403 if LoadAccountByTokenUseCase returns AccessDeniedError', async () => {
     jest
       .spyOn(loadAccountByTokenUseCaseStub, 'load')
-      .mockResolvedValueOnce(new AccessDeniedError())
+      .mockResolvedValueOnce(failure(new AccessDeniedError()))
     const result = await sut.handle(httpRequest)
     expect(result).toEqual(forbidden(new AccessDeniedError()))
   })
@@ -72,6 +72,14 @@ describe('Auth Middleware', () => {
   it('should return 200 if LoadAccountByTokenUseCase returns an AccountModel', async () => {
     const result = await sut.handle(httpRequest)
     expect(result).toEqual(ok({ accountId: 'any_id' }))
+  })
+
+  it('should return 500 if LoadAccountByTokenUseCase returns a LoadAccountByTokenRepositoryError', async () => {
+    jest
+      .spyOn(loadAccountByTokenUseCaseStub, 'load')
+      .mockResolvedValueOnce(failure(new LoadAccountByTokenRepositoryError()))
+    const result = await sut.handle(httpRequest)
+    expect(result).toEqual(serverError(new LoadAccountByTokenRepositoryError()))
   })
 
   it('should return 500 if LoadAccountByTokenUseCase throws', async () => {

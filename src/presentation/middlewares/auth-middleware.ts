@@ -3,16 +3,19 @@ import {
   HttpResponse,
   Middleware,
   LoadAccountByTokenUseCase,
-  AccountModel
+  DbLoadAccountByTokenUsecaseResult
 } from './auth-middleware-protocols'
 import { forbidden, ok, serverError } from '@src/presentation/helpers/http'
 import { AccessDeniedError } from '@src/presentation/errors'
+import { InvalidAccountTokenOrRoleError } from '@src/domain/errors'
+import {
+  DecrypterError,
+  LoadAccountByTokenRepositoryError
+} from '@src/data/usecases/load-account-by-token/db-load-account-by-token-result'
 
 export class AuthMiddleware implements Middleware {
   constructor(
-    private readonly loadAccountByTokenUseCase: LoadAccountByTokenUseCase<
-      AccountModel | AccessDeniedError
-    >,
+    private readonly loadAccountByTokenUseCase: LoadAccountByTokenUseCase<DbLoadAccountByTokenUsecaseResult>,
     private readonly role?: string
   ) {}
 
@@ -30,15 +33,29 @@ export class AuthMiddleware implements Middleware {
           role: this.role
         })
 
-      if (loadAccountByTokenUseCaseResult instanceof AccessDeniedError) {
-        return forbidden(new AccessDeniedError())
+      if (loadAccountByTokenUseCaseResult.isFailure()) {
+        return this.handleError(loadAccountByTokenUseCaseResult.error)
       }
 
+      const { id: accountId } = loadAccountByTokenUseCaseResult.data
+
       return ok({
-        accountId: loadAccountByTokenUseCaseResult.id
+        accountId
       })
     } catch (error: any) {
       return serverError(error)
     }
+  }
+
+  private handleError(
+    error:
+      | DecrypterError
+      | LoadAccountByTokenRepositoryError
+      | InvalidAccountTokenOrRoleError
+  ) {
+    if (error instanceof LoadAccountByTokenRepositoryError) {
+      return serverError(error)
+    }
+    return forbidden(error)
   }
 }
