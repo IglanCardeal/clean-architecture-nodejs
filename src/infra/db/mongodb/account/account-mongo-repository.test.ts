@@ -80,4 +80,23 @@ describe('Account MongoDB Repository', () => {
       expect(accountAfter?.accessToken).toBe('any_token')
     })
   })
+
+  describe('loadByToken()', () => {
+    const accessToken = 'any_token'
+
+    it('Should return an account without role on loadByToken success', async () => {
+      const { insertedId: fakeAccountId } = await insertFakeAccount({
+        ...makeFakeAccountData(),
+        accessToken
+      })
+      await sut.updateAccessToken(fakeAccountId.toString(), accessToken)
+      const account = await sut.loadByToken(accessToken)
+      expect(account).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          ...makeFakeAccountData()
+        })
+      )
+    })
+  })
 })
