@@ -13,11 +13,12 @@ describe('Account MongoDB Repository', () => {
   const sut = makeSut()
   let accountCollection: Collection<Document>
 
-  const insertFakeAccount = async ({ name, email, password }: any) => {
+  const insertFakeAccount = async ({ name, email, password, role }: any) => {
     return accountCollection.insertOne({
       name,
       email,
-      password
+      password,
+      role
     })
   }
 
@@ -83,18 +84,37 @@ describe('Account MongoDB Repository', () => {
 
   describe('loadByToken()', () => {
     const accessToken = 'any_token'
+    const role = 'any_role'
 
     it('Should return an account without role on loadByToken success', async () => {
       const { insertedId: fakeAccountId } = await insertFakeAccount({
-        ...makeFakeAccountData(),
-        accessToken
+        ...makeFakeAccountData()
       })
       await sut.updateAccessToken(fakeAccountId.toString(), accessToken)
       const account = await sut.loadByToken(accessToken)
       expect(account).toEqual(
         expect.objectContaining({
           id: expect.any(String),
-          ...makeFakeAccountData()
+          ...makeFakeAccountData(),
+          accessToken
+        })
+      )
+    })
+
+    it('Should return an account with a role on loadByToken success', async () => {
+      const { insertedId: fakeAccountId } = await insertFakeAccount({
+        ...makeFakeAccountData(),
+        accessToken,
+        role
+      })
+      await sut.updateAccessToken(fakeAccountId.toString(), accessToken)
+      const account = await sut.loadByToken(accessToken, role)
+      expect(account).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          ...makeFakeAccountData(),
+          accessToken,
+          role
         })
       )
     })
