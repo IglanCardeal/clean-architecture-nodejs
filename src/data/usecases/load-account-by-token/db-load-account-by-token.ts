@@ -33,8 +33,10 @@ export class DbLoadAccountByTokenUsecase
       return failure(decryptResult.error)
     }
 
-    const accountId = decryptResult.data
-    const findAccountResult = await this.findAccountById(accountId, role)
+    const findAccountResult = await this.findAccountByAccessToken(
+      accessToken,
+      role
+    )
 
     if (findAccountResult.isFailure()) {
       return failure(findAccountResult.error)
@@ -60,15 +62,15 @@ export class DbLoadAccountByTokenUsecase
     }
   }
 
-  private async findAccountById(
-    accountId: string,
+  private async findAccountByAccessToken(
+    accessToken: string,
     role?: string
   ): Promise<
     Either<AccountModel | undefined, LoadAccountByTokenRepositoryError>
   > {
     try {
       const account = await this.loadAccountByTokenRepository.loadByToken(
-        accountId,
+        accessToken,
         role
       )
       return success(account)

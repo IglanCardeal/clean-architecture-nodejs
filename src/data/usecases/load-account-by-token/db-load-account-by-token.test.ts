@@ -73,7 +73,7 @@ describe('DbLoadAccountByToken Usecase', () => {
       'loadByToken'
     )
     await sut.load(props)
-    expect(loadByTokenSpy).toHaveBeenCalledWith('account_id', 'user')
+    expect(loadByTokenSpy).toHaveBeenCalledWith('any_token', 'user')
   })
 
   it('Should return a LoadAccountByTokenRepositoryError when LoadAccountByTokenRepository throws', async () => {
