@@ -59,13 +59,14 @@ export class AccountMongoRepository
 
   async loadByToken(
     accessToken: string,
-    _role?: string | undefined
+    role?: string | undefined
   ): Promise<AccountModel | undefined> {
     const accountCollection = await MongoHelper.getCollection<AddAccountModel>(
       'accounts'
     )
     const accountFinded = await accountCollection.findOne({
-      accessToken
+      accessToken: accessToken,
+      role: role
     })
     if (!accountFinded) return undefined
     return {
