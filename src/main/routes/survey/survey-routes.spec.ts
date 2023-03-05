@@ -18,7 +18,7 @@ describe('Surveys Routes', () => {
   })
 
   describe(`POST /api/${SURVEYS_ROUTE_PREFIX}`, () => {
-    it('Should return status code 204 on success', async () => {
+    it('Should return status code 403 on add survey without access token', async () => {
       await request(app)
         .post(`/api/${SURVEYS_ROUTE_PREFIX}`)
         .send({
@@ -30,7 +30,7 @@ describe('Surveys Routes', () => {
             }
           ]
         })
-        .expect(204)
+        .expect(403)
     })
   })
 })
