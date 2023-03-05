@@ -17,7 +17,7 @@ export const conflict = (error: Error): HttpResponse => ({
 })
 
 export const forbidden = (error: Error): HttpResponse => ({
-  statusCode: 409,
+  statusCode: 403,
   body: {
     message: error.message
   }
