@@ -66,9 +66,18 @@ export class AccountMongoRepository
     )
     const accountFinded = await accountCollection.findOne({
       accessToken: accessToken,
-      role: role
+      $or: [
+        {
+          role
+        },
+        {
+          role: 'admin'
+        }
+      ]
     })
+
     if (!accountFinded) return undefined
+
     return {
       ...accountFinded,
       id: MongoHelper.mapDocumentIdToString(accountFinded)

@@ -84,7 +84,6 @@ describe('Account MongoDB Repository', () => {
 
   describe('loadByToken()', () => {
     const accessToken = 'any_token'
-    const role = 'any_role'
 
     it('Should return an account without role on loadByToken success', async () => {
       const { insertedId: fakeAccountId } = await insertFakeAccount({
@@ -101,26 +100,53 @@ describe('Account MongoDB Repository', () => {
       )
     })
 
-    it('Should return an account with a role on loadByToken success', async () => {
+    it('Should return an account with admin role on loadByToken success', async () => {
       const { insertedId: fakeAccountId } = await insertFakeAccount({
         ...makeFakeAccountData(),
         accessToken,
-        role
+        role: 'admin'
       })
       await sut.updateAccessToken(fakeAccountId.toString(), accessToken)
-      const account = await sut.loadByToken(accessToken, role)
+      const account = await sut.loadByToken(accessToken, 'admin')
       expect(account).toEqual(
         expect.objectContaining({
           id: expect.any(String),
           ...makeFakeAccountData(),
           accessToken,
-          role
+          role: 'admin'
+        })
+      )
+    })
+
+    it('Should return an account on loadByToken if user is admin', async () => {
+      const { insertedId: fakeAccountId } = await insertFakeAccount({
+        ...makeFakeAccountData(),
+        accessToken,
+        role: 'admin'
+      })
+      await sut.updateAccessToken(fakeAccountId.toString(), accessToken)
+      const account = await sut.loadByToken(accessToken)
+      expect(account).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          ...makeFakeAccountData(),
+          accessToken,
+          role: 'admin'
         })
       )
     })
 
     it('Should return undefined whe no account found by token', async () => {
       const account = await sut.loadByToken('invalid_token')
+      expect(account).toBeUndefined()
+    })
+
+    it('Should return undefined when invalid role', async () => {
+      await insertFakeAccount({
+        ...makeFakeAccountData(),
+        accessToken
+      })
+      const account = await sut.loadByToken(accessToken, 'admin')
       expect(account).toBeUndefined()
     })
   })
