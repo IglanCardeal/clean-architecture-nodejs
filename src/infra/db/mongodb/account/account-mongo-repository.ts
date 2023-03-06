@@ -17,21 +17,19 @@ export class AccountMongoRepository
     LoadAccountByTokenRepository
 {
   async add(account: AddAccountModel): Promise<AccountModel> {
-    const accountCollection = await MongoHelper.getCollection<AddAccountModel>(
-      'accounts'
-    )
+    const accountCollection = await this.getAccountCollection()
     const document = await accountCollection.insertOne({ ...account })
     return { ...account, id: MongoHelper.mapInsertedIdToString(document) }
   }
 
   async loadByEmail(email: string): Promise<AccountModel | undefined> {
-    const accountCollection = await MongoHelper.getCollection<AddAccountModel>(
-      'accounts'
-    )
+    const accountCollection = await this.getAccountCollection()
     const accountFinded = await accountCollection.findOne({
       email
     })
+
     if (!accountFinded) return undefined
+
     return {
       ...accountFinded,
       id: MongoHelper.mapDocumentIdToString(accountFinded)
@@ -42,9 +40,7 @@ export class AccountMongoRepository
     accountId: string,
     accessToken: string
   ): Promise<void> {
-    const accountCollection = await MongoHelper.getCollection<AccountModel>(
-      'accounts'
-    )
+    const accountCollection = await this.getAccountCollection<AccountModel>()
     await accountCollection.updateOne(
       {
         _id: new ObjectId(accountId)
@@ -61,9 +57,7 @@ export class AccountMongoRepository
     accessToken: string,
     role?: string | undefined
   ): Promise<AccountModel | undefined> {
-    const accountCollection = await MongoHelper.getCollection<AddAccountModel>(
-      'accounts'
-    )
+    const accountCollection = await this.getAccountCollection()
     const accountFinded = await accountCollection.findOne({
       accessToken: accessToken,
       $or: [
@@ -82,5 +76,9 @@ export class AccountMongoRepository
       ...accountFinded,
       id: MongoHelper.mapDocumentIdToString(accountFinded)
     }
+  }
+
+  private async getAccountCollection<T extends AddAccountModel>() {
+    return await MongoHelper.getCollection<T>('accounts')
   }
 }
