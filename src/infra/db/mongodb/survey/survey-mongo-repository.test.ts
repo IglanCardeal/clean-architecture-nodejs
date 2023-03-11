@@ -11,7 +11,8 @@ const makeFakeSurveyData = (): AddSurveyModel => ({
       image: 'any_image',
       answer: 'any_answer'
     }
-  ]
+  ],
+  date: new Date()
 })
 
 describe('Account MongoDB Repository', () => {
@@ -37,7 +38,8 @@ describe('Account MongoDB Repository', () => {
       question: 'any_question'
     })
     expect(surveySaved).toMatchObject({
-      ...makeFakeSurveyData()
+      ...makeFakeSurveyData(),
+      date: expect.any(Date)
     })
   })
 })

@@ -30,7 +30,8 @@ export class AddSurveyController implements Controller {
 
       const addSurveyUseCaseResult = await this.addSurveyUseCase.add({
         question,
-        answers
+        answers,
+        date: new Date()
       })
 
       if (addSurveyUseCaseResult.isFailure()) {
