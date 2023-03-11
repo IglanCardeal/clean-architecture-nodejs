@@ -1,14 +1,5 @@
-export interface AddSurveyModel {
-  question: string
-  answers: SurveyAnswer[]
-  date: Date
-}
-
-export interface SurveyAnswer {
-  image: string
-  answer: string
-}
+import { SurveyModel } from '../models/survey'
 
 export interface AddSurveyUseCase<T> {
-  add(data: AddSurveyModel): Promise<T>
+  add(data: SurveyModel): Promise<T>
 }
