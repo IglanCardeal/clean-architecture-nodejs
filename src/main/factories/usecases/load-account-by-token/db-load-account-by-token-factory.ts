@@ -1,5 +1,5 @@
-import { DbLoadAccountByTokenUsecase } from '@src/data/usecases/load-account-by-token/db-load-account-by-token'
-import { DbLoadAccountByTokenUsecaseResult } from '@src/data/usecases/load-account-by-token/db-load-account-by-token-result'
+import { DbLoadAccountByTokenUsecase } from '@src/data/usecases/account/load-account-by-token/db-load-account-by-token'
+import { DbLoadAccountByTokenUsecaseResult } from '@src/data/usecases/account/load-account-by-token/db-load-account-by-token-result'
 import { LoadAccountByTokenUseCase } from '@src/domain/usecases/account/load-account-by-token'
 import { TokenGeneratorAdapter } from '@src/infra/crypto/jwt/jwt-adpter'
 import { AccountMongoRepository } from '@src/infra/db/mongodb'

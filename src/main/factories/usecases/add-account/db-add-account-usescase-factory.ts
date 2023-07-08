@@ -1,5 +1,5 @@
-import { DbAuthenticationUseCase } from '@src/data/usecases/authentication/db-authentication-usecase'
-import { DbAuthenticationUseCaseResult } from '@src/data/usecases/authentication/db-authentication-usecase-result'
+import { DbAuthenticationUseCase } from '@src/data/usecases/account/authentication/db-authentication-usecase'
+import { DbAuthenticationUseCaseResult } from '@src/data/usecases/account/authentication/db-authentication-usecase-result'
 import { AuthenticationUseCase } from '@src/domain/usecases/account'
 import { BcryptAdapter } from '@src/infra/crypto/bcrypt/bcrypt-adapter'
 import { TokenGeneratorAdapter } from '@src/infra/crypto/jwt/jwt-adpter'

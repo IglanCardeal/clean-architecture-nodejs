@@ -1,6 +1,5 @@
 import { EmailAlreadyInUseError } from '@src/domain/errors'
 import { failure, success, Either } from '@src/shared/either'
-import { LoadAccountByEmailRepository } from '../authentication/db-authentication-usecase-protocols'
 import {
   AddAccountUseCase,
   Hasher,
@@ -14,6 +13,7 @@ import {
   HasherError,
   LoadAccountByEmailRepositoryError
 } from './db-add-account-usecase-result'
+import { LoadAccountByEmailRepository } from '../authentication/db-authentication-usecase-protocols'
 
 export class DbAddAccountUseCase
   implements AddAccountUseCase<DbAddAccountResult>

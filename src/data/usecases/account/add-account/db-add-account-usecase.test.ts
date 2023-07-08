@@ -10,7 +10,7 @@ import {
   LoadAccountByEmailRepositoryError
 } from './db-add-account-usecase-result'
 import { DbAddAccountUseCase } from './db-add-account-usecase'
-import { LoadAccountByEmailRepository } from '../authentication/db-authentication-usecase-protocols'
+import { LoadAccountByEmailRepository } from './db-add-account-usecase-protocols'
 import { EmailAlreadyInUseError } from '@src/domain/errors'
 class HasherStub implements Hasher {
   async hash(_password: string): Promise<string> {

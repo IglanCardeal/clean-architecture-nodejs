@@ -1,5 +1,5 @@
-import { DbAddAccountUseCase } from '@src/data/usecases/add-account/db-add-account-usecase'
-import { DbAddAccountResult } from '@src/data/usecases/add-account/db-add-account-usecase-result'
+import { DbAddAccountUseCase } from '@src/data/usecases/account/add-account/db-add-account-usecase'
+import { DbAddAccountResult } from '@src/data/usecases/account/add-account/db-add-account-usecase-result'
 import { AddAccountUseCase } from '@src/domain/usecases/account/add-account'
 import { BcryptAdapter } from '@src/infra/crypto/bcrypt/bcrypt-adapter'
 import { AccountMongoRepository } from '@src/infra/db/mongodb'

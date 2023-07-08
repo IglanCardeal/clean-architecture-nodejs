@@ -17,9 +17,9 @@ import {
   DbAddAccountResult,
   HasherError,
   LoadAccountByEmailRepositoryError
-} from '@src/data/usecases/add-account/db-add-account-usecase-result'
+} from '@src/data/usecases/account/add-account/db-add-account-usecase-result'
 import { EmailAlreadyInUseError } from '@src/domain/errors'
-import { DbAuthenticationUseCaseResult } from '@src/data/usecases/authentication/db-authentication-usecase-result'
+import { DbAuthenticationUseCaseResult } from '@src/data/usecases/account/authentication/db-authentication-usecase-result'
 
 export class SignUpController implements Controller {
   constructor(
