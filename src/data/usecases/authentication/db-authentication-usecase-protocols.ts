@@ -4,6 +4,7 @@ export {
 } from '@src/data/protocols/db'
 export { HashComparer, TokenGenerator } from '@src/data/protocols/crypto'
 export * from '@src/domain/models/account'
+export * from '@src/domain/usecases/account'
 
 export interface CompareData {
   password: string

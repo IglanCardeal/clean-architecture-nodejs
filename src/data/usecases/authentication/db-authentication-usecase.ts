@@ -1,15 +1,13 @@
 import { InvalidCredentialsError } from '@src/domain/errors'
-import {
-  AuthenticationUseCase,
-  AuthModel
-} from '@src/domain/usecases/authentication'
 import { Either, failure, success } from '@src/shared'
 import {
   LoadAccountByEmailRepository,
   HashComparer,
   TokenGenerator,
   AccountModel,
-  UpdateAccessTokenRepository
+  UpdateAccessTokenRepository,
+  AuthenticationUseCase,
+  AuthModel
 } from './db-authentication-usecase-protocols'
 import {
   DbAuthenticationUseCaseResult,

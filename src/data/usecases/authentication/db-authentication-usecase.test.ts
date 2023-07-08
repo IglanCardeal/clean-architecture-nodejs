@@ -1,4 +1,3 @@
-import { AuthModel } from '@src/domain/usecases/authentication'
 import {
   AccountModel,
   UpdateAccessTokenRepository
@@ -7,7 +6,8 @@ import { DbAuthenticationUseCase } from './db-authentication-usecase'
 import {
   LoadAccountByEmailRepository,
   HashComparer,
-  TokenGenerator
+  TokenGenerator,
+  AuthModel
 } from './db-authentication-usecase-protocols'
 import {
   HasherComparerError,
