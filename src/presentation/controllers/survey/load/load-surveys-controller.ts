@@ -1,4 +1,4 @@
-import { ok } from '@src/presentation/helpers/http'
+import { ok, serverError } from '@src/presentation/helpers/http'
 import {
   Controller,
   HttpRequest,
@@ -10,7 +10,11 @@ export class LoadSurveysController implements Controller {
   constructor(private readonly loadSurveyUseCase: LoadSurveyUseCase) {}
 
   async handle(_httRequest: HttpRequest): Promise<HttpResponse> {
-    const surveys = await this.loadSurveyUseCase.load()
-    return ok(surveys)
+    try {
+      const surveys = await this.loadSurveyUseCase.load()
+      return ok(surveys)
+    } catch (error: any) {
+      return serverError(error)
+    }
   }
 }
