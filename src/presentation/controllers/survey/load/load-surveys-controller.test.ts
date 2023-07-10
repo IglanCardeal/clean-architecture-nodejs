@@ -1,4 +1,4 @@
-import { ok } from '@src/presentation/helpers/http'
+import { ok, serverError } from '@src/presentation/helpers/http'
 import { LoadSurveysController } from './load-surveys-controller'
 import { LoadSurveyUseCase, SurveyModel } from './load-surveys-protocols'
 
@@ -37,8 +37,15 @@ describe('LoadSurveysController', () => {
     expect(loadSpy).toHaveBeenCalled()
   })
 
-  it('Should return surveys data on success', async () => {
+  it('Should return 200 on success', async () => {
     const result = await sut.handle({})
     expect(result).toEqual(ok(makeFakeSurveys()))
+  })
+
+  it('Should return 500 if LoadSurveysUseCase throws', async () => {
+    const anyError = new Error()
+    jest.spyOn(dbLoadSurveysUsecaseStub, 'load').mockRejectedValueOnce(anyError)
+    const result = await sut.handle({})
+    expect(result).toEqual(serverError(anyError))
   })
 })
