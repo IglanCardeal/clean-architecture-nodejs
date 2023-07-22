@@ -8,7 +8,6 @@ export class DbLoadSurveysUseCase implements LoadSurveyUseCase {
   constructor(private readonly listSurveysRepository: ListSurveysRepository) {}
 
   async load(): Promise<SurveyModel[]> {
-    await this.listSurveysRepository.getList()
-    return []
+    return await this.listSurveysRepository.getList()
   }
 }
