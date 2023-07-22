@@ -15,7 +15,7 @@ const makeFakeSurveyData = (): SurveyModel => ({
   date: new Date()
 })
 
-describe('Account MongoDB Repository', () => {
+describe('Surveys MongoDB Repository', () => {
   const sut = makeSut()
   let surveyCollection: Collection<Document>
 
@@ -32,14 +32,16 @@ describe('Account MongoDB Repository', () => {
     await surveyCollection.deleteMany({})
   })
 
-  it('Should save a survey on add success', async () => {
-    await sut.add(makeFakeSurveyData())
-    const surveySaved = await surveyCollection.findOne({
-      question: 'any_question'
-    })
-    expect(surveySaved).toMatchObject({
-      ...makeFakeSurveyData(),
-      date: expect.any(Date)
+  describe('add', () => {
+    it('Should save a survey on add success', async () => {
+      await sut.add(makeFakeSurveyData())
+      const surveySaved = await surveyCollection.findOne({
+        question: 'any_question'
+      })
+      expect(surveySaved).toMatchObject({
+        ...makeFakeSurveyData(),
+        date: expect.any(Date)
+      })
     })
   })
 })
