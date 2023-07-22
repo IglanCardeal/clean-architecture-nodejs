@@ -60,5 +60,11 @@ describe('Surveys MongoDB Repository', () => {
         date: expect.any(Date)
       })
     })
+
+    it('Should return an empty list when no surveys', async () => {
+      const result = await sut.getList()
+
+      expect(result).toHaveLength(0)
+    })
   })
 })
