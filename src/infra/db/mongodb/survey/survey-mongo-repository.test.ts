@@ -44,4 +44,21 @@ describe('Surveys MongoDB Repository', () => {
       })
     })
   })
+
+  describe('getList', () => {
+    it('Should return surveys list on success', async () => {
+      await Promise.all([
+        sut.add(makeFakeSurveyData()),
+        sut.add(makeFakeSurveyData())
+      ])
+
+      const result = await sut.getList()
+
+      expect(result).toHaveLength(2)
+      expect(result[0]).toMatchObject({
+        ...makeFakeSurveyData(),
+        date: expect.any(Date)
+      })
+    })
+  })
 })
