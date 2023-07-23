@@ -6,13 +6,16 @@ import { sign } from 'jsonwebtoken'
 import { Collection, Document } from 'mongodb'
 import { ENV } from '@src/main/config/env'
 
-const getValidAccessToken = async (accountCollection: Collection<Document>) => {
+const getValidAccessToken = async (
+  accountCollection: Collection<Document>,
+  role?: string
+) => {
   const res = await accountCollection.insertOne({
     name: 'Foo',
     email: 'foo@mail.com',
     password: '123foo',
     passwordConfirmation: '123foo',
-    role: 'admin'
+    role
   })
   const id = res.insertedId
   const validToken = sign({ accountId: id }, ENV.jwtSecret)
@@ -64,7 +67,7 @@ describe('Surveys Routes', () => {
     })
 
     it('Should return status code 204 on add survey with valid access token', async () => {
-      const validToken = await getValidAccessToken(accountCollection)
+      const validToken = await getValidAccessToken(accountCollection, 'admin')
       await request(app)
         .post(`/api/${SURVEYS_ROUTE_PREFIX}`)
         .set('x-access-token', validToken)
@@ -78,6 +81,33 @@ describe('Surveys Routes', () => {
           ]
         })
         .expect(204)
+    })
+  })
+
+  describe(`GET /api/${SURVEYS_ROUTE_PREFIX}`, () => {
+    it('Should return status code 403 on add survey without access token', async () => {
+      await request(app).get(`/api/${SURVEYS_ROUTE_PREFIX}`).expect(403)
+    })
+
+    it('Should return status code 200 for a valid user access token', async () => {
+      const userAccessToken = await getValidAccessToken(accountCollection)
+
+      await request(app)
+        .get(`/api/${SURVEYS_ROUTE_PREFIX}`)
+        .set('x-access-token', userAccessToken)
+        .expect(200)
+    })
+
+    it('Should return status code 200 for a valid admin access token', async () => {
+      const adminAccessToken = await getValidAccessToken(
+        accountCollection,
+        'admin'
+      )
+
+      await request(app)
+        .get(`/api/${SURVEYS_ROUTE_PREFIX}`)
+        .set('x-access-token', adminAccessToken)
+        .expect(200)
     })
   })
 })

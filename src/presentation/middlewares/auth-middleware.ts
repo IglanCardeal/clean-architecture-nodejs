@@ -11,7 +11,7 @@ import { InvalidAccountTokenOrRoleError } from '@src/domain/errors'
 import {
   DecrypterError,
   LoadAccountByTokenRepositoryError
-} from '@src/data/usecases/load-account-by-token/db-load-account-by-token-result'
+} from '@src/data/usecases/account/load-account-by-token/db-load-account-by-token-result'
 
 export class AuthMiddleware implements Middleware {
   constructor(

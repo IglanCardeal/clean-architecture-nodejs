@@ -1,11 +1,11 @@
 import {
   AddAccountRepositoryError,
   DbAddAccountResult
-} from '@src/data/usecases/add-account/db-add-account-usecase-result'
+} from '@src/data/usecases/account/add-account/db-add-account-usecase-result'
 import {
   DbAuthenticationUseCaseResult,
   UserAccessToken
-} from '@src/data/usecases/authentication/db-authentication-usecase-result'
+} from '@src/data/usecases/account/authentication/db-authentication-usecase-result'
 import { EmailAlreadyInUseError } from '@src/domain/errors'
 import { MissingParamError, ServerError } from '@src/presentation/errors'
 import {

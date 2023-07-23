@@ -5,7 +5,7 @@ import {
   UpdateAccessTokenRepository
 } from '@src/data/protocols/db'
 import { AccountModel } from '@src/domain/models/account'
-import { AddAccountModel } from '@src/domain/usecases/add-account'
+import { AddAccountModel } from '@src/domain/usecases/account/add-account'
 import { ObjectId } from 'mongodb'
 import { MongoHelper } from '@src/infra/db/mongodb/helpers/mongo-helper'
 

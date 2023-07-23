@@ -1,4 +1,4 @@
-import { makeDbAuthenticationUseCase } from '@src/main/factories/usecases/add-account/db-add-account-usescase-factory'
+import { makeDbAuthenticationUseCase } from '@src/main/factories/usecases/account/add-account/db-add-account-usescase-factory'
 import { LoginController } from '@src/presentation/controllers/account/login/login-controller'
 import { Controller } from '@src/presentation/protocols'
 import { makeLogControllerDecorator } from '../../decorators/log-controller-decorator-factory'
