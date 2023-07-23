@@ -4,6 +4,7 @@ import {
   SurveyModel
 } from './db-load-surveys-usecase-protocols'
 
+const anyDate = new Date()
 const makeFakeSurveys = (): SurveyModel[] => [
   {
     answers: [
@@ -12,7 +13,7 @@ const makeFakeSurveys = (): SurveyModel[] => [
         image: 'any'
       }
     ],
-    date: new Date(),
+    date: anyDate,
     question: 'any'
   }
 ]
