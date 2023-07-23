@@ -6,3 +6,4 @@ export * from './account/load-account-by-token-repository'
 export * from './log/log-repository'
 
 export * from './survey/add-survey-repository'
+export * from './survey/list-surveys-repository'

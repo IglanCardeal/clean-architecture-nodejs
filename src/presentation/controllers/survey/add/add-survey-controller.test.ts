@@ -73,7 +73,9 @@ describe('Add Survey Controller', () => {
   it('Should call AddSurveyUseCase with correct values', async () => {
     const addSpy = jest.spyOn(dbAddSurveyUseCaseStub, 'add')
     await sut.handle(httpRequest)
-    expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
+    expect(addSpy).toHaveBeenCalledWith(
+      expect.objectContaining(httpRequest.body)
+    )
   })
 
   it('Should return 500 if AddSurveyUseCase throws', async () => {

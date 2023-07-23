@@ -8,7 +8,7 @@ import {
   DbLoadAccountByTokenUsecaseResult
 } from './auth-middleware-protocols'
 import { failure, success } from '@src/shared'
-import { LoadAccountByTokenRepositoryError } from '@src/data/usecases/load-account-by-token/db-load-account-by-token-result'
+import { LoadAccountByTokenRepositoryError } from '@src/data/usecases/account/load-account-by-token/db-load-account-by-token-result'
 
 class LoadAccountByTokenUseCaseStub
   implements LoadAccountByTokenUseCase<DbLoadAccountByTokenUsecaseResult>
