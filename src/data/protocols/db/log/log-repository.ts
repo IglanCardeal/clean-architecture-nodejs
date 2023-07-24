@@ -1,4 +1,4 @@
-export interface LogTransactionId {
+export type LogTransactionId = {
   transactionId: string
 }
 

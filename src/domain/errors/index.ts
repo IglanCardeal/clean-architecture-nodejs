@@ -1,4 +1,4 @@
-export interface DomainError {
+export type DomainError = {
   readonly message: string
   readonly error?: any
 }

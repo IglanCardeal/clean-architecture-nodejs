@@ -1,4 +1,4 @@
-export interface LoadAccountByTokenUseCaseProps {
+export type LoadAccountByTokenUseCaseProps = {
   accessToken: string
   role?: string
 }
