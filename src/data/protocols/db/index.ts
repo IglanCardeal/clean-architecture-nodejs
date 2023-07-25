@@ -7,3 +7,4 @@ export * from './log/log-repository'
 
 export * from './survey/add-survey-repository'
 export * from './survey/list-surveys-repository'
+export * from './survey/load-survey-by-id-repository'
