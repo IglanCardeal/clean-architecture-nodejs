@@ -2,6 +2,7 @@ import { SurveyModel } from '../add-survey/db-add-survey-usecase-protocols'
 import { DbLoadSurveyByIdUseCase } from './db-load-survey-by-id-usecase'
 import { LoadSurveyByIdRepository } from './db-load-survey-by-id-usecase-protocols'
 
+const anyDate = new Date()
 const makeFakeSurveyModel = () => ({
   question: 'any_question',
   answers: [
@@ -10,7 +11,7 @@ const makeFakeSurveyModel = () => ({
       answer: 'any_answer'
     }
   ],
-  date: new Date(),
+  date: anyDate,
   id: 'any_id'
 })
 
@@ -38,5 +39,13 @@ describe('DbLoadSurveyByIdUseCase', () => {
     await sut.loadById(surveyId)
 
     expect(loadSpy).toHaveBeenCalledWith('any_id')
+  })
+
+  it('Should return survey data on success', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.loadById(surveyId)
+
+    expect(result).toEqual(makeFakeSurveyModel())
   })
 })
