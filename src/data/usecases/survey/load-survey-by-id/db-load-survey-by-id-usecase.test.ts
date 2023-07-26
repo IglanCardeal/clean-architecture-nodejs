@@ -16,7 +16,7 @@ const makeFakeSurveyModel = () => ({
 })
 
 class LoadSurveyByIdRepositoryStub implements LoadSurveyByIdRepository {
-  async load(_id: string): Promise<SurveyModel> {
+  async load(_id: string): Promise<SurveyModel | null> {
     return makeFakeSurveyModel()
   }
 }
@@ -47,5 +47,14 @@ describe('DbLoadSurveyByIdUseCase', () => {
     const result = await sut.loadById(surveyId)
 
     expect(result).toEqual(makeFakeSurveyModel())
+  })
+
+  it('Should return null if no survey was found', async () => {
+    const { sut, loadSurveyByIdRepositoryStub } = makeSut()
+    jest.spyOn(loadSurveyByIdRepositoryStub, 'load').mockResolvedValueOnce(null)
+
+    const result = await sut.loadById(surveyId)
+
+    expect(result).toEqual(null)
   })
 })
