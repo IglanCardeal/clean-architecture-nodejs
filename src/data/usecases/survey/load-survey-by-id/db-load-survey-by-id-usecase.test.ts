@@ -57,4 +57,13 @@ describe('DbLoadSurveyByIdUseCase', () => {
 
     expect(result).toEqual(null)
   })
+
+  it('Should throw if LoadSurveyByIdRepository throws', async () => {
+    const { sut, loadSurveyByIdRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadSurveyByIdRepositoryStub, 'load')
+      .mockRejectedValueOnce(new Error())
+
+    await expect(sut.loadById(surveyId)).rejects.toThrow()
+  })
 })
