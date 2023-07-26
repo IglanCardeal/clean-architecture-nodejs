@@ -11,7 +11,6 @@ export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
   ) {}
 
   async save(data: SaveSurveyResultModel): Promise<SurveyResultModel> {
-    await this.saveSurveyResultRepository.save(data)
-    return {} as any
+    return await this.saveSurveyResultRepository.save(data)
   }
 }
