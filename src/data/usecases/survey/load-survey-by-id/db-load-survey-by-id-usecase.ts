@@ -10,7 +10,6 @@ export class DbLoadSurveyByIdUseCase implements LoadSurveyByIdUseCase {
   ) {}
 
   async loadById(surveyId: string): Promise<SurveyModel | null> {
-    await this.loadSurveyByIdRepository.load(surveyId)
-    return null
+    return await this.loadSurveyByIdRepository.load(surveyId)
   }
 }
