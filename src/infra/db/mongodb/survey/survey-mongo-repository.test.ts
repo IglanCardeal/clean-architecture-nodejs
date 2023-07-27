@@ -3,6 +3,7 @@ import { Collection, Document } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo-repository'
 
+const anyDate = new Date()
 const makeSut = () => new SurveyMongoRepository()
 const makeFakeSurveyData = (): SurveyModel => ({
   question: 'any_question',
@@ -12,7 +13,7 @@ const makeFakeSurveyData = (): SurveyModel => ({
       answer: 'any_answer'
     }
   ],
-  date: new Date()
+  date: anyDate
 })
 
 describe('Surveys MongoDB Repository', () => {
@@ -38,10 +39,7 @@ describe('Surveys MongoDB Repository', () => {
       const surveySaved = await surveyCollection.findOne({
         question: 'any_question'
       })
-      expect(surveySaved).toMatchObject({
-        ...makeFakeSurveyData(),
-        date: expect.any(Date)
-      })
+      expect(surveySaved).toMatchObject(makeFakeSurveyData())
     })
   })
 
@@ -55,16 +53,24 @@ describe('Surveys MongoDB Repository', () => {
       const result = await sut.getList()
 
       expect(result).toHaveLength(2)
-      expect(result[0]).toMatchObject({
-        ...makeFakeSurveyData(),
-        date: expect.any(Date)
-      })
+      expect(result[0]).toMatchObject(makeFakeSurveyData())
     })
 
     it('Should return an empty list when no surveys', async () => {
       const result = await sut.getList()
 
       expect(result).toHaveLength(0)
+    })
+  })
+
+  describe('load', () => {
+    it('Should load survey by id', async () => {
+      const inserted = await surveyCollection.insertOne(makeFakeSurveyData())
+      const surveyId = inserted.insertedId.toString()
+
+      const result = await sut.load(surveyId)
+
+      expect(result).toMatchObject(makeFakeSurveyData())
     })
   })
 })
