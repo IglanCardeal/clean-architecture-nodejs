@@ -25,8 +25,8 @@ export class SurveyMongoRepository
 
   async load(surveyId: string): Promise<SurveyModel | null> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
-    const data = await surveyCollection.findOne({ _id: new ObjectId(surveyId) })
-    if (!data) return null
-    return data as unknown as SurveyModel
+    return (await surveyCollection.findOne({
+      _id: new ObjectId(surveyId)
+    })) as unknown as SurveyModel
   }
 }
