@@ -72,5 +72,13 @@ describe('Surveys MongoDB Repository', () => {
 
       expect(result).toMatchObject(makeFakeSurveyData())
     })
+
+    it('Should return null if no survey', async () => {
+      const noExistId = '507f1f77bcf86cd799439011'
+
+      const result = await sut.load(noExistId)
+
+      expect(result).toBeNull()
+    })
   })
 })
