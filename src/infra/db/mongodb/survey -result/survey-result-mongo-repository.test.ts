@@ -18,7 +18,7 @@ describe('SurveyResultMongoRepository', () => {
 
   beforeAll(async () => {
     await MongoHelper.connect()
-    surveyCollection = await MongoHelper.getCollection('surveys')
+    surveyCollection = await MongoHelper.getCollection('surveyResults')
   })
 
   afterAll(async () => {
