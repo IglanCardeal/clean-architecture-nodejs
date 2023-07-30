@@ -11,6 +11,10 @@ const makeFakeSaveSurveyResultModel = (): SaveSurveyResultModel => ({
   answer: 'any_answer',
   date: anyDate
 })
+const makeFakeUpdatedSaveSurveyResultModel = (): SaveSurveyResultModel => ({
+  ...makeFakeSaveSurveyResultModel(),
+  answer: 'updated_answer'
+})
 
 describe('SurveyResultMongoRepository', () => {
   const sut = makeSut()
@@ -34,6 +38,16 @@ describe('SurveyResultMongoRepository', () => {
       const result = await sut.save(makeFakeSaveSurveyResultModel())
       expect(result).toMatchObject({
         ...makeFakeSaveSurveyResultModel(),
+        id: expect.any(String)
+      })
+    })
+
+    it('Should update the survey result if it already exist', async () => {
+      const saved = await sut.save(makeFakeSaveSurveyResultModel())
+      const updated = await sut.save(makeFakeUpdatedSaveSurveyResultModel())
+      expect(saved.id).toBe(updated.id)
+      expect(updated).toMatchObject({
+        ...makeFakeUpdatedSaveSurveyResultModel(),
         id: expect.any(String)
       })
     })
