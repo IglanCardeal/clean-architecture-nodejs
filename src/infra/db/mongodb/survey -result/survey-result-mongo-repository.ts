@@ -21,7 +21,8 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
     )
     return {
       ...survey,
-      id: inserted.value?._id.toString() as string
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      id: inserted.value!._id.toString() as string
     }
   }
 }
