@@ -1,4 +1,8 @@
-import { badRequest, forbidden } from '@src/presentation/helpers/http'
+import {
+  badRequest,
+  forbidden,
+  serverError
+} from '@src/presentation/helpers/http'
 import {
   Body,
   SaveSurveyResultController
@@ -72,5 +76,17 @@ describe('SaveSurveyResultController', () => {
     const result = await sut.handle(makeFakeRequest())
 
     expect(result).toEqual(forbidden(new InvalidParamError('survey id')))
+  })
+
+  it('Should returns 500 if LoadSurveyByIdUseCase throws', async () => {
+    const { sut, loadSurveyByIdUseCaseStub } = makeSut()
+    const anyServerError = new Error()
+    jest
+      .spyOn(loadSurveyByIdUseCaseStub, 'loadById')
+      .mockRejectedValueOnce(anyServerError)
+
+    const result = await sut.handle(makeFakeRequest())
+
+    expect(result).toEqual(serverError(anyServerError))
   })
 })
