@@ -1,4 +1,4 @@
-import { badRequest } from '@src/presentation/helpers/http'
+import { badRequest, forbidden } from '@src/presentation/helpers/http'
 import {
   Controller,
   HttpRequest,
@@ -6,6 +6,7 @@ import {
   LoadSurveyByIdUseCase
 } from './save-survey-result-controller-protocols'
 import { MissingSurveyId } from '@src/domain/errors'
+import { InvalidParamError } from '@src/presentation/errors'
 
 export type Body = {
   surveyId: string
@@ -21,7 +22,11 @@ export class SaveSurveyResultController implements Controller {
       return badRequest(new MissingSurveyId())
     }
 
-    await this.loadSurveyByIdUseCase.loadById(surveyId)
+    const survey = await this.loadSurveyByIdUseCase.loadById(surveyId)
+
+    if (!survey) {
+      return forbidden(new InvalidParamError('survey id'))
+    }
 
     return {} as any
   }
