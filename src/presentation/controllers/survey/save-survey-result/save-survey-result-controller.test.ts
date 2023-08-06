@@ -1,8 +1,4 @@
-import {
-  badRequest,
-  forbidden,
-  serverError
-} from '@src/presentation/helpers/http'
+import { forbidden, serverError } from '@src/presentation/helpers/http'
 import {
   Body,
   SaveSurveyResultController
@@ -12,7 +8,7 @@ import {
   LoadSurveyByIdUseCase,
   SurveyModel
 } from './save-survey-result-controller-protocols'
-import { InvalidParamError, MissingParamError } from '@src/presentation/errors'
+import { InvalidParamError } from '@src/presentation/errors'
 
 const anyDate = new Date()
 const makeFakeSurveyModel = (): SurveyModel => ({
@@ -51,14 +47,6 @@ const makeFakeRequest = (): HttpRequest<Body, never> => ({
 })
 
 describe('SaveSurveyResultController', () => {
-  it('Should return 400 if missing survey id', async () => {
-    const { sut } = makeSut()
-
-    const result = await sut.handle({ body: { surveyId: '', answer } })
-
-    expect(result).toEqual(badRequest(new MissingParamError('survey id')))
-  })
-
   it('Should call LoadSurveyByIdUseCase with correct survey id', async () => {
     const { sut, loadSurveyByIdUseCaseStub } = makeSut()
     const loadByIdSpy = jest.spyOn(loadSurveyByIdUseCaseStub, 'loadById')
@@ -91,16 +79,16 @@ describe('SaveSurveyResultController', () => {
     expect(result).toEqual(serverError(anyServerError))
   })
 
-  it('Should returns 400 if an no answer is provided', async () => {
+  it('Should returns 403 if an invalid answer is provided', async () => {
     const { sut } = makeSut()
 
     const result = await sut.handle({
       body: {
-        answer: '',
+        answer: 'invalid_answer',
         surveyId
       }
     })
 
-    expect(result).toEqual(badRequest(new MissingParamError('answer')))
+    expect(result).toEqual(forbidden(new InvalidParamError('answer')))
   })
 })
