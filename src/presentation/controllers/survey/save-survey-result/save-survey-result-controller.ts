@@ -21,10 +21,14 @@ export class SaveSurveyResultController implements Controller {
 
   async handle(httpRequest: HttpRequest<Body, never>): Promise<HttpResponse> {
     try {
-      const { surveyId } = httpRequest.body || {}
+      const { surveyId, answer } = httpRequest.body || {}
 
       if (!surveyId) {
         return badRequest(new MissingParamError('survey id'))
+      }
+
+      if (!answer) {
+        return badRequest(new MissingParamError('answer'))
       }
 
       const survey = await this.loadSurveyByIdUseCase.loadById(surveyId)
