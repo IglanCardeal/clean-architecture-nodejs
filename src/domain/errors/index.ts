@@ -36,13 +36,3 @@ export class InvalidAccountTokenOrRoleError
     this.message = 'The account token or role is invalid'
   }
 }
-
-export class MissingSurveyId extends DomainError {
-  readonly message: string
-
-  constructor() {
-    super()
-    this.name = 'MissingSurveyId'
-    this.message = 'Missing survey id'
-  }
-}

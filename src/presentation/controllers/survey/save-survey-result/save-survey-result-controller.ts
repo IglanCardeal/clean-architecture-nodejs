@@ -9,11 +9,11 @@ import {
   HttpResponse,
   LoadSurveyByIdUseCase
 } from './save-survey-result-controller-protocols'
-import { MissingSurveyId } from '@src/domain/errors'
-import { InvalidParamError } from '@src/presentation/errors'
+import { InvalidParamError, MissingParamError } from '@src/presentation/errors'
 
 export type Body = {
   surveyId: string
+  answer: string
 }
 
 export class SaveSurveyResultController implements Controller {
@@ -24,7 +24,7 @@ export class SaveSurveyResultController implements Controller {
       const { surveyId } = httpRequest.body || {}
 
       if (!surveyId) {
-        return badRequest(new MissingSurveyId())
+        return badRequest(new MissingParamError('survey id'))
       }
 
       const survey = await this.loadSurveyByIdUseCase.loadById(surveyId)
