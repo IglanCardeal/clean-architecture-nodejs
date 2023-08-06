@@ -21,6 +21,8 @@ export class SaveSurveyResultController implements Controller {
       return badRequest(new MissingSurveyId())
     }
 
+    await this.loadSurveyByIdUseCase.loadById(surveyId)
+
     return {} as any
   }
 }
