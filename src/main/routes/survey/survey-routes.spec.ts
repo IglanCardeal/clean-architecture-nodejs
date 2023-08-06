@@ -5,6 +5,7 @@ import { SURVEYS_ROUTE_PREFIX } from './survey-routes'
 import { sign } from 'jsonwebtoken'
 import { Collection, Document } from 'mongodb'
 import { ENV } from '@src/main/config/env'
+import { SurveyModel } from '@src/domain/models/survey'
 
 const getValidAccessToken = async (
   accountCollection: Collection<Document>,
@@ -32,8 +33,20 @@ const getValidAccessToken = async (
   return validToken
 }
 
+const makeFakeSurveyData = (): SurveyModel => ({
+  question: 'any_question',
+  answers: [
+    {
+      image: 'any_image',
+      answer: 'any_answer'
+    }
+  ],
+  date: new Date()
+})
+
 describe('Surveys Routes', () => {
   let accountCollection: Collection<Document>
+  let surveyCollection: Collection<Document>
 
   beforeAll(async () => {
     await MongoHelper.connect()
@@ -45,7 +58,7 @@ describe('Surveys Routes', () => {
   })
 
   beforeEach(async () => {
-    const surveyCollection = await MongoHelper.getCollection('surveys')
+    surveyCollection = await MongoHelper.getCollection('surveys')
     await surveyCollection.deleteMany({})
     await accountCollection.deleteMany({})
   })
@@ -117,6 +130,20 @@ describe('Surveys Routes', () => {
 
     it('Should return status code 403 on save survey result without access token', async () => {
       await request(app).put(makePath('any_id')).expect(403)
+    })
+
+    it('Should return status code 200 on save survey result with access token', async () => {
+      const res = await surveyCollection.insertOne(makeFakeSurveyData())
+      const surveyId = res.insertedId.toString()
+      const validToken = await getValidAccessToken(accountCollection)
+
+      await request(app)
+        .put(makePath(surveyId))
+        .set('x-access-token', validToken)
+        .send({
+          answer: 'any_answer'
+        })
+        .expect(200)
     })
   })
 })
