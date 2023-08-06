@@ -1,6 +1,10 @@
 import { badRequest } from '@src/presentation/helpers/http'
-import { SaveSurveyResultController } from './save-survey-result-controller'
 import {
+  Body,
+  SaveSurveyResultController
+} from './save-survey-result-controller'
+import {
+  HttpRequest,
   LoadSurveyByIdUseCase,
   SurveyModel
 } from './save-survey-result-controller-protocols'
@@ -32,6 +36,14 @@ const makeSut = () => {
   }
 }
 
+const surveyId = 'any_survey_id'
+
+const makeFakeRequest = (): HttpRequest<Body, never> => ({
+  body: {
+    surveyId
+  }
+})
+
 describe('SaveSurveyResultController', () => {
   it('Should return 400 if missing survey id', async () => {
     const { sut } = makeSut()
@@ -39,5 +51,14 @@ describe('SaveSurveyResultController', () => {
     const result = await sut.handle({ body: { surveyId: '' } })
 
     expect(result).toEqual(badRequest(new MissingSurveyId()))
+  })
+
+  it('Should call LoadSurveyByIdUseCase with correct survey id', async () => {
+    const { sut, loadSurveyByIdUseCaseStub } = makeSut()
+    const loadByIdSpy = jest.spyOn(loadSurveyByIdUseCaseStub, 'loadById')
+
+    await sut.handle(makeFakeRequest())
+
+    expect(loadByIdSpy).toHaveBeenCalledWith(surveyId)
   })
 })
