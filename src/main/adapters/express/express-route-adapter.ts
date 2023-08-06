@@ -7,7 +7,13 @@ import { Request, Response } from 'express'
 
 export const routeAdapter = (controller: Controller) => {
   return async (req: Request, res: Response) => {
-    const httpRequest = <HttpRequest>{ body: req.body }
+    const httpRequest = <HttpRequest>{
+      body: {
+        ...req.body,
+        ...req.params
+      },
+      accountId: req.accountId
+    }
     const { statusCode, body }: HttpResponse = await controller.handle(
       httpRequest
     )

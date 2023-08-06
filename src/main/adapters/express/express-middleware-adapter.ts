@@ -14,6 +14,7 @@ export const middlewareAdapter = (middleware: Middleware) => {
     if (statusCode !== 200) {
       return res.status(statusCode).json(body)
     }
+    req.accountId = body.accountId
     return next()
   }
 }
