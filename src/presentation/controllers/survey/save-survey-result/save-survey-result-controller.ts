@@ -1,4 +1,8 @@
-import { badRequest, forbidden } from '@src/presentation/helpers/http'
+import {
+  badRequest,
+  forbidden,
+  serverError
+} from '@src/presentation/helpers/http'
 import {
   Controller,
   HttpRequest,
@@ -16,18 +20,22 @@ export class SaveSurveyResultController implements Controller {
   constructor(private readonly loadSurveyByIdUseCase: LoadSurveyByIdUseCase) {}
 
   async handle(httpRequest: HttpRequest<Body, never>): Promise<HttpResponse> {
-    const { surveyId } = httpRequest.body || {}
+    try {
+      const { surveyId } = httpRequest.body || {}
 
-    if (!surveyId) {
-      return badRequest(new MissingSurveyId())
+      if (!surveyId) {
+        return badRequest(new MissingSurveyId())
+      }
+
+      const survey = await this.loadSurveyByIdUseCase.loadById(surveyId)
+
+      if (!survey) {
+        return forbidden(new InvalidParamError('survey id'))
+      }
+
+      return {} as any
+    } catch (error: any) {
+      return serverError(error)
     }
-
-    const survey = await this.loadSurveyByIdUseCase.loadById(surveyId)
-
-    if (!survey) {
-      return forbidden(new InvalidParamError('survey id'))
-    }
-
-    return {} as any
   }
 }
