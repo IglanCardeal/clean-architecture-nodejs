@@ -1,4 +1,4 @@
-import { forbidden, serverError } from '@src/presentation/helpers/http'
+import { forbidden, ok, serverError } from '@src/presentation/helpers/http'
 import {
   Body,
   SaveSurveyResultController
@@ -126,5 +126,13 @@ describe('SaveSurveyResultController', () => {
       answer: 'any_answer',
       date: expect.any(Date)
     })
+  })
+
+  it('Should return 200 on success', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.handle(makeFakeRequest())
+
+    expect(result).toEqual(ok(makeFakeSurveyResultModel()))
   })
 })
