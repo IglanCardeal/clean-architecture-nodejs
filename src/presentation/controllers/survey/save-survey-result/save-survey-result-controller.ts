@@ -1,15 +1,11 @@
-import {
-  badRequest,
-  forbidden,
-  serverError
-} from '@src/presentation/helpers/http'
+import { forbidden, serverError } from '@src/presentation/helpers/http'
 import {
   Controller,
   HttpRequest,
   HttpResponse,
   LoadSurveyByIdUseCase
 } from './save-survey-result-controller-protocols'
-import { InvalidParamError, MissingParamError } from '@src/presentation/errors'
+import { InvalidParamError } from '@src/presentation/errors'
 
 export type Body = {
   surveyId: string
@@ -21,20 +17,19 @@ export class SaveSurveyResultController implements Controller {
 
   async handle(httpRequest: HttpRequest<Body, never>): Promise<HttpResponse> {
     try {
-      const { surveyId, answer } = httpRequest.body || {}
-
-      if (!surveyId) {
-        return badRequest(new MissingParamError('survey id'))
-      }
-
-      if (!answer) {
-        return badRequest(new MissingParamError('answer'))
-      }
+      const { surveyId, answer } = httpRequest.body as Body
 
       const survey = await this.loadSurveyByIdUseCase.loadById(surveyId)
 
       if (!survey) {
         return forbidden(new InvalidParamError('survey id'))
+      }
+
+      const surveyAnswers = survey.answers.map((ans) => ans.answer)
+      const isInvalidAnswer = !surveyAnswers.includes(answer)
+
+      if (isInvalidAnswer) {
+        return forbidden(new InvalidParamError('answer'))
       }
 
       return {} as any
