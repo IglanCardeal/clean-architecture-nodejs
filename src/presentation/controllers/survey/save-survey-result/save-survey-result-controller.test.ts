@@ -12,8 +12,7 @@ import {
   LoadSurveyByIdUseCase,
   SurveyModel
 } from './save-survey-result-controller-protocols'
-import { MissingSurveyId } from '@src/domain/errors'
-import { InvalidParamError } from '@src/presentation/errors'
+import { InvalidParamError, MissingParamError } from '@src/presentation/errors'
 
 const anyDate = new Date()
 const makeFakeSurveyModel = (): SurveyModel => ({
@@ -42,10 +41,12 @@ const makeSut = () => {
 }
 
 const surveyId = 'any_survey_id'
+const answer = 'any_answer'
 
 const makeFakeRequest = (): HttpRequest<Body, never> => ({
   body: {
-    surveyId
+    surveyId,
+    answer
   }
 })
 
@@ -53,9 +54,9 @@ describe('SaveSurveyResultController', () => {
   it('Should return 400 if missing survey id', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.handle({ body: { surveyId: '' } })
+    const result = await sut.handle({ body: { surveyId: '', answer } })
 
-    expect(result).toEqual(badRequest(new MissingSurveyId()))
+    expect(result).toEqual(badRequest(new MissingParamError('survey id')))
   })
 
   it('Should call LoadSurveyByIdUseCase with correct survey id', async () => {
@@ -88,5 +89,18 @@ describe('SaveSurveyResultController', () => {
     const result = await sut.handle(makeFakeRequest())
 
     expect(result).toEqual(serverError(anyServerError))
+  })
+
+  it('Should returns 400 if an no answer is provided', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.handle({
+      body: {
+        answer: '',
+        surveyId
+      }
+    })
+
+    expect(result).toEqual(badRequest(new MissingParamError('answer')))
   })
 })
