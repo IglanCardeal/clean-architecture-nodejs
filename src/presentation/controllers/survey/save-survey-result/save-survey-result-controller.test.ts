@@ -1,4 +1,4 @@
-import { badRequest } from '@src/presentation/helpers/http'
+import { badRequest, forbidden } from '@src/presentation/helpers/http'
 import {
   Body,
   SaveSurveyResultController
@@ -9,6 +9,7 @@ import {
   SurveyModel
 } from './save-survey-result-controller-protocols'
 import { MissingSurveyId } from '@src/domain/errors'
+import { InvalidParamError } from '@src/presentation/errors'
 
 const anyDate = new Date()
 const makeFakeSurveyModel = (): SurveyModel => ({
@@ -60,5 +61,16 @@ describe('SaveSurveyResultController', () => {
     await sut.handle(makeFakeRequest())
 
     expect(loadByIdSpy).toHaveBeenCalledWith(surveyId)
+  })
+
+  it('Should returns 403 if LoadSurveyByIdUseCase returns null', async () => {
+    const { sut, loadSurveyByIdUseCaseStub } = makeSut()
+    jest
+      .spyOn(loadSurveyByIdUseCaseStub, 'loadById')
+      .mockResolvedValueOnce(null)
+
+    const result = await sut.handle(makeFakeRequest())
+
+    expect(result).toEqual(forbidden(new InvalidParamError('survey id')))
   })
 })
