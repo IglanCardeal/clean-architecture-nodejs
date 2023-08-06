@@ -1,9 +1,9 @@
-export type HttpRequest = {
-  body?: any
-  headers?: any
+export type HttpRequest<B = any, H = any> = {
+  body?: B
+  headers?: H
 }
 
-export type HttpResponse = {
-  body: any
+export type HttpResponse<B = any> = {
+  body: B
   statusCode: number
 }
