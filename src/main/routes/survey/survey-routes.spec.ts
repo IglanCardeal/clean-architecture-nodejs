@@ -110,4 +110,13 @@ describe('Surveys Routes', () => {
         .expect(200)
     })
   })
+
+  describe(`PUT /api/${SURVEYS_ROUTE_PREFIX}/:surveyId/results`, () => {
+    const makePath = (surveyId: string) =>
+      `/api/${SURVEYS_ROUTE_PREFIX}/${surveyId}/results`
+
+    it('Should return status code 403 on save survey result without access token', async () => {
+      await request(app).put(makePath('any_id')).expect(403)
+    })
+  })
 })
