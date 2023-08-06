@@ -128,6 +128,18 @@ describe('SaveSurveyResultController', () => {
     })
   })
 
+  it('Should returns 500 if SaveSurveyResultUseCase throws', async () => {
+    const { sut, saveSurveyResultUseCaseStub } = makeSut()
+    const anyServerError = new Error()
+    jest
+      .spyOn(saveSurveyResultUseCaseStub, 'save')
+      .mockRejectedValueOnce(new Error())
+
+    const result = await sut.handle(makeFakeRequest())
+
+    expect(result).toEqual(serverError(anyServerError))
+  })
+
   it('Should return 200 on success', async () => {
     const { sut } = makeSut()
 
