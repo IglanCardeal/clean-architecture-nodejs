@@ -1,4 +1,29 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+echo "==========================================="
+echo "Checking for new project git tag..."
+
+latest_tag=$(git describe --abbrev=0 --tags)
+
+if [ -n "$latest_tag" ]; then
+  # Verifica se a versão no package.json é diferente da última tag criada
+  # caso seja, realiza um commit de update no version package.json com a
+  # última tag criada.
+  current_version=$(node -pe "require('./package.json').version")
+
+  echo "Current project version: $latest_tag"
+  echo "Last tag created: $latest_tag"
+
+  if [ "$current_version" != "$latest_tag" ]; then
+    echo "Last git tag and project version are different!"
+    echo "Updating package.json version to: $latest_tag"
+    npm version "$latest_tag" --allow-same-version
+  else
+    echo "Project version up to date"
+  fi
+fi
+
+echo "==========================================="
+
 yarn test:ci
