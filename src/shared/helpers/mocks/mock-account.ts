@@ -8,12 +8,6 @@ export const mockAccount = (): AccountModel => ({
   password: 'hashed_password'
 })
 
-export const mockAccountData = (): Omit<AccountModel, 'id'> => ({
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'hashed_password'
-})
-
 export const mockProps = (): LoadAccountByTokenUseCaseProps => ({
   accessToken: 'any_token',
   role: 'user'
