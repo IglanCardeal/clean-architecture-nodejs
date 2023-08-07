@@ -1,7 +1,7 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-echo "==========================================="
+echo "==============================================="
 echo "Checking for new project git tag..."
 
 latest_tag=$(git describe --abbrev=0 --tags)
@@ -24,6 +24,6 @@ if [ -n "$latest_tag" ]; then
   fi
 fi
 
-echo "==========================================="
+echo "==============================================="
 
 yarn test:ci
