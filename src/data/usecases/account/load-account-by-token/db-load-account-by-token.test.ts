@@ -3,13 +3,13 @@ import { DbLoadAccountByTokenUsecase } from './db-load-account-by-token'
 import {
   AccountModel,
   Decrypter,
-  LoadAccountByTokenRepository,
-  LoadAccountByTokenUseCaseProps
+  LoadAccountByTokenRepository
 } from './db-load-account-by-token-protocols'
 import {
   DecrypterError,
   LoadAccountByTokenRepositoryError
 } from './db-load-account-by-token-result'
+import { mockAccount, mockProps } from '@src/shared/helpers/mocks'
 
 class DecrypterStub implements Decrypter {
   async decrypt(_value: string): Promise<string> {
@@ -17,18 +17,12 @@ class DecrypterStub implements Decrypter {
   }
 }
 
-const makeFakeAccount = () => ({
-  id: 'any_id',
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'hashed_password'
-})
 class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
   async loadByToken(
     _accountId: string,
     _role?: string
   ): Promise<AccountModel | undefined> {
-    return makeFakeAccount()
+    return mockAccount()
   }
 }
 
@@ -45,14 +39,10 @@ const makeSut = () => {
     loadAccountByTokenRepositoryStub
   }
 }
-const makeFakeProps = (): LoadAccountByTokenUseCaseProps => ({
-  accessToken: 'any_token',
-  role: 'user'
-})
 
 describe('DbLoadAccountByToken Usecase', () => {
   const { decrypterStub, sut, loadAccountByTokenRepositoryStub } = makeSut()
-  const props = makeFakeProps()
+  const props = mockProps()
 
   it('Should call Decrypter with correct values', async () => {
     const decryptSpy = jest.spyOn(decrypterStub, 'decrypt')
@@ -97,6 +87,6 @@ describe('DbLoadAccountByToken Usecase', () => {
   it('Should return an account on success', async () => {
     const result = await sut.load(props)
     const account = result.isSuccess() && result.data
-    expect(account).toEqual(makeFakeAccount())
+    expect(account).toEqual(mockAccount())
   })
 })

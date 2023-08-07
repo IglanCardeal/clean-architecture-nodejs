@@ -1,23 +1,11 @@
+import { mockSurveyModel } from '@src/shared/helpers/mocks'
 import { SurveyModel } from '../add-survey/db-add-survey-usecase-protocols'
 import { DbLoadSurveyByIdUseCase } from './db-load-survey-by-id-usecase'
 import { LoadSurveyByIdRepository } from './db-load-survey-by-id-usecase-protocols'
 
-const anyDate = new Date()
-const makeFakeSurveyModel = () => ({
-  question: 'any_question',
-  answers: [
-    {
-      image: 'any_image',
-      answer: 'any_answer'
-    }
-  ],
-  date: anyDate,
-  id: 'any_id'
-})
-
 class LoadSurveyByIdRepositoryStub implements LoadSurveyByIdRepository {
   async load(_id: string): Promise<SurveyModel | null> {
-    return makeFakeSurveyModel()
+    return mockSurveyModel()
   }
 }
 
@@ -46,7 +34,7 @@ describe('DbLoadSurveyByIdUseCase', () => {
 
     const result = await sut.loadById(surveyId)
 
-    expect(result).toEqual(makeFakeSurveyModel())
+    expect(result).toEqual(mockSurveyModel())
   })
 
   it('Should return null if no survey was found', async () => {

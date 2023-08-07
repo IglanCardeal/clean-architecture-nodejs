@@ -1,21 +1,14 @@
+import { mockSaveSurveyResultModel } from '@src/shared/helpers/mocks'
 import { DbSaveSurveyResultUseCase } from './db-save-survey-result-usecase'
 import {
-  SaveSurveyResultModel,
   SaveSurveyResultRepository,
-  SurveyResultModel
+  SurveyResultModel,
+  SaveSurveyResultParams
 } from './db-save-survey-result-usecase-protocols'
 
-const anyDate = new Date()
-const makeFakeSaveSurveyResultModel = () => ({
-  surveyId: 'any_id',
-  accountId: 'any_id',
-  answer: 'any_answer',
-  date: anyDate
-})
-
 class SaveSurveyResultRepositoryStub implements SaveSurveyResultRepository {
-  async save(_survey: SaveSurveyResultModel): Promise<SurveyResultModel> {
-    return { ...makeFakeSaveSurveyResultModel(), id: 'any_id' }
+  async save(_survey: SaveSurveyResultParams): Promise<SurveyResultModel> {
+    return { ...mockSaveSurveyResultModel(), id: 'any_id' }
   }
 }
 
@@ -32,9 +25,9 @@ describe('DbSaveSurveyResultUseCase', () => {
     const { saveSurveyResultRepositoryStub, sut } = makeSut()
     const saveSpy = jest.spyOn(saveSurveyResultRepositoryStub, 'save')
 
-    await sut.save(makeFakeSaveSurveyResultModel())
+    await sut.save(mockSaveSurveyResultModel())
 
-    expect(saveSpy).toHaveBeenCalledWith(makeFakeSaveSurveyResultModel())
+    expect(saveSpy).toHaveBeenCalledWith(mockSaveSurveyResultModel())
   })
 
   it('Should throw if SaveSurveyResultRepository throws', async () => {
@@ -43,14 +36,14 @@ describe('DbSaveSurveyResultUseCase', () => {
       .spyOn(saveSurveyResultRepositoryStub, 'save')
       .mockRejectedValueOnce(new Error())
 
-    await expect(sut.save(makeFakeSaveSurveyResultModel())).rejects.toThrow()
+    await expect(sut.save(mockSaveSurveyResultModel())).rejects.toThrow()
   })
 
   it('Should return survey result data on success', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.save(makeFakeSaveSurveyResultModel())
+    const result = await sut.save(mockSaveSurveyResultModel())
 
-    expect(result).toEqual({ ...makeFakeSaveSurveyResultModel(), id: 'any_id' })
+    expect(result).toEqual({ ...mockSaveSurveyResultModel(), id: 'any_id' })
   })
 })

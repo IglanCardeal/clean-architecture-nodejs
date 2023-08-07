@@ -4,3 +4,4 @@ export {
   SaveSurveyResultParams as SaveSurveyResultModel,
   SaveSurveyResultUseCase
 } from '@src/domain/usecases/survey/save-survey-result'
+export { SaveSurveyResultParams } from '@src/domain/usecases/survey/save-survey-result'

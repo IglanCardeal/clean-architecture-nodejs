@@ -1,22 +1,11 @@
 import { ok, serverError } from '@src/presentation/helpers/http'
 import { LoadSurveysController } from './load-surveys-controller'
 import { LoadSurveyUseCase, SurveyModel } from './load-surveys-protocols'
-
-const anyDate = new Date()
-const makeFakeSurveys = (): SurveyModel[] => [{
-  answers: [
-    {
-      answer: 'any',
-      image: 'any'
-    }
-  ],
-  date: anyDate,
-  question: 'any'
-}]
+import { mockSurveys } from '@src/shared/helpers/mocks'
 
 class DbLoadSurveysUsecaseStub implements LoadSurveyUseCase {
   async load(): Promise<SurveyModel[]> {
-    return makeFakeSurveys()
+    return mockSurveys()
   }
 }
 
@@ -39,7 +28,7 @@ describe('LoadSurveysController', () => {
 
   it('Should return 200 on success', async () => {
     const result = await sut.handle({})
-    expect(result).toEqual(ok(makeFakeSurveys()))
+    expect(result).toEqual(ok(mockSurveys()))
   })
 
   it('Should return 500 if LoadSurveysUseCase throws', async () => {

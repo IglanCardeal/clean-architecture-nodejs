@@ -12,35 +12,20 @@ import {
 import { InvalidParamError } from '@src/presentation/errors'
 import { SurveyResultModel } from '@src/domain/models/survey-result'
 import { SaveSurveyResultParams } from '../add/add-survey-protocols'
-
-const anyDate = new Date()
-const makeFakeSurveyModel = (): SurveyModel => ({
-  question: 'any_question',
-  answers: [
-    {
-      image: 'any_image',
-      answer: 'any_answer'
-    }
-  ],
-  date: anyDate
-})
-const makeFakeSurveyResultModel = () => ({
-  id: 'any_id',
-  surveyId: 'any_survey_id',
-  accountId: 'any_account_id',
-  answer: 'any_answer',
-  date: anyDate
-})
+import {
+  mockSurveyResultModel,
+  mockSurveyModel
+} from '@src/shared/helpers/mocks'
 
 class LoadSurveyByIdUseCaseStub implements LoadSurveyByIdUseCase {
   async loadById(_id: string): Promise<SurveyModel | null> {
-    return makeFakeSurveyModel()
+    return mockSurveyModel()
   }
 }
 
 class SaveSurveyResultUseCaseStub implements SaveSurveyResultUseCase {
   async save(_data: SaveSurveyResultParams): Promise<SurveyResultModel> {
-    return makeFakeSurveyResultModel()
+    return mockSurveyResultModel()
   }
 }
 
@@ -145,6 +130,6 @@ describe('SaveSurveyResultController', () => {
 
     const result = await sut.handle(makeFakeRequest())
 
-    expect(result).toEqual(ok(makeFakeSurveyResultModel()))
+    expect(result).toEqual(ok(mockSurveyResultModel()))
   })
 })

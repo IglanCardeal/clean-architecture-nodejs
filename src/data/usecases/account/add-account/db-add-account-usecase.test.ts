@@ -12,18 +12,12 @@ import {
 import { DbAddAccountUseCase } from './db-add-account-usecase'
 import { LoadAccountByEmailRepository } from './db-add-account-usecase-protocols'
 import { EmailAlreadyInUseError } from '@src/domain/errors'
+import { mockAccount } from '@src/shared/helpers/mocks'
 class HasherStub implements Hasher {
   async hash(_password: string): Promise<string> {
     return 'hashed_password'
   }
 }
-
-const makeFakeAccount = (): AccountModel => ({
-  id: 'any_id',
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'hashed_password'
-})
 
 class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
   async loadByEmail(_email: string): Promise<AccountModel | undefined> {
@@ -33,7 +27,7 @@ class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
 
 class AddAccountRepositoryStub implements AddAccountRepository {
   async add(_account: AddAccountParams): Promise<AccountModel> {
-    return makeFakeAccount()
+    return mockAccount()
   }
 }
 
@@ -79,7 +73,7 @@ describe('DbAddAccountUseCase', () => {
   it('Should return an EmailAlreadyInUseError when an account was found by the given email address', async () => {
     jest
       .spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
-      .mockResolvedValueOnce(makeFakeAccount())
+      .mockResolvedValueOnce(mockAccount())
     const result = await sut.add(account)
     const error = result.isFailure() && result.error
     expect(error).toEqual(new EmailAlreadyInUseError())
@@ -131,6 +125,6 @@ describe('DbAddAccountUseCase', () => {
 
   it('Should return an account on success', async () => {
     const result = await sut.add(account)
-    expect(result.isSuccess() && result.data).toEqual(makeFakeAccount())
+    expect(result.isSuccess() && result.data).toEqual(mockAccount())
   })
 })

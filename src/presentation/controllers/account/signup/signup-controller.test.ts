@@ -17,24 +17,17 @@ import {
 import { failure, success } from '@src/shared/either'
 import { SignUpController } from './signup-controller'
 import {
-  AccountModel,
   Validation,
   AddAccountUseCase,
   AddAccountParams,
   AuthenticationUseCase
 } from './signup-controller-protocols'
-
-const makeFakeAccount = (): AccountModel => ({
-  id: 'valid_id',
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'valid_password'
-})
+import { mockAccount } from '@src/shared/helpers/mocks'
 
 const makeAddAccount = (): AddAccountUseCase<DbAddAccountResult> => {
   class AddAccountUseCaseStub implements AddAccountUseCase<DbAddAccountResult> {
     async add(_account: AddAccountParams): Promise<DbAddAccountResult> {
-      return success(makeFakeAccount())
+      return success(mockAccount())
     }
   }
   return new AddAccountUseCaseStub()

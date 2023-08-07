@@ -1,26 +1,13 @@
+import { mockSurveys } from '@src/shared/helpers/mocks'
 import { DbLoadSurveysUseCase } from './db-load-surveys-usecase'
 import {
   ListSurveysRepository,
   SurveyModel
 } from './db-load-surveys-usecase-protocols'
 
-const anyDate = new Date()
-const makeFakeSurveys = (): SurveyModel[] => [
-  {
-    answers: [
-      {
-        answer: 'any',
-        image: 'any'
-      }
-    ],
-    date: anyDate,
-    question: 'any'
-  }
-]
-
 class LoadSurveysRepositoryStub implements ListSurveysRepository {
   async getList(): Promise<SurveyModel[]> {
-    return makeFakeSurveys()
+    return mockSurveys()
   }
 }
 
@@ -47,7 +34,7 @@ describe('DbLoadSurveysUseCase', () => {
 
     const result = await sut.load()
 
-    expect(result).toEqual(makeFakeSurveys())
+    expect(result).toEqual(mockSurveys())
   })
 
   it('should throw if LoadSurveysRepository throws', async () => {

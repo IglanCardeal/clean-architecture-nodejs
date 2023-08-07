@@ -4,6 +4,7 @@ import {
 } from './db-add-survey-usecase-protocols'
 import { AddSurveyRepositoryError } from './db-add-survey-usecase-result'
 import { DbAddSurveyUseCase } from './db-add-survey-usecase'
+import { mockSurveyData } from '@src/shared/helpers/mocks'
 
 class AddSurveyRepositoryStub implements AddSurveyRepository {
   async add(_survey: SurveyModel): Promise<void> {
@@ -19,19 +20,8 @@ const makeSut = () => {
   }
 }
 
-const makeFakeSurveyData = () => ({
-  question: 'any_question',
-  answers: [
-    {
-      image: 'any_image',
-      answer: 'any_answer'
-    }
-  ],
-  date: new Date()
-})
-
 describe('DbAddSurveyUseCase', () => {
-  const surveyData = makeFakeSurveyData()
+  const surveyData = mockSurveyData()
   const { addSurveyRepositoryStub, sut } = makeSut()
 
   it('should call AddSurveyRepository with correct values', async () => {

@@ -17,17 +17,11 @@ import {
   UserAccessToken
 } from './db-authentication-usecase-result'
 import { InvalidCredentialsError } from '@src/domain/errors'
-
-const makeFakeAccount = (): AccountModel => ({
-  id: 'any_id',
-  name: 'any_name',
-  email: 'any@email.com',
-  password: 'hashed_password'
-})
+import { mockAccount } from '@src/shared/helpers/mocks'
 
 class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
   async loadByEmail(_email: string): Promise<AccountModel | undefined> {
-    return makeFakeAccount()
+    return mockAccount()
   }
 }
 
