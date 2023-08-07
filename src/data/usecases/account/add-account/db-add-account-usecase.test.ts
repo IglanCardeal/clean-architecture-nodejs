@@ -1,6 +1,6 @@
 import {
   Hasher,
-  AddAccountModel,
+  AddAccountParams,
   AccountModel,
   AddAccountRepository
 } from './db-add-account-usecase-protocols'
@@ -32,7 +32,7 @@ class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
 }
 
 class AddAccountRepositoryStub implements AddAccountRepository {
-  async add(_account: AddAccountModel): Promise<AccountModel> {
+  async add(_account: AddAccountParams): Promise<AccountModel> {
     return makeFakeAccount()
   }
 }

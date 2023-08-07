@@ -7,7 +7,7 @@ import {
   LoadAccountByEmailRepository,
   HashComparer,
   TokenGenerator,
-  AuthModel
+  AuthParams
 } from './db-authentication-usecase-protocols'
 import {
   HasherComparerError,
@@ -80,7 +80,7 @@ describe('DbAuthenticationUseCase', () => {
     tokenGeneratorStub,
     updateAccessTokenRepositoryStub
   } = makeSut()
-  const authModel: AuthModel = {
+  const authModel: AuthParams = {
     email: 'any@mail.com',
     password: 'any_password'
   }

@@ -11,7 +11,7 @@ import {
 } from './save-survey-result-controller-protocols'
 import { InvalidParamError } from '@src/presentation/errors'
 import { SurveyResultModel } from '@src/domain/models/survey-result'
-import { SaveSurveyResultModel } from '../add/add-survey-protocols'
+import { SaveSurveyResultParams } from '../add/add-survey-protocols'
 
 const anyDate = new Date()
 const makeFakeSurveyModel = (): SurveyModel => ({
@@ -39,7 +39,7 @@ class LoadSurveyByIdUseCaseStub implements LoadSurveyByIdUseCase {
 }
 
 class SaveSurveyResultUseCaseStub implements SaveSurveyResultUseCase {
-  async save(_data: SaveSurveyResultModel): Promise<SurveyResultModel> {
+  async save(_data: SaveSurveyResultParams): Promise<SurveyResultModel> {
     return makeFakeSurveyResultModel()
   }
 }

@@ -5,7 +5,7 @@ import {
   UpdateAccessTokenRepository
 } from '@src/data/protocols/db'
 import { AccountModel } from '@src/domain/models/account'
-import { AddAccountModel } from '@src/domain/usecases/account/add-account'
+import { AddAccountParams } from '@src/domain/usecases/account/add-account'
 import { ObjectId } from 'mongodb'
 import { MongoHelper } from '@src/infra/db/mongodb/helpers/mongo-helper'
 
@@ -16,7 +16,7 @@ export class AccountMongoRepository
     UpdateAccessTokenRepository,
     LoadAccountByTokenRepository
 {
-  async add(account: AddAccountModel): Promise<AccountModel> {
+  async add(account: AddAccountParams): Promise<AccountModel> {
     const accountCollection = await this.getAccountCollection()
     const document = await accountCollection.insertOne({ ...account })
     return { ...account, id: MongoHelper.mapInsertedIdToString(document) }
@@ -78,7 +78,7 @@ export class AccountMongoRepository
     }
   }
 
-  private async getAccountCollection<T extends AddAccountModel>() {
+  private async getAccountCollection<T extends AddAccountParams>() {
     return await MongoHelper.getCollection<T>('accounts')
   }
 }

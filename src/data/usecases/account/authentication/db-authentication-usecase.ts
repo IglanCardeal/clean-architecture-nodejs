@@ -7,7 +7,7 @@ import {
   AccountModel,
   UpdateAccessTokenRepository,
   AuthenticationUseCase,
-  AuthModel
+  AuthParams
 } from './db-authentication-usecase-protocols'
 import {
   DbAuthenticationUseCaseResult,
@@ -28,7 +28,7 @@ export class DbAuthenticationUseCase
     private readonly updateAccessTokenRepository: UpdateAccessTokenRepository
   ) {}
 
-  async auth(authModel: AuthModel): Promise<DbAuthenticationUseCaseResult> {
+  async auth(authModel: AuthParams): Promise<DbAuthenticationUseCaseResult> {
     const { email, password: passwordInformed } = authModel
     const loadAccountByEmailResult = await this.loadAccountByEmail(email)
 

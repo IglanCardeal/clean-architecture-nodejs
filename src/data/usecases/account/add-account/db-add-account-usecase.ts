@@ -3,7 +3,7 @@ import { failure, success, Either } from '@src/shared/either'
 import {
   AddAccountUseCase,
   Hasher,
-  AddAccountModel,
+  AddAccountParams,
   AccountModel,
   AddAccountRepository
 } from './db-add-account-usecase-protocols'
@@ -24,7 +24,7 @@ export class DbAddAccountUseCase
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository
   ) {}
 
-  async add(accountData: AddAccountModel): Promise<DbAddAccountResult> {
+  async add(accountData: AddAccountParams): Promise<DbAddAccountResult> {
     const verifyEmailAlreadyInUseResult = await this.verifyEmailAlreadyInUse(
       accountData.email
     )
@@ -79,7 +79,7 @@ export class DbAddAccountUseCase
   }
 
   private async createNewAccount(
-    accountData: AddAccountModel
+    accountData: AddAccountParams
   ): Promise<Either<AccountModel, AddAccountRepositoryError>> {
     try {
       const accountCreated = await this.addAccountRepository.add(accountData)

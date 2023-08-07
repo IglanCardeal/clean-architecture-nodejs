@@ -1,17 +1,17 @@
 import { Collection, Document } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
-import { SaveSurveyResultModel } from '@src/domain/usecases/survey/save-survey-result'
+import { SaveSurveyResultParams } from '@src/domain/usecases/survey/save-survey-result'
 
 const anyDate = new Date()
 const makeSut = () => new SurveyResultMongoRepository()
-const makeFakeSaveSurveyResultModel = (): SaveSurveyResultModel => ({
+const makeFakeSaveSurveyResultModel = (): SaveSurveyResultParams => ({
   surveyId: 'any_id',
   accountId: 'any_id',
   answer: 'any_answer',
   date: anyDate
 })
-const makeFakeUpdatedSaveSurveyResultModel = (): SaveSurveyResultModel => ({
+const makeFakeUpdatedSaveSurveyResultModel = (): SaveSurveyResultParams => ({
   ...makeFakeSaveSurveyResultModel(),
   answer: 'updated_answer'
 })

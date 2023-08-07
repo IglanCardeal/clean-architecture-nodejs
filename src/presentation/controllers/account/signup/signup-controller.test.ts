@@ -20,7 +20,7 @@ import {
   AccountModel,
   Validation,
   AddAccountUseCase,
-  AddAccountModel,
+  AddAccountParams,
   AuthenticationUseCase
 } from './signup-controller-protocols'
 
@@ -33,7 +33,7 @@ const makeFakeAccount = (): AccountModel => ({
 
 const makeAddAccount = (): AddAccountUseCase<DbAddAccountResult> => {
   class AddAccountUseCaseStub implements AddAccountUseCase<DbAddAccountResult> {
-    async add(_account: AddAccountModel): Promise<DbAddAccountResult> {
+    async add(_account: AddAccountParams): Promise<DbAddAccountResult> {
       return success(makeFakeAccount())
     }
   }
