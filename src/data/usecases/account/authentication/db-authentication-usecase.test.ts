@@ -1,14 +1,6 @@
-import {
-  AccountModel,
-  UpdateAccessTokenRepository
-} from './db-authentication-usecase-protocols'
+import { UpdateAccessTokenRepository } from './db-authentication-usecase-protocols'
 import { DbAuthenticationUseCase } from './db-authentication-usecase'
-import {
-  LoadAccountByEmailRepository,
-  HashComparer,
-  TokenGenerator,
-  AuthParams
-} from './db-authentication-usecase-protocols'
+import { AuthParams } from './db-authentication-usecase-protocols'
 import {
   HasherComparerError,
   LoadAccountByEmailRepositoryError,
@@ -17,25 +9,11 @@ import {
   UserAccessToken
 } from './db-authentication-usecase-result'
 import { InvalidCredentialsError } from '@src/domain/errors'
-import { mockAccount } from '@src/shared/helpers/mocks'
-
-class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-  async loadByEmail(_email: string): Promise<AccountModel | undefined> {
-    return mockAccount()
-  }
-}
-
-class HashComparerStub implements HashComparer {
-  async compare(_password: string, _hash: string): Promise<boolean> {
-    return true
-  }
-}
-
-class TokenGeneratorStub implements TokenGenerator {
-  async generate(_id: string): Promise<string> {
-    return 'access_token'
-  }
-}
+import { makeLoadAccountByEmailRepositoryStub } from '@src/shared/helpers/stubs'
+import {
+  makeHashComparerStub,
+  makeTokenGeneratorStub
+} from '@src/shared/helpers/stubs/crypto'
 
 class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
   async updateAccessToken(
@@ -48,10 +26,10 @@ class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
 
 const makeSut = () => {
   const loadAccountByEmailRepositoryStub =
-    new LoadAccountByEmailRepositoryStub()
-  const hashComparerStub = new HashComparerStub()
+    makeLoadAccountByEmailRepositoryStub(true)
+  const hashComparerStub = makeHashComparerStub()
   const updateAccessTokenRepositoryStub = new UpdateAccessTokenRepositoryStub()
-  const tokenGeneratorStub = new TokenGeneratorStub()
+  const tokenGeneratorStub = makeTokenGeneratorStub()
   return {
     sut: new DbAuthenticationUseCase(
       loadAccountByEmailRepositoryStub,
