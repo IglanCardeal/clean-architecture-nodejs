@@ -1,9 +1,4 @@
 import {
-  AddAccountParams,
-  AccountModel,
-  AddAccountRepository
-} from './db-add-account-usecase-protocols'
-import {
   HasherError,
   AddAccountRepositoryError,
   LoadAccountByEmailRepositoryError
@@ -11,20 +6,17 @@ import {
 import { DbAddAccountUseCase } from './db-add-account-usecase'
 import { EmailAlreadyInUseError } from '@src/domain/errors'
 import { mockAccount } from '@src/shared/helpers/mocks'
-import { makeLoadAccountByEmailRepositoryStub } from '@src/shared/helpers/stubs'
+import {
+  makeAddAccountRepositoryStub,
+  makeLoadAccountByEmailRepositoryStub
+} from '@src/shared/helpers/stubs'
 import { makeHasherStub } from '@src/shared/helpers/stubs/crypto'
-
-class AddAccountRepositoryStub implements AddAccountRepository {
-  async add(_account: AddAccountParams): Promise<AccountModel> {
-    return mockAccount()
-  }
-}
 
 const makeSut = () => {
   const hasherStub = makeHasherStub()
   const loadAccountByEmailRepositoryStub =
     makeLoadAccountByEmailRepositoryStub()
-  const addAccountRepositoryStub = new AddAccountRepositoryStub()
+  const addAccountRepositoryStub = makeAddAccountRepositoryStub()
   return {
     sut: new DbAddAccountUseCase(
       hasherStub,

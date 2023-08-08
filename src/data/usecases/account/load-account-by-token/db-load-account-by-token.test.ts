@@ -1,29 +1,17 @@
 import { InvalidAccountTokenOrRoleError } from '@src/domain/errors'
 import { DbLoadAccountByTokenUsecase } from './db-load-account-by-token'
 import {
-  AccountModel,
-  LoadAccountByTokenRepository
-} from './db-load-account-by-token-protocols'
-import {
   DecrypterError,
   LoadAccountByTokenRepositoryError
 } from './db-load-account-by-token-result'
 import { mockAccount, mockProps } from '@src/shared/helpers/mocks'
 import { makeDecrypterStub } from '@src/shared/helpers/stubs/crypto'
-
-class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
-  async loadByToken(
-    _accountId: string,
-    _role?: string
-  ): Promise<AccountModel | undefined> {
-    return mockAccount()
-  }
-}
+import { makeLoadAccountByTokenRepositoryStub } from '@src/shared/helpers/stubs'
 
 const makeSut = () => {
   const decrypterStub = makeDecrypterStub()
   const loadAccountByTokenRepositoryStub =
-    new LoadAccountByTokenRepositoryStub()
+    makeLoadAccountByTokenRepositoryStub()
   return {
     sut: new DbLoadAccountByTokenUsecase(
       decrypterStub,

@@ -1,4 +1,3 @@
-import { UpdateAccessTokenRepository } from './db-authentication-usecase-protocols'
 import { DbAuthenticationUseCase } from './db-authentication-usecase'
 import { AuthParams } from './db-authentication-usecase-protocols'
 import {
@@ -9,26 +8,20 @@ import {
   UserAccessToken
 } from './db-authentication-usecase-result'
 import { InvalidCredentialsError } from '@src/domain/errors'
-import { makeLoadAccountByEmailRepositoryStub } from '@src/shared/helpers/stubs'
+import {
+  makeLoadAccountByEmailRepositoryStub,
+  makeUpdateAccessTokenRepositoryStub
+} from '@src/shared/helpers/stubs'
 import {
   makeHashComparerStub,
   makeTokenGeneratorStub
 } from '@src/shared/helpers/stubs/crypto'
 
-class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-  async updateAccessToken(
-    _accountId: string,
-    _acessToken: string
-  ): Promise<void> {
-    return undefined
-  }
-}
-
 const makeSut = () => {
   const loadAccountByEmailRepositoryStub =
     makeLoadAccountByEmailRepositoryStub(true)
   const hashComparerStub = makeHashComparerStub()
-  const updateAccessTokenRepositoryStub = new UpdateAccessTokenRepositoryStub()
+  const updateAccessTokenRepositoryStub = makeUpdateAccessTokenRepositoryStub()
   const tokenGeneratorStub = makeTokenGeneratorStub()
   return {
     sut: new DbAuthenticationUseCase(
