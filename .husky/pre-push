@@ -12,7 +12,7 @@ if [ -n "$latest_tag" ]; then
   # última tag criada.
   current_version=$(node -pe "require('./package.json').version")
 
-  echo "Current project version: $latest_tag"
+  echo "Current project version: $current_version"
   echo "Last tag created: $latest_tag"
 
   if [ "$current_version" != "$latest_tag" ]; then
