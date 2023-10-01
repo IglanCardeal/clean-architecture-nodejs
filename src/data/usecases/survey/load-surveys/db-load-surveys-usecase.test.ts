@@ -1,18 +1,9 @@
 import { mockSurveys } from '@src/shared/helpers/mocks'
 import { DbLoadSurveysUseCase } from './db-load-surveys-usecase'
-import {
-  ListSurveysRepository,
-  SurveyModel
-} from './db-load-surveys-usecase-protocols'
-
-class LoadSurveysRepositoryStub implements ListSurveysRepository {
-  async getList(): Promise<SurveyModel[]> {
-    return mockSurveys()
-  }
-}
+import { mockLoadSurveysRepository } from '@src/shared/helpers/stubs/db/survey'
 
 const makeSut = () => {
-  const loadSurveysRepositoryStub = new LoadSurveysRepositoryStub()
+  const loadSurveysRepositoryStub = mockLoadSurveysRepository()
   return {
     sut: new DbLoadSurveysUseCase(loadSurveysRepositoryStub),
     loadSurveysRepositoryStub

@@ -1,16 +1,9 @@
 import { mockSurveyModel } from '@src/shared/helpers/mocks'
-import { SurveyModel } from '../add-survey/db-add-survey-usecase-protocols'
 import { DbLoadSurveyByIdUseCase } from './db-load-survey-by-id-usecase'
-import { LoadSurveyByIdRepository } from './db-load-survey-by-id-usecase-protocols'
-
-class LoadSurveyByIdRepositoryStub implements LoadSurveyByIdRepository {
-  async load(_id: string): Promise<SurveyModel | null> {
-    return mockSurveyModel()
-  }
-}
+import { mockLoadSurveyByIdRepository } from '@src/shared/helpers/stubs/db/survey'
 
 const makeSut = () => {
-  const loadSurveyByIdRepositoryStub = new LoadSurveyByIdRepositoryStub()
+  const loadSurveyByIdRepositoryStub = mockLoadSurveyByIdRepository()
   return {
     sut: new DbLoadSurveyByIdUseCase(loadSurveyByIdRepositoryStub),
     loadSurveyByIdRepositoryStub

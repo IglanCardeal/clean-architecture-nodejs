@@ -1,19 +1,9 @@
 import { mockSaveSurveyResultModel } from '@src/shared/helpers/mocks'
 import { DbSaveSurveyResultUseCase } from './db-save-survey-result-usecase'
-import {
-  SaveSurveyResultRepository,
-  SurveyResultModel,
-  SaveSurveyResultParams
-} from './db-save-survey-result-usecase-protocols'
-
-class SaveSurveyResultRepositoryStub implements SaveSurveyResultRepository {
-  async save(_survey: SaveSurveyResultParams): Promise<SurveyResultModel> {
-    return { ...mockSaveSurveyResultModel(), id: 'any_id' }
-  }
-}
+import { mockSaveSurveyResultRepository } from '@src/shared/helpers/stubs/db/survey'
 
 const makeSut = () => {
-  const saveSurveyResultRepositoryStub = new SaveSurveyResultRepositoryStub()
+  const saveSurveyResultRepositoryStub = mockSaveSurveyResultRepository()
   return {
     sut: new DbSaveSurveyResultUseCase(saveSurveyResultRepositoryStub),
     saveSurveyResultRepositoryStub

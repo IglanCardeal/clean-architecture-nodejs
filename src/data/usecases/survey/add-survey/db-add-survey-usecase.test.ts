@@ -1,19 +1,10 @@
-import {
-  AddSurveyRepository,
-  SurveyModel
-} from './db-add-survey-usecase-protocols'
 import { AddSurveyRepositoryError } from './db-add-survey-usecase-result'
 import { DbAddSurveyUseCase } from './db-add-survey-usecase'
 import { mockSurveyData } from '@src/shared/helpers/mocks'
-
-class AddSurveyRepositoryStub implements AddSurveyRepository {
-  async add(_survey: SurveyModel): Promise<void> {
-    return undefined
-  }
-}
+import { mockAddSurveyRepository } from '@src/shared/helpers/stubs/db/survey'
 
 const makeSut = () => {
-  const addSurveyRepositoryStub = new AddSurveyRepositoryStub()
+  const addSurveyRepositoryStub = mockAddSurveyRepository()
   return {
     sut: new DbAddSurveyUseCase(addSurveyRepositoryStub),
     addSurveyRepositoryStub
