@@ -4,6 +4,7 @@ import {
   Hasher,
   TokenGenerator
 } from '@src/data/protocols/crypto'
+import { UUIDGenerator } from '@src/presentation/protocols'
 
 export const makeHasherStub = (): Hasher => {
   class HasherStub implements Hasher {
@@ -39,4 +40,13 @@ export const makeDecrypterStub = (): Decrypter => {
     }
   }
   return new DecrypterStub()
+}
+
+export const mockUuidGenerator = () => {
+  class UUIDGeneratorStub implements UUIDGenerator {
+    generate(): string {
+      return 'unique_id'
+    }
+  }
+  return new UUIDGeneratorStub()
 }

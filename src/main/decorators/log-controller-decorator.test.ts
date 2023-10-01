@@ -1,42 +1,15 @@
 import { ok, serverError } from '@src/presentation/helpers/http'
-import {
-  LogDataError,
-  LogTransactionId,
-  LogRepository
-} from '@src/data/protocols/db'
-import {
-  Controller,
-  HttpRequest,
-  HttpResponse,
-  UUIDGenerator
-} from '@src/presentation/protocols'
+import { HttpRequest } from '@src/presentation/protocols'
 import { LogControllerDecorator } from './log-controller-decorator'
+import {
+  mockController,
+  mockLogRepository
+} from '@src/shared/helpers/stubs/db/log'
+import { mockUuidGenerator } from '@src/shared/helpers/stubs/crypto'
 
-class AnyControllerStub implements Controller {
-  async handle(_httRequest: HttpRequest): Promise<HttpResponse> {
-    return ok<string>('ok')
-  }
-}
-
-class LogRepositoryStub implements LogRepository {
-  async logError<T extends LogDataError>(_data: T): Promise<void> {
-    return undefined
-  }
-
-  async logInfo<T extends LogTransactionId>(_data: T): Promise<void> {
-    return undefined
-  }
-}
-
-class UUIDGeneratorStub implements UUIDGenerator {
-  generate(): string {
-    return 'unique_id'
-  }
-}
-
-const logRepositoryStub = new LogRepositoryStub()
-const anyControllerStub = new AnyControllerStub()
-const uuidStub = new UUIDGeneratorStub()
+const logRepositoryStub = mockLogRepository()
+const anyControllerStub = mockController()
+const uuidStub = mockUuidGenerator()
 const makeSut = () =>
   new LogControllerDecorator(anyControllerStub, logRepositoryStub, uuidStub)
 const makeServerError = () => {
