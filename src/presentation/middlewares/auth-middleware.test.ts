@@ -1,33 +1,10 @@
 import { AuthMiddleware } from './auth-middleware'
 import { forbidden, ok, serverError } from '@src/presentation/helpers/http'
 import { AccessDeniedError } from '@src/presentation/errors'
-import {
-  HttpRequest,
-  LoadAccountByTokenUseCase,
-  LoadAccountByTokenUseCaseProps,
-  DbLoadAccountByTokenUsecaseResult
-} from './auth-middleware-protocols'
-import { failure, success } from '@src/shared'
+import { HttpRequest } from './auth-middleware-protocols'
+import { failure } from '@src/shared'
 import { LoadAccountByTokenRepositoryError } from '@src/data/usecases/account/load-account-by-token/db-load-account-by-token-result'
-
-class LoadAccountByTokenUseCaseStub
-  implements LoadAccountByTokenUseCase<DbLoadAccountByTokenUsecaseResult>
-{
-  async load({
-    accessToken: _accessToken,
-    role: _role
-  }: LoadAccountByTokenUseCaseProps): Promise<DbLoadAccountByTokenUsecaseResult> {
-    return success(makeFakeAccountModel())
-  }
-}
-
-const makeFakeAccountModel = () => ({
-  id: 'any_id',
-  name: 'any_name',
-  email: 'any_email',
-  password: 'any_pass',
-  accessToken: 'valid_access_token'
-})
+import { mockLoadAccountByTokenUseCase } from '@src/shared/helpers/stubs/usecase/account'
 
 const makeFakeRequest = (): HttpRequest => ({
   headers: {
@@ -36,7 +13,7 @@ const makeFakeRequest = (): HttpRequest => ({
 })
 
 const makeSut = (role?: string) => {
-  const loadAccountByTokenUseCaseStub = new LoadAccountByTokenUseCaseStub()
+  const loadAccountByTokenUseCaseStub = mockLoadAccountByTokenUseCase()
   return {
     sut: new AuthMiddleware(loadAccountByTokenUseCaseStub, role),
     loadAccountByTokenUseCaseStub

@@ -12,6 +12,11 @@ export const mockAccount = (): AccountModel => ({
   ...makeRawAccountData()
 })
 
+export const mockAccountModel = () => ({
+  ...mockAccount(),
+  accessToken: 'valid_access_token'
+})
+
 export const mockProps = (): LoadAccountByTokenUseCaseProps => ({
   accessToken: 'any_token',
   role: 'user'
