@@ -1,20 +1,9 @@
-import { SurveyModel } from '@src/domain/models/survey'
 import { Collection, Document } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo-repository'
+import { mockSurveyData } from '@src/shared/helpers/mocks'
 
-const anyDate = new Date()
 const makeSut = () => new SurveyMongoRepository()
-const makeFakeSurveyData = (): SurveyModel => ({
-  question: 'any_question',
-  answers: [
-    {
-      image: 'any_image',
-      answer: 'any_answer'
-    }
-  ],
-  date: anyDate
-})
 
 describe('Surveys MongoDB Repository', () => {
   const sut = makeSut()
@@ -35,25 +24,22 @@ describe('Surveys MongoDB Repository', () => {
 
   describe('add', () => {
     it('Should save a survey on add success', async () => {
-      await sut.add(makeFakeSurveyData())
+      await sut.add(mockSurveyData())
       const surveySaved = await surveyCollection.findOne({
         question: 'any_question'
       })
-      expect(surveySaved).toMatchObject(makeFakeSurveyData())
+      expect(surveySaved).toMatchObject(mockSurveyData())
     })
   })
 
   describe('getList', () => {
     it('Should return surveys list on success', async () => {
-      await Promise.all([
-        sut.add(makeFakeSurveyData()),
-        sut.add(makeFakeSurveyData())
-      ])
+      await Promise.all([sut.add(mockSurveyData()), sut.add(mockSurveyData())])
 
       const result = await sut.getList()
 
       expect(result).toHaveLength(2)
-      expect(result[0]).toMatchObject(makeFakeSurveyData())
+      expect(result[0]).toMatchObject(mockSurveyData())
     })
 
     it('Should return an empty list when no surveys', async () => {
@@ -65,12 +51,12 @@ describe('Surveys MongoDB Repository', () => {
 
   describe('load', () => {
     it('Should load survey by id', async () => {
-      const inserted = await surveyCollection.insertOne(makeFakeSurveyData())
+      const inserted = await surveyCollection.insertOne(mockSurveyData())
       const surveyId = inserted.insertedId.toString()
 
       const result = await sut.load(surveyId)
 
-      expect(result).toMatchObject(makeFakeSurveyData())
+      expect(result).toMatchObject(mockSurveyData())
     })
 
     it('Should return null if no survey', async () => {

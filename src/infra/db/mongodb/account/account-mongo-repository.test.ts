@@ -1,13 +1,9 @@
 import { Collection, Document } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { AccountMongoRepository } from './account-mongo-repository'
+import { makeRawAccountData } from '@src/shared/helpers/mocks'
 
 const makeSut = () => new AccountMongoRepository()
-const makeFakeAccountData = () => ({
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'hashed_password'
-})
 
 describe('Account MongoDB Repository', () => {
   const sut = makeSut()
@@ -37,11 +33,11 @@ describe('Account MongoDB Repository', () => {
 
   describe('add()', () => {
     it('Should return an account on add success', async () => {
-      const account = await sut.add(makeFakeAccountData())
+      const account = await sut.add(makeRawAccountData())
       expect(account).toEqual(
         expect.objectContaining({
           id: expect.any(String),
-          ...makeFakeAccountData()
+          ...makeRawAccountData()
         })
       )
     })
@@ -49,12 +45,12 @@ describe('Account MongoDB Repository', () => {
 
   describe('loadByEmail()', () => {
     it('Should return an account on loadByEmail success', async () => {
-      await insertFakeAccount(makeFakeAccountData())
+      await insertFakeAccount(makeRawAccountData())
       const account = await sut.loadByEmail('valid_email@mail.com')
       expect(account).toEqual(
         expect.objectContaining({
           id: expect.any(String),
-          ...makeFakeAccountData()
+          ...makeRawAccountData()
         })
       )
     })
@@ -68,7 +64,7 @@ describe('Account MongoDB Repository', () => {
   describe('updateAccessToken()', () => {
     it('Should update account access token on updateAccessToken success', async () => {
       const { insertedId: fakeAccountId } = await insertFakeAccount(
-        makeFakeAccountData()
+        makeRawAccountData()
       )
       const accountBefore = await accountCollection.findOne({
         _id: fakeAccountId
@@ -87,14 +83,14 @@ describe('Account MongoDB Repository', () => {
 
     it('Should return an account without role on loadByToken success', async () => {
       const { insertedId: fakeAccountId } = await insertFakeAccount({
-        ...makeFakeAccountData()
+        ...makeRawAccountData()
       })
       await sut.updateAccessToken(fakeAccountId.toString(), accessToken)
       const account = await sut.loadByToken(accessToken)
       expect(account).toEqual(
         expect.objectContaining({
           id: expect.any(String),
-          ...makeFakeAccountData(),
+          ...makeRawAccountData(),
           accessToken
         })
       )
@@ -102,7 +98,7 @@ describe('Account MongoDB Repository', () => {
 
     it('Should return an account with admin role on loadByToken success', async () => {
       const { insertedId: fakeAccountId } = await insertFakeAccount({
-        ...makeFakeAccountData(),
+        ...makeRawAccountData(),
         accessToken,
         role: 'admin'
       })
@@ -111,7 +107,7 @@ describe('Account MongoDB Repository', () => {
       expect(account).toEqual(
         expect.objectContaining({
           id: expect.any(String),
-          ...makeFakeAccountData(),
+          ...makeRawAccountData(),
           accessToken,
           role: 'admin'
         })
@@ -120,7 +116,7 @@ describe('Account MongoDB Repository', () => {
 
     it('Should return an account on loadByToken if user is admin', async () => {
       const { insertedId: fakeAccountId } = await insertFakeAccount({
-        ...makeFakeAccountData(),
+        ...makeRawAccountData(),
         accessToken,
         role: 'admin'
       })
@@ -129,7 +125,7 @@ describe('Account MongoDB Repository', () => {
       expect(account).toEqual(
         expect.objectContaining({
           id: expect.any(String),
-          ...makeFakeAccountData(),
+          ...makeRawAccountData(),
           accessToken,
           role: 'admin'
         })
@@ -143,7 +139,7 @@ describe('Account MongoDB Repository', () => {
 
     it('Should return undefined when invalid role', async () => {
       await insertFakeAccount({
-        ...makeFakeAccountData(),
+        ...makeRawAccountData(),
         accessToken
       })
       const account = await sut.loadByToken(accessToken, 'admin')

@@ -1,20 +1,12 @@
 import { Collection, Document } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
-import { SaveSurveyResultParams } from '@src/domain/usecases/survey/save-survey-result'
+import {
+  mockSaveSurveyResultModel,
+  mockSurveyResultModel
+} from '@src/shared/helpers/mocks'
 
-const anyDate = new Date()
 const makeSut = () => new SurveyResultMongoRepository()
-const makeFakeSaveSurveyResultModel = (): SaveSurveyResultParams => ({
-  surveyId: 'any_id',
-  accountId: 'any_id',
-  answer: 'any_answer',
-  date: anyDate
-})
-const makeFakeUpdatedSaveSurveyResultModel = (): SaveSurveyResultParams => ({
-  ...makeFakeSaveSurveyResultModel(),
-  answer: 'updated_answer'
-})
 
 describe('SurveyResultMongoRepository', () => {
   const sut = makeSut()
@@ -35,19 +27,19 @@ describe('SurveyResultMongoRepository', () => {
 
   describe('save', () => {
     it('Should save a survey result if its a new one', async () => {
-      const result = await sut.save(makeFakeSaveSurveyResultModel())
+      const result = await sut.save(mockSaveSurveyResultModel())
       expect(result).toMatchObject({
-        ...makeFakeSaveSurveyResultModel(),
+        ...mockSaveSurveyResultModel(),
         id: expect.any(String)
       })
     })
 
     it('Should update the survey result if it already exist', async () => {
-      const saved = await sut.save(makeFakeSaveSurveyResultModel())
-      const updated = await sut.save(makeFakeUpdatedSaveSurveyResultModel())
+      const saved = await sut.save(mockSaveSurveyResultModel())
+      const updated = await sut.save(mockSurveyResultModel())
       expect(saved.id).toBe(updated.id)
       expect(updated).toMatchObject({
-        ...makeFakeUpdatedSaveSurveyResultModel(),
+        ...mockSurveyResultModel(),
         id: expect.any(String)
       })
     })

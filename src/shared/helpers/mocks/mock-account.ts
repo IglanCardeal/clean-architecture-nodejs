@@ -1,11 +1,15 @@
 import { AccountModel } from '@src/domain/models/account'
 import { LoadAccountByTokenUseCaseProps } from '@src/domain/usecases/account'
 
-export const mockAccount = (): AccountModel => ({
-  id: 'any_id',
+export const makeRawAccountData = () => ({
   name: 'valid_name',
   email: 'valid_email@mail.com',
   password: 'hashed_password'
+})
+
+export const mockAccount = (): AccountModel => ({
+  id: 'any_id',
+  ...makeRawAccountData()
 })
 
 export const mockProps = (): LoadAccountByTokenUseCaseProps => ({
