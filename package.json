@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.prod.json && tscpaths -p tsconfig.prod.json -s ./src -o ./dist",
     "start": "NODE_ENV=production node dist/main/server.js",
-    "dev": "NODE_ENV=development tsnd -r tsconfig-paths/register --respawn --ignore-watch node_modules src/main/server.ts",
+    "dev": "NODE_ENV=development tsnd --files -r tsconfig-paths/register --respawn --ignore-watch node_modules src/main/server.ts",
     "debug": "NODE_ENV=development tsnd --inspect=0.0.0.0:9222 --nolazy -r tsconfig-paths/register --respawn --ignore-watch node_modules src/main/server.ts",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "yarn run lint --fix",
