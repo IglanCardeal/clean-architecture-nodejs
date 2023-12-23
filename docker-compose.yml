@@ -12,7 +12,7 @@ services:
 
   api:
     container_name: api-container
-    image: node:16
+    image: node:16.20
     working_dir: /usr/app
     command: bash -c "npm i -q && npm run start"
     environment:
