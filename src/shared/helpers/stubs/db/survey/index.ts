@@ -10,7 +10,7 @@ import { SaveSurveyResultParams } from '@src/domain/usecases/survey'
 import {
   mockSurveyModel,
   mockSurveys,
-  mockSaveSurveyResultModel
+  mockSurveyResultModel
 } from '@src/shared/helpers/mocks'
 
 export const mockAddSurveyRepository = () => {
@@ -43,7 +43,7 @@ export const mockLoadSurveysRepository = () => {
 export const mockSaveSurveyResultRepository = () => {
   class SaveSurveyResultRepositoryStub implements SaveSurveyResultRepository {
     async save(_survey: SaveSurveyResultParams): Promise<SurveyResultModel> {
-      return { ...mockSaveSurveyResultModel(), id: 'any_id' }
+      return mockSurveyResultModel()
     }
   }
   return new SaveSurveyResultRepositoryStub()

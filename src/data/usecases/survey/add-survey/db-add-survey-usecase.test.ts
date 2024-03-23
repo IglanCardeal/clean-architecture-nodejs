@@ -1,6 +1,6 @@
 import { AddSurveyRepositoryError } from './db-add-survey-usecase-result'
 import { DbAddSurveyUseCase } from './db-add-survey-usecase'
-import { mockSurveyData } from '@src/shared/helpers/mocks'
+import { mockSurveyModel } from '@src/shared/helpers/mocks'
 import { mockAddSurveyRepository } from '@src/shared/helpers/stubs/db/survey'
 
 const makeSut = () => {
@@ -12,7 +12,7 @@ const makeSut = () => {
 }
 
 describe('DbAddSurveyUseCase', () => {
-  const surveyData = mockSurveyData()
+  const surveyData = mockSurveyModel()
   const { addSurveyRepositoryStub, sut } = makeSut()
 
   it('should call AddSurveyRepository with correct values', async () => {
