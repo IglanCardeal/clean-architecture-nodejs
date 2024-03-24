@@ -1,13 +1,12 @@
 import { ObjectId } from 'mongodb'
+import { QueryBuilder } from '../helpers'
 
-const getLoadBySurveyIdQuery = (surveyId: string) => [
-  {
-    $match: {
+const getLoadBySurveyIdQuery = (surveyId: string) => {
+  return new QueryBuilder()
+    .match({
       surveyId: new ObjectId(surveyId)
-    }
-  },
-  {
-    $group: {
+    })
+    .group({
       _id: 0,
       data: {
         $push: '$$ROOT'
@@ -15,28 +14,20 @@ const getLoadBySurveyIdQuery = (surveyId: string) => [
       count: {
         $sum: 1
       }
-    }
-  },
-  {
-    $unwind: {
+    })
+    .unwind({
       path: '$data'
-    }
-  },
-  {
-    $lookup: {
+    })
+    .lookup({
       from: 'surveys',
       localField: 'data.surveyId',
       foreignField: '_id',
       as: 'survey'
-    }
-  },
-  {
-    $unwind: {
+    })
+    .unwind({
       path: '$survey'
-    }
-  },
-  {
-    $group: {
+    })
+    .group({
       _id: {
         surveyId: '$survey._id',
         question: '$survey.question',
@@ -55,15 +46,11 @@ const getLoadBySurveyIdQuery = (surveyId: string) => [
       count: {
         $sum: 1
       }
-    }
-  },
-  {
-    $unwind: {
+    })
+    .unwind({
       path: '$_id.answer'
-    }
-  },
-  {
-    $addFields: {
+    })
+    .addFields({
       '_id.answer.count': '$count',
       '_id.answer.percent': {
         $round: [
@@ -78,10 +65,8 @@ const getLoadBySurveyIdQuery = (surveyId: string) => [
           2
         ]
       }
-    }
-  },
-  {
-    $group: {
+    })
+    .group({
       _id: {
         surveyId: '$_id.surveyId',
         question: '$_id.question',
@@ -90,17 +75,15 @@ const getLoadBySurveyIdQuery = (surveyId: string) => [
       answers: {
         $push: '$_id.answer'
       }
-    }
-  },
-  {
-    $project: {
+    })
+    .project({
       _id: 0,
       surveyId: '$_id.surveyId',
       question: '$_id.question',
       date: '$_id.date',
       answers: '$answers'
-    }
-  }
-]
+    })
+    .build()
+}
 
 export { getLoadBySurveyIdQuery }
