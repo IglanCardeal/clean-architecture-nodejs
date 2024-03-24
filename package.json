@@ -26,7 +26,7 @@
     "test:i": "yarn test:integration",
     "test:i:w": "yarn test:integration:watch",
     "test:i:v": "yarn test:integration:verbose",
-    "test:staged": "yarn test --findRelatedTests",
+    "test:staged": "yarn test --runInBand --findRelatedTests",
     "test:coverage": "yarn test --coverage",
     "test:ci": "yarn test:coverage && yarn test:i",
     "prepare": "husky install"
