@@ -1,8 +1,8 @@
 import { Collection, Document } from 'mongodb'
 import { MongoHelper } from '../helpers'
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
-import { SurveyModel } from '@src/domain/models/survey'
 import { SaveSurveyResultParams } from '@src/domain/usecases/survey'
+import { makeAccount, makeSurvey } from '../helpers/mocks'
 
 const makeSut = () => new SurveyResultMongoRepository()
 
@@ -11,33 +11,6 @@ describe('SurveyResultMongoRepository', () => {
   let surveyCollection: Collection<Document>
   let surveyResultsCollection: Collection<Document>
   let accountCollection: Collection
-
-  const makeSurvey = async (): Promise<SurveyModel> => {
-    const res = await surveyCollection.insertOne({
-      question: 'any_question',
-      answers: [
-        { image: 'any_image', answer: 'any_answer' },
-        { answer: 'other_answer' },
-        { answer: 'any_other_answer' }
-      ],
-      date: new Date()
-    })
-    const survey = await surveyCollection.findOne({ _id: res.insertedId })
-    return {
-      ...survey,
-      id: MongoHelper.mapDocumentIdToString({ _id: res.insertedId })
-    } as any
-  }
-
-  const makeAccount = async (): Promise<{ id: string }> => {
-    const res = await accountCollection.insertOne({
-      name: 'any_name',
-      email: 'any_mail@mail.com',
-      password: 'any_password'
-    })
-
-    return { id: MongoHelper.mapDocumentIdToString({ _id: res.insertedId }) }
-  }
 
   beforeAll(async () => {
     await MongoHelper.connect()
@@ -58,8 +31,8 @@ describe('SurveyResultMongoRepository', () => {
 
   describe('save', () => {
     it('Should save a survey result if its a new one', async () => {
-      const account = await makeAccount()
-      const survey = await makeSurvey()
+      const account = await makeAccount(accountCollection)
+      const survey = await makeSurvey(surveyCollection)
       const saveSurveyResultParams: SaveSurveyResultParams = {
         answer: survey.answers[0].answer,
         accountId: account.id,
@@ -75,9 +48,9 @@ describe('SurveyResultMongoRepository', () => {
     })
 
     it('Should update the survey result if it already exist', async () => {
-      const account = await makeAccount()
-      const account2 = await makeAccount()
-      const survey = await makeSurvey()
+      const account = await makeAccount(accountCollection)
+      const account2 = await makeAccount(accountCollection)
+      const survey = await makeSurvey(surveyCollection)
       const saveSurveyResultParams: SaveSurveyResultParams = {
         answer: survey.answers[0].answer,
         accountId: account.id,
