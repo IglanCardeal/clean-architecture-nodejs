@@ -1,5 +1,5 @@
 import { Collection, Document } from 'mongodb'
-import { MongoHelper } from '../helpers/mongo-helper'
+import { MongoHelper } from '../helpers'
 import { SurveyMongoRepository } from './survey-mongo-repository'
 import { mockSurveyModel } from '@src/shared/helpers/mocks'
 

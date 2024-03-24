@@ -1,5 +1,5 @@
 import { Collection } from 'mongodb'
-import { MongoHelper } from '../helpers/mongo-helper'
+import { MongoHelper } from '../helpers'
 import { LogMongoRepository } from './log-mongo-repository'
 
 describe('Log Mongo Repository', () => {

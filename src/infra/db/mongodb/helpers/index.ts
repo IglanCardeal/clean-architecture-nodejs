@@ -1,2 +1,2 @@
-export * from './mongo-helper'
+export * from './mongo/mongo-helper'
 export * from './query-builder'

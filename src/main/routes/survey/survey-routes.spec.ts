@@ -1,4 +1,4 @@
-import { MongoHelper } from '@src/infra/db/mongodb/helpers/mongo-helper'
+import { MongoHelper } from '@src/infra/db/mongodb/helpers'
 import { app } from '@src/main/config/app'
 import request from 'supertest'
 import { SURVEYS_ROUTE_PREFIX } from './survey-routes'

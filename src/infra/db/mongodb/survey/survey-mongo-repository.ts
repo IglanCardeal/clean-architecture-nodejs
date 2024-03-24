@@ -4,7 +4,7 @@ import {
   LoadSurveyByIdRepository
 } from '@src/data/protocols/db'
 import { SurveyModel } from '@src/domain/models/survey'
-import { MongoHelper } from '@src/infra/db/mongodb/helpers/mongo-helper'
+import { MongoHelper } from '@src/infra/db/mongodb/helpers'
 import { ObjectId } from 'mongodb'
 
 export class SurveyMongoRepository

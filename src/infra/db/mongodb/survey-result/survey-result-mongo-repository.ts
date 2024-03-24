@@ -1,7 +1,7 @@
 import { SaveSurveyResultRepository } from '@src/data/protocols/db'
 import { SurveyResultModel } from '@src/domain/models/survey-result'
 import { SaveSurveyResultParams } from '@src/domain/usecases/survey/save-survey-result'
-import { MongoHelper } from '@src/infra/db/mongodb/helpers/mongo-helper'
+import { MongoHelper } from '@src/infra/db/mongodb/helpers'
 import { ObjectId } from 'mongodb'
 import { getLoadBySurveyIdQuery } from '../queries'
 

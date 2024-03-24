@@ -7,7 +7,7 @@ import {
 import { AccountModel } from '@src/domain/models/account'
 import { AddAccountParams } from '@src/domain/usecases/account/add-account'
 import { ObjectId } from 'mongodb'
-import { MongoHelper } from '@src/infra/db/mongodb/helpers/mongo-helper'
+import { MongoHelper } from '@src/infra/db/mongodb/helpers'
 
 export class AccountMongoRepository
   implements
