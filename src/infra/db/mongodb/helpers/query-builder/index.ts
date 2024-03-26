@@ -17,6 +17,13 @@ export class QueryBuilder {
     return this
   }
 
+  sort(data: AnyObject): QueryBuilder {
+    this.query.push({
+      $sort: data
+    })
+    return this
+  }
+
   unwind(data: AnyObject): QueryBuilder {
     this.query.push({
       $unwind: data

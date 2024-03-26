@@ -21,12 +21,15 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
       },
       { upsert: true }
     )
-    return this.loadBySurveyId(survey.surveyId)
+    return this.loadBySurveyId(survey.surveyId, survey.accountId)
   }
 
-  private async loadBySurveyId(surveyId: string): Promise<SurveyResultModel> {
+  private async loadBySurveyId(
+    surveyId: string,
+    accountId: string
+  ): Promise<SurveyResultModel> {
     const surveyCollection = await MongoHelper.getCollection('surveyResults')
-    const query = getLoadBySurveyIdQuery(surveyId)
+    const query = getLoadBySurveyIdQuery(surveyId, accountId)
     const surveyResult = await surveyCollection.aggregate(query).toArray()
     return surveyResult?.[0] as SurveyResultModel
   }
