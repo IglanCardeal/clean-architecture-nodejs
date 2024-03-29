@@ -7,6 +7,7 @@ import {
 import { SurveyModel } from '@src/domain/models/survey'
 import { SurveyResultModel } from '@src/domain/models/survey-result'
 import { SaveSurveyResultParams } from '@src/domain/usecases/survey'
+import { LoadSurveyResultRepository } from '@src/data/protocols/db'
 import {
   mockSurveyModel,
   mockSurveys,
@@ -47,4 +48,13 @@ export const mockSaveSurveyResultRepository = () => {
     }
   }
   return new SaveSurveyResultRepositoryStub()
+}
+
+export const mockLoadSurveyResultRepository = () => {
+  class LoadSurveyResultRepositoryStub implements LoadSurveyResultRepository {
+    async loadBySurveyId(_surveyId: string): Promise<SurveyResultModel> {
+      return mockSurveyResultModel()
+    }
+  }
+  return new LoadSurveyResultRepositoryStub()
 }
