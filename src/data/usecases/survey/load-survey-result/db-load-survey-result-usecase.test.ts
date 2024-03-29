@@ -1,5 +1,6 @@
 import { mockLoadSurveyResultRepository } from '@src/shared/helpers/stubs/db/survey'
 import { DbLoadSurveyResultUseCase } from './db-load-survey-result-usecase'
+import { mockSurveyResultModel } from '@src/shared/helpers/mocks'
 
 const makeSut = () => {
   const loadSurveyResultRepositoryStub = mockLoadSurveyResultRepository()
@@ -32,5 +33,13 @@ describe('DbLoadSurveyResultUseCase', () => {
       .mockRejectedValueOnce(new Error())
 
     await expect(sut.load(anySurveyResultId)).rejects.toThrow()
+  })
+
+  it('should return survey result on success', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.load(anySurveyResultId)
+
+    expect(result).toEqual(mockSurveyResultModel())
   })
 })
