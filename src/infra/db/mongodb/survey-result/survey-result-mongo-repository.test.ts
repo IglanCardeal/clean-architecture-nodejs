@@ -1,4 +1,4 @@
-import { Collection, Document } from 'mongodb'
+import { Collection, Document, ObjectId } from 'mongodb'
 import { MongoHelper } from '../helpers'
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
 import { SaveSurveyResultParams } from '@src/domain/usecases/survey'
@@ -40,16 +40,19 @@ describe('SurveyResultMongoRepository', () => {
         date: new Date()
       }
 
-      const result = await sut.save(saveSurveyResultParams)
+      await sut.save(saveSurveyResultParams)
+      const res = (await surveyResultsCollection.findOne({
+        surveyId: new ObjectId(saveSurveyResultParams.surveyId)
+      })) as any
 
-      expect(result).toBeDefined()
-      expect(String(result.surveyId)).toBe(saveSurveyResultParams.surveyId)
-      expect(result.answers[0].percent).toBe(100)
+      expect(res).toBeDefined()
+      expect(res.answer).toBe(saveSurveyResultParams.answer)
+      expect(String(res.accountId)).toBe(saveSurveyResultParams.accountId)
+      expect(String(res.surveyId)).toBe(saveSurveyResultParams.surveyId)
     })
 
     it('Should update the survey result if it already exist', async () => {
       const account = await makeAccount(accountCollection)
-      const account2 = await makeAccount(accountCollection)
       const survey = await makeSurvey(surveyCollection)
       const saveSurveyResultParams: SaveSurveyResultParams = {
         answer: survey.answers[0].answer,
@@ -60,17 +63,18 @@ describe('SurveyResultMongoRepository', () => {
       const saveSurveyResultParams2: SaveSurveyResultParams = {
         ...saveSurveyResultParams,
         answer: survey.answers[1].answer,
-        accountId: account2.id
+        accountId: account.id
       }
 
       await sut.save(saveSurveyResultParams)
-      const updated = await sut.save(saveSurveyResultParams2)
+      await sut.save(saveSurveyResultParams2)
 
-      expect(String(updated.surveyId)).toBe(saveSurveyResultParams.surveyId)
-      expect(updated.answers[0].count).toBe(1)
-      expect(updated.answers[0].percent).toBe(50)
-      expect(updated.answers[1].count).toBe(1)
-      expect(updated.answers[1].percent).toBe(50)
+      const res = (await surveyResultsCollection.findOne({
+        surveyId: new ObjectId(saveSurveyResultParams.surveyId)
+      })) as any
+
+      expect(String(res.surveyId)).toBe(saveSurveyResultParams.surveyId)
+      expect(res.answer).toBe(saveSurveyResultParams2.answer)
     })
   })
 

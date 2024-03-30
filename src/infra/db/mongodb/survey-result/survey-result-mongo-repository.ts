@@ -11,7 +11,7 @@ import { getLoadBySurveyIdQuery } from '../queries'
 export class SurveyResultMongoRepository
   implements SaveSurveyResultRepository, LoadSurveyResultRepository
 {
-  async save(survey: SaveSurveyResultParams): Promise<SurveyResultModel> {
+  async save(survey: SaveSurveyResultParams): Promise<void> {
     const surveyCollection = await MongoHelper.getCollection('surveyResults')
     await surveyCollection.findOneAndUpdate(
       {
@@ -26,7 +26,6 @@ export class SurveyResultMongoRepository
       },
       { upsert: true }
     )
-    return this.loadBySurveyId(survey.surveyId, survey.accountId)
   }
 
   public async loadBySurveyId(
