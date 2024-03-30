@@ -22,6 +22,17 @@ export class DbLoadSurveyResultUseCase implements LoadSurveyResultUseCase {
 
     if (!survey) return null as any as SurveyResultModel
 
-    return {} as any
+    const surveyResultWithCountZero = {
+      surveyId: survey.id as string,
+      answers: survey.answers.map((answer) => ({
+        ...answer,
+        count: 0,
+        percent: 0
+      })),
+      date: survey.date,
+      question: survey.question
+    } as SurveyResultModel
+
+    return surveyResultWithCountZero
   }
 }
