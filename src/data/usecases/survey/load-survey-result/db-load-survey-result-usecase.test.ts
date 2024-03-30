@@ -3,7 +3,10 @@ import {
   mockLoadSurveyResultRepository
 } from '@src/shared/helpers/stubs/db/survey'
 import { DbLoadSurveyResultUseCase } from './db-load-survey-result-usecase'
-import { mockSurveyResultModel } from '@src/shared/helpers/mocks'
+import {
+  mockSurveyResultModel,
+  mockSurveyResultModelWithCountZero
+} from '@src/shared/helpers/mocks'
 
 const makeSut = () => {
   const loadSurveyResultRepositoryStub = mockLoadSurveyResultRepository()
@@ -71,7 +74,18 @@ describe('DbLoadSurveyResultUseCase', () => {
     expect(result).toBeNull()
   })
 
-  it.skip('should return survey result on success', async () => {
+  it('should return a surveyResultModel with count 0 if LoadSurveyResultRepository returns null', async () => {
+    const { loadSurveyResultRepositoryStub, sut } = makeSut()
+    jest
+      .spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
+      .mockResolvedValueOnce(null as any)
+
+    const result = await sut.load(anySurveyResultId)
+
+    expect(result).toEqual(mockSurveyResultModelWithCountZero())
+  })
+
+  it('should return survey result on success', async () => {
     const { sut } = makeSut()
 
     const result = await sut.load(anySurveyResultId)
