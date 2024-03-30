@@ -16,9 +16,11 @@ export class DbLoadSurveyResultUseCase implements LoadSurveyResultUseCase {
       surveyId
     )
 
-    if (!surveyResult) {
-      await this.loadSurveyByIdRepository.load(surveyId)
-    }
+    if (surveyResult) return surveyResult
+
+    const survey = await this.loadSurveyByIdRepository.load(surveyId)
+
+    if (!survey) return null as any as SurveyResultModel
 
     return {} as any
   }
