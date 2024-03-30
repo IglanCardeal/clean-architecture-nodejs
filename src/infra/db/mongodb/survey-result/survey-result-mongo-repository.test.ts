@@ -114,13 +114,23 @@ describe('SurveyResultMongoRepository', () => {
         sut.save(saveSurveyResultParams4)
       ])
 
-      const rersult = await sut.loadBySurveyId(survey.id as string, account2.id)
+      const result = await sut.loadBySurveyId(survey.id as string, account2.id)
 
-      expect(String(rersult.surveyId)).toBe(saveSurveyResultParams.surveyId)
-      expect(rersult.answers[0].count).toBe(3)
-      expect(rersult.answers[0].percent).toBe(75)
-      expect(rersult.answers[1].count).toBe(1)
-      expect(rersult.answers[1].percent).toBe(25)
+      expect(result).toBeTruthy()
+      expect(String(result.surveyId)).toBe(saveSurveyResultParams.surveyId)
+      expect(result.answers[0].count).toBe(3)
+      expect(result.answers[0].percent).toBe(75)
+      expect(result.answers[1].count).toBe(1)
+      expect(result.answers[1].percent).toBe(25)
+    })
+
+    it('Should return undefined when no survey result', async () => {
+      const account = await makeAccount(accountCollection)
+      const survey = await makeSurvey(surveyCollection)
+
+      const result = await sut.loadBySurveyId(survey.id as string, account.id)
+
+      expect(result).toBeNull()
     })
   })
 })
