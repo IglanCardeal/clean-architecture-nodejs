@@ -43,7 +43,7 @@ describe('DbLoadSurveyResultUseCase', () => {
     await expect(sut.load(anySurveyResultId)).rejects.toThrow()
   })
 
-  it('should call LoadSurveyByIdRepository when LoadSurveyResultRepository returns undefined', async () => {
+  it('should call LoadSurveyByIdRepository when LoadSurveyResultRepository returns null', async () => {
     const { loadSurveyResultRepositoryStub, loadSurveyByIdRepository, sut } =
       makeSut()
     jest
@@ -54,6 +54,21 @@ describe('DbLoadSurveyResultUseCase', () => {
     await sut.load(anySurveyResultId)
 
     expect(loadSpy).toHaveBeenCalledWith(anySurveyResultId)
+  })
+
+  it('should return null when LoadSurveyByIdRepository returns null', async () => {
+    const { loadSurveyResultRepositoryStub, loadSurveyByIdRepository, sut } =
+      makeSut()
+    jest
+      .spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
+      .mockResolvedValueOnce(null as any)
+    jest
+      .spyOn(loadSurveyByIdRepository, 'load')
+      .mockResolvedValueOnce(null as any)
+
+    const result = await sut.load(anySurveyResultId)
+
+    expect(result).toBeNull()
   })
 
   it.skip('should return survey result on success', async () => {
