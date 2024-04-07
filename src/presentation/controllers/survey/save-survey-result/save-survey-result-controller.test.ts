@@ -3,31 +3,13 @@ import {
   Body,
   SaveSurveyResultController
 } from './save-survey-result-controller'
-import {
-  HttpRequest,
-  LoadSurveyByIdUseCase,
-  SaveSurveyResultUseCase,
-  SurveyModel
-} from './save-survey-result-controller-protocols'
+import { HttpRequest } from './save-survey-result-controller-protocols'
 import { InvalidParamError } from '@src/presentation/errors'
-import { SurveyResultModel } from '@src/domain/models/survey-result'
-import { SaveSurveyResultParams } from '../add/add-survey-protocols'
+import { mockSurveyResultModel } from '@src/shared/helpers/mocks'
 import {
-  mockSurveyResultModel,
-  mockSurveyModel
-} from '@src/shared/helpers/mocks'
-
-class LoadSurveyByIdUseCaseStub implements LoadSurveyByIdUseCase {
-  async loadById(_id: string): Promise<SurveyModel | null> {
-    return mockSurveyModel()
-  }
-}
-
-class SaveSurveyResultUseCaseStub implements SaveSurveyResultUseCase {
-  async save(_data: SaveSurveyResultParams): Promise<SurveyResultModel> {
-    return mockSurveyResultModel()
-  }
-}
+  LoadSurveyByIdUseCaseStub,
+  SaveSurveyResultUseCaseStub
+} from '@src/shared/helpers/stubs/usecase/survey'
 
 const makeSut = () => {
   const loadSurveyByIdUseCaseStub = new LoadSurveyByIdUseCaseStub()
