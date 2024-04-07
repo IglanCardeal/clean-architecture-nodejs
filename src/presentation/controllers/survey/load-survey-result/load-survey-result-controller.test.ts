@@ -1,8 +1,9 @@
 import { LoadSurveyResultUseCaseStub } from '@src/shared/helpers/stubs/usecase/survey'
 import { LoadSurveyResultController } from './load-survey-result-controller'
 import { HttpRequest } from './load-survey-result-controller-protocols'
-import { forbidden, serverError } from '@src/presentation/helpers/http'
+import { forbidden, ok, serverError } from '@src/presentation/helpers/http'
 import { InvalidParamError } from '@src/presentation/errors'
+import { mockSurveyResultModel } from '@src/shared/helpers/mocks'
 
 const makeFakeRequest = (): HttpRequest => ({
   params: {
@@ -52,5 +53,13 @@ describe('LoadSurveyResultController', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(serverError(loadSurveyResultUseCaseError))
+  })
+
+  it('Should return 200 on success', async () => {
+    const { sut } = makeSut()
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(ok(mockSurveyResultModel()))
   })
 })
