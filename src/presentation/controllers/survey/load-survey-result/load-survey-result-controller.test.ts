@@ -1,7 +1,7 @@
 import { LoadSurveyResultUseCaseStub } from '@src/shared/helpers/stubs/usecase/survey'
 import { LoadSurveyResultController } from './load-survey-result-controller'
 import { HttpRequest } from './load-survey-result-controller-protocols'
-import { forbidden } from '@src/presentation/helpers/http'
+import { forbidden, serverError } from '@src/presentation/helpers/http'
 import { InvalidParamError } from '@src/presentation/errors'
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -38,5 +38,19 @@ describe('LoadSurveyResultController', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
+  })
+
+  it('Should return 500 if LoadSurveyResultUseCase throws', async () => {
+    const { sut, loadSurveyResultUseCaseStub } = makeSut()
+    const loadSurveyResultUseCaseError = new Error(
+      'LoadSurveyResultUseCase error'
+    )
+    jest
+      .spyOn(loadSurveyResultUseCaseStub, 'load')
+      .mockRejectedValueOnce(loadSurveyResultUseCaseError)
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(serverError(loadSurveyResultUseCaseError))
   })
 })
