@@ -1,4 +1,4 @@
-import { forbidden, serverError } from '@src/presentation/helpers/http'
+import { forbidden, ok, serverError } from '@src/presentation/helpers/http'
 import {
   Controller,
   HttpRequest,
@@ -20,7 +20,7 @@ export class LoadSurveyResultController implements Controller {
 
       if (!surveyResult) return forbidden(new InvalidParamError('surveyId'))
 
-      return null as any
+      return ok(surveyResult)
     } catch (error: any) {
       return serverError(error)
     }
