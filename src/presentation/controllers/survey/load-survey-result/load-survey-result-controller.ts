@@ -1,4 +1,4 @@
-import { forbidden } from '@src/presentation/helpers/http'
+import { forbidden, serverError } from '@src/presentation/helpers/http'
 import {
   Controller,
   HttpRequest,
@@ -13,12 +13,16 @@ export class LoadSurveyResultController implements Controller {
   ) {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
-    const { surveyId } = request.params
+    try {
+      const { surveyId } = request.params
 
-    const surveyResult = await this.loadSurveyResultUseCase.load(surveyId)
+      const surveyResult = await this.loadSurveyResultUseCase.load(surveyId)
 
-    if (!surveyResult) return forbidden(new InvalidParamError('surveyId'))
+      if (!surveyResult) return forbidden(new InvalidParamError('surveyId'))
 
-    return null as any
+      return null as any
+    } catch (error: any) {
+      return serverError(error)
+    }
   }
 }
