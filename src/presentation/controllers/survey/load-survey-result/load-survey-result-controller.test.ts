@@ -5,7 +5,7 @@ import { forbidden, ok, serverError } from '@src/presentation/helpers/http'
 import { InvalidParamError } from '@src/presentation/errors'
 import { mockSurveyResultModel } from '@src/shared/helpers/mocks'
 
-const makeFakeRequest = (): HttpRequest => ({
+const mockRequest = (): HttpRequest => ({
   params: {
     surveyId: 'any_id'
   }
@@ -25,9 +25,9 @@ describe('LoadSurveyResultController', () => {
     const { sut, loadSurveyResultUseCaseStub } = makeSut()
     const loadSpy = jest.spyOn(loadSurveyResultUseCaseStub, 'load')
 
-    await sut.handle(makeFakeRequest())
+    await sut.handle(mockRequest())
 
-    expect(loadSpy).toBeCalledWith(makeFakeRequest().params.surveyId)
+    expect(loadSpy).toBeCalledWith(mockRequest().params.surveyId)
   })
 
   it('Should return 403 if LoadSurveyResultUseCase returns null', async () => {
@@ -36,7 +36,7 @@ describe('LoadSurveyResultController', () => {
       .spyOn(loadSurveyResultUseCaseStub, 'load')
       .mockResolvedValueOnce(null as any)
 
-    const httpResponse = await sut.handle(makeFakeRequest())
+    const httpResponse = await sut.handle(mockRequest())
 
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
   })
@@ -50,7 +50,7 @@ describe('LoadSurveyResultController', () => {
       .spyOn(loadSurveyResultUseCaseStub, 'load')
       .mockRejectedValueOnce(loadSurveyResultUseCaseError)
 
-    const httpResponse = await sut.handle(makeFakeRequest())
+    const httpResponse = await sut.handle(mockRequest())
 
     expect(httpResponse).toEqual(serverError(loadSurveyResultUseCaseError))
   })
@@ -58,7 +58,7 @@ describe('LoadSurveyResultController', () => {
   it('Should return 200 on success', async () => {
     const { sut } = makeSut()
 
-    const httpResponse = await sut.handle(makeFakeRequest())
+    const httpResponse = await sut.handle(mockRequest())
 
     expect(httpResponse).toEqual(ok(mockSurveyResultModel()))
   })

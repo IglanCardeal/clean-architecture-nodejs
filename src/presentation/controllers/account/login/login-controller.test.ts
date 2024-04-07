@@ -47,7 +47,7 @@ const makeSut = () => {
     authenticationUseCaseStub
   }
 }
-const makeFakeRequest = () => ({
+const mockRequest = () => ({
   body: {
     email: 'any@mail.com',
     password: 'any_pass'
@@ -55,7 +55,7 @@ const makeFakeRequest = () => ({
 })
 
 describe('Login Controller', () => {
-  const httpRequest = makeFakeRequest()
+  const httpRequest = mockRequest()
   const { sut, authenticationUseCaseStub, validationStub } = makeSut()
 
   it('Should call Validation with correct values', async () => {
