@@ -1,19 +1,13 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Clean Architecture CI
+name: Clean Architecture NodeJS CI
 
 on:
   push:
     branches:
-      - main
-      - master
-      - production
+      - '*'
   pull_request:
     branches:
       - main
-      - master
-      - production
+      - develop
 
 jobs:
   build:
@@ -30,11 +24,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # - name: Start MongoDB
-      #   uses: supercharge/mongodb-github-action@1.6.0
-      #   with:
-      #     mongodb-version: ${{ matrix.mongodb-version }}
-
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
@@ -47,12 +36,8 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
 
-      - name: Run unit test
+      - name: Run unit tests
         run: yarn test:unit
 
-      - name: Run integration test
+      - name: Run integration tests
         run: yarn test:integration
-    # - name: Run functional test
-    #   run: yarn test:functional
-    # - name: Start the build
-    #   run: yarn build
