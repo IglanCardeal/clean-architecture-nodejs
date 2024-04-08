@@ -1,6 +1,6 @@
 {
   "name": "nodejs-tdd-ddd",
-  "version": "1.6.0",
+  "version": "2.0.1",
   "description": "",
   "main": "index.js",
   "engines": {
@@ -14,7 +14,7 @@
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "yarn run lint --fix",
     "jest:clear": "jest --clearCache",
-    "test": "jest --passWithNoTests --silent",
+    "test": "jest --passWithNoTests --silent --runInBand",
     "test:verbose": "jest --passWithNoTests --verbose",
     "test:unit": "yarn test",
     "test:unit:watch": "yarn test --onlyChanged --watch",
@@ -26,7 +26,7 @@
     "test:i": "yarn test:integration",
     "test:i:w": "yarn test:integration:watch",
     "test:i:v": "yarn test:integration:verbose",
-    "test:staged": "yarn test --findRelatedTests",
+    "test:staged": "yarn test --runInBand --findRelatedTests",
     "test:coverage": "yarn test --coverage",
     "test:ci": "yarn test:coverage && yarn test:i",
     "prepare": "husky install"

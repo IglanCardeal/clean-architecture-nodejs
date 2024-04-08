@@ -8,11 +8,11 @@ O objetivo do treinamento é mostrar como criar uma API com uma arquitetura bem 
 
 > ## Features disponibilizadas pela API
 
-1. [Cadastro](./requirements/signup.md)
-2. [Login](./requirements/login.md)
-3. [Criar enquete](./requirements/add-survey.md)
-4. [Listar enquetes](./requirements/load-surveys.md)
-5. [Responder enquete](./requirements/save-survey-result.md)
+1. [Cadastro](./requirements/account/signup.md)
+2. [Login](./requirements/account/login.md)
+3. [Criar enquete](./requirements/survey/add.md)
+4. [Listar enquetes](./requirements/survey/list.md)
+5. [Responder enquete](./requirements/survey/save-survey-result.md)
 6. [Resultado da enquete](./requirements/load-survey-result.md)
 
 > ## Princípios
@@ -57,6 +57,120 @@ O objetivo do treinamento é mostrar como criar uma API com uma arquitetura bem 
 - Continuous Deployment
 
 ---
+
+## Local Tests
+
+Abaixo, as rotas com seus respectivos cURL e response (em caso de sucesso) body para que seja usado como referência para testes locais:
+
+- `[POST] /api/account/signup`: Para efetuar cadastro de novos usuários.
+
+  **cURL**:
+
+  ```bash
+  curl --location 'http://localhost:3000/api/account/signup' \
+  --header 'content-type: application/json' \
+  --header 'user-agent: vscode-restclient' \
+  --data-raw '{
+      "name": "Foo",
+      "email": "foo2@email.com",
+      "password": "123foo",
+      "passwordConfirmation": "123foo"
+  }'
+  ```
+
+  **Response**:
+
+  ```json
+  {
+      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOiI2NWZmM2E4NTU1YmU5ZDY5OWUxOWEwN2QiLCJpYXQiOjE3MTEyMjU0Nzh9.f6VekaYCHjRC-cHAw4XkEu3zmg7xy-xXs5k8Z-U1jDE"
+  }
+  ```
+
+- `[POST] /api/account/login`: Para efetuar login de usuário.
+
+  **cURL**:
+
+  ```bash
+  curl --location 'http://localhost:3000/api/account/login' \
+  --header 'content-type: application/json' \
+  --header 'user-agent: vscode-restclient' \
+  --data-raw '{
+      "email": "foo5@email.com",
+      "password": "123foo"
+  }'
+  ```
+
+  **Response**:
+
+  ```json
+  {
+      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOiI2NWZmODRkN2ZmYzVkZmY2ZDY5MmM5NDAiLCJpYXQiOjE3MTEyNDQ1MDh9.HOG0iTCXg6VkWVH-wU4kLLFkhRUR23NIoqe1QxxEelc"
+  }
+  ```
+
+- `[POST] /api/surveys`: Para cadastro de novas pesquisas.
+
+  **cURL**:
+
+  ```bash
+  curl --location 'http://localhost:3000/api/surveys' \
+  --header 'content-type: application/json' \
+  --header 'user-agent: vscode-restclient' \
+  --header 'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOiI2NTg2MzEzNWQxZmM0ODM2NTAxYzM3ODYiLCJpYXQiOjE3MTEyMjEwNzN9.cNvBX2XkWtSGTeTH5MhHJ73YrR1yAWAuFhcH9xeuvYY' \
+  --data '{
+      "question": "Any question",
+      "answers": [
+          {
+              "image": "image-name",
+              "answer": "Any answer"
+          }
+      ]
+  }'
+  ```
+
+  **Response (no content - 204)**:
+
+  ```json
+  {}
+  ```
+
+- `[PUT] /api/surveys/{surveyId}/results`: Para cadastro de resposta de pesquisa.
+
+  **cURL**:
+
+  ```bash
+  curl --location --request PUT 'http://localhost:3000/api/surveys/65ff2accfc779e823a1d8860/results' \
+  --header 'content-type: application/json' \
+  --header 'user-agent: vscode-restclient' \
+  --header 'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOiI2NTg2MzEzNWQxZmM0ODM2NTAxYzM3ODYiLCJpYXQiOjE3MTEyMjEwNzN9.cNvBX2XkWtSGTeTH5MhHJ73YrR1yAWAuFhcH9xeuvYY' \
+  --data '{
+      "answer": "JQuery"
+  }'
+  ```
+
+  **Response**:
+
+  ```json
+  {
+      "surveyId": "any_survey_id",
+      "question": "any_question",
+      "date": "2024-03-23T19:57:07.107Z",
+      "answers": [
+          {
+              "answer": "any_answer",
+              "image": "any_url",
+              "count": 1,
+              "percent": 50
+          },
+          {
+              "answer": "other_answer",
+              "image": "other_url",
+              "count": 1,
+              "percent": 50
+          }
+      ]
+  }
+  ```
 
 ## Problemas
 
