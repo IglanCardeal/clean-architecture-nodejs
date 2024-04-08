@@ -14,7 +14,7 @@ export class LoadSurveyResultController implements Controller {
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const { surveyId } = request.params
+      const { surveyId } = request.body
 
       const surveyResult = await this.loadSurveyResultUseCase.load(surveyId)
 
