@@ -6,7 +6,7 @@ import { InvalidParamError } from '@src/presentation/errors'
 import { mockSurveyResultModel } from '@src/shared/helpers/mocks'
 
 const mockRequest = (): HttpRequest => ({
-  params: {
+  body: {
     surveyId: 'any_id'
   }
 })
@@ -27,7 +27,7 @@ describe('LoadSurveyResultController', () => {
 
     await sut.handle(mockRequest())
 
-    expect(loadSpy).toBeCalledWith(mockRequest().params.surveyId)
+    expect(loadSpy).toBeCalledWith(mockRequest().body.surveyId)
   })
 
   it('Should return 403 if LoadSurveyResultUseCase returns null', async () => {
