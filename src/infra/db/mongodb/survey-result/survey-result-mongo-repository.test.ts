@@ -124,9 +124,11 @@ describe('SurveyResultMongoRepository', () => {
       expect(result.answers[1].percent).toBe(25)
     })
 
-    it('Should return undefined when no survey result', async () => {
+    it('Should return null when no survey result', async () => {
       const account = await makeAccount(accountCollection)
       const survey = await makeSurvey(surveyCollection)
+
+      await surveyResultsCollection.deleteMany({})
 
       const result = await sut.loadBySurveyId(survey.id as string, account.id)
 

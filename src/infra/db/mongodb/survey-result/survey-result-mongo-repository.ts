@@ -35,6 +35,6 @@ export class SurveyResultMongoRepository
     const surveyCollection = await MongoHelper.getCollection('surveyResults')
     const query = getLoadBySurveyIdQuery(surveyId, accountId)
     const surveyResult = await surveyCollection.aggregate(query).toArray()
-    return (surveyResult?.[0] || null) as SurveyResultModel
+    return (surveyResult[0] || null) as SurveyResultModel
   }
 }
