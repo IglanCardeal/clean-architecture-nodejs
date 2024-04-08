@@ -34,7 +34,7 @@ const makeSut = () => {
   }
 }
 
-const makeFakeRequest = (): HttpRequest => ({
+const mockRequest = (): HttpRequest => ({
   body: {
     question: 'any',
     answers: [
@@ -48,7 +48,7 @@ const makeFakeRequest = (): HttpRequest => ({
 
 describe('Add Survey Controller', () => {
   const { sut, validationStub, dbAddSurveyUseCaseStub } = makeSut()
-  const httpRequest = makeFakeRequest()
+  const httpRequest = mockRequest()
 
   it('Should call Valitation with correct values', async () => {
     const validateSpy = jest.spyOn(validationStub, 'validate')

@@ -1,4 +1,4 @@
-import { MongoHelper } from '@src/infra/db/mongodb/helpers/mongo-helper'
+import { MongoHelper } from '@src/infra/db/mongodb/helpers'
 import { app } from '@src/main/config/app'
 import request from 'supertest'
 import { SURVEYS_ROUTE_PREFIX } from './survey-routes'
@@ -143,6 +143,25 @@ describe('Surveys Routes', () => {
         .send({
           answer: 'any_answer'
         })
+        .expect(200)
+    })
+  })
+
+  describe(`GET /api/${SURVEYS_ROUTE_PREFIX}/:surveyId/results`, () => {
+    it('Should return status code 403 on load survey result without access token', async () => {
+      await request(app)
+        .get(`/api/${SURVEYS_ROUTE_PREFIX}/any_id/results`)
+        .expect(403)
+    })
+
+    it('Should return status code 200 on load survey result with access token', async () => {
+      const res = await surveyCollection.insertOne(makeFakeSurveyData())
+      const surveyId = res.insertedId.toString()
+      const validToken = await getValidAccessToken(accountCollection)
+
+      await request(app)
+        .get(`/api/${SURVEYS_ROUTE_PREFIX}/${surveyId}/results`)
+        .set('x-access-token', validToken)
         .expect(200)
     })
   })

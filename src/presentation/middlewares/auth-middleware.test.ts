@@ -6,7 +6,7 @@ import { failure } from '@src/shared'
 import { LoadAccountByTokenRepositoryError } from '@src/data/usecases/account/load-account-by-token/db-load-account-by-token-result'
 import { mockLoadAccountByTokenUseCase } from '@src/shared/helpers/stubs/usecase/account'
 
-const makeFakeRequest = (): HttpRequest => ({
+const mockRequest = (): HttpRequest => ({
   headers: {
     'x-access-token': 'any_token'
   }
@@ -22,7 +22,7 @@ const makeSut = (role?: string) => {
 
 describe('Auth Middleware', () => {
   const { sut, loadAccountByTokenUseCaseStub } = makeSut('any_role')
-  const httpRequest = makeFakeRequest()
+  const httpRequest = mockRequest()
 
   it('should return 403 if no x-access-token is provided', async () => {
     const result = await sut.handle({})

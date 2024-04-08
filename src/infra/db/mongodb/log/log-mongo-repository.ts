@@ -3,7 +3,7 @@ import {
   LogTransactionId,
   LogRepository
 } from '@src/data/protocols/db'
-import { MongoHelper } from '../helpers/mongo-helper'
+import { MongoHelper } from '../helpers'
 
 export class LogMongoRepository implements LogRepository {
   async logError<T extends LogDataError>(data: T): Promise<void> {
